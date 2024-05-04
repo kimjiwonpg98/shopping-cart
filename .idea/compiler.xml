@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel target="21">
+      <module name="api" target="21" />
+      <module name="api.main" target="21" />
+      <module name="api.test" target="21" />
+      <module name="bootstrap" target="17" />
+      <module name="bootstrap.main" target="17" />
+      <module name="bootstrap.test" target="17" />
+      <module name="database-mysql" target="21" />
+      <module name="database-mysql.main" target="21" />
+      <module name="database-mysql.test" target="21" />
+      <module name="domain" target="21" />
+      <module name="domain.main" target="21" />
+      <module name="domain.test" target="21" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
