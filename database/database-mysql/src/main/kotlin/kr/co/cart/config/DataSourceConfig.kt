@@ -15,30 +15,30 @@ import javax.sql.DataSource
 @Configuration
 class DataSourceConfig {
     @Bean(name = [CART_WRITE_DATASOURCE])
-    @ConfigurationProperties(prefix = TITLE_ACADEMY_WRITE_PROPERTIES)
-    fun titleAcademyWriteDataSource(): DataSource = DataSourceBuilder.create()
+    @ConfigurationProperties(prefix = CART_WRITE_PROPERTIES)
+    fun cartWriteDataSource(): DataSource = DataSourceBuilder.create()
         .type(HikariDataSource::class.java)
         .build()
 
     @Bean(name = [CART_READ_DATASOURCE])
-    @ConfigurationProperties(prefix = TITLE_ACADEMY_READ_PROPERTIES)
-    fun titleAcademyReadDataSource(): DataSource = DataSourceBuilder.create()
+    @ConfigurationProperties(prefix = CART_READ_PROPERTIES)
+    fun cartReadDataSource(): DataSource = DataSourceBuilder.create()
         .type(HikariDataSource::class.java)
         .build()
 
     @Bean(name = [DYNAMIC_ROUTING_DATA_SOURCE])
     @ConditionalOnBean(name = [CART_WRITE_DATASOURCE, CART_READ_DATASOURCE])
     fun routingDataSource(
-        @Qualifier(CART_WRITE_DATASOURCE) titleAcademyWriteDataSource: DataSource,
-        @Qualifier(CART_READ_DATASOURCE) titleAcademyReadDataSource: DataSource
+        @Qualifier(CART_WRITE_DATASOURCE) cartWriteDataSource: DataSource,
+        @Qualifier(CART_READ_DATASOURCE) cartReadDataSource: DataSource
     ): DataSource {
         val dynamicRoutingDataSource = DynamicRoutingDataSource()
         val dataSources: Map<Any, Any> = mapOf(
-            DynamicRoutingDataSource.WRITE to titleAcademyWriteDataSource,
-            DynamicRoutingDataSource.READ to titleAcademyReadDataSource
+            DynamicRoutingDataSource.WRITE to cartWriteDataSource,
+            DynamicRoutingDataSource.READ to cartReadDataSource
         )
         dynamicRoutingDataSource.setTargetDataSources(dataSources)
-        dynamicRoutingDataSource.setDefaultTargetDataSource(titleAcademyWriteDataSource)
+        dynamicRoutingDataSource.setDefaultTargetDataSource(cartWriteDataSource)
         return dynamicRoutingDataSource
     }
 
@@ -50,8 +50,8 @@ class DataSourceConfig {
     ): LazyConnectionDataSourceProxy = LazyConnectionDataSourceProxy(dynamicRoutingDataSource)
 
     companion object {
-        const val TITLE_ACADEMY_WRITE_PROPERTIES = "spring.datasource.title-academy.write"
-        const val TITLE_ACADEMY_READ_PROPERTIES = "spring.datasource.title-academy.read"
+        const val CART_WRITE_PROPERTIES = "spring.datasource.cart.write"
+        const val CART_READ_PROPERTIES = "spring.datasource.cart.read"
 
         const val CART_WRITE_DATASOURCE = "cartWriteDataSource"
         const val CART_READ_DATASOURCE = "cartReadDataSource"
