@@ -1,7 +1,6 @@
 package kr.co.cart.config
 
 import com.zaxxer.hikari.HikariDataSource
-import kr.co.title.config.DynamicRoutingDataSource
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean
