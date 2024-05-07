@@ -1,7 +1,7 @@
 # Read Me First
 The following was discovered as part of building this project:
 
-* The original package name 'kr.co.cart.cart' is invalid and this project uses 'kr.co.shoppingcart.cart' instead.
+* The original package name 'kr.co.shopping-cart.cart' is invalid and this project uses 'kr.co.shoppingcart.cart' instead.
 
 # Getting Started
 

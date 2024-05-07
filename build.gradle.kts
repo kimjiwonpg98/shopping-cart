@@ -1,59 +1,53 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-	kotlin("jvm")
-	kotlin("plugin.spring")
-	id("org.springframework.boot")
-	id("io.spring.dependency-management")
-	/** lint 관리 **/
-	id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
-	/** 커버러지 관리 **/
-	id("org.jetbrains.kotlinx.kover") version "0.7.5"
+	id("org.springframework.boot") version "3.2.5"
+	id("io.spring.dependency-management") version "1.1.4"
+	kotlin("jvm") version "1.9.23"
+	kotlin("plugin.spring") version "1.9.23"
+	kotlin("plugin.jpa") version "1.9.23"
+	kotlin("plugin.noarg") version "1.9.23"
 }
 
-val projectGroup: String by project
-val applicationVersion: String by project
+group = "kr.co.shopping-cart"
+version = "0.0.1-SNAPSHOT"
 
-allprojects {
-	group = projectGroup
-	version = applicationVersion
+java {
+	sourceCompatibility = JavaVersion.VERSION_21
+}
 
-	repositories {
-		mavenCentral()
-	}
+repositories {
+	mavenCentral()
+}
 
-	subprojects {
-		apply(plugin = "org.jetbrains.kotlin.jvm")
-		apply(plugin = "org.jetbrains.kotlin.plugin.spring")
-		apply(plugin = "org.springframework.boot")
-		apply(plugin = "io.spring.dependency-management")
+dependencies {
+	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+	implementation("org.jetbrains.kotlin:kotlin-reflect")
+	implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
+	implementation("org.springframework.boot:spring-boot-starter-validation")
+	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
 
-		dependencies {
-			implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-			implementation("org.jetbrains.kotlin:kotlin-reflect")
-			implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
-			implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
-		}
+	runtimeOnly("com.mysql:mysql-connector-j")
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
+}
 
-		tasks.getByName("bootJar") {
-			enabled = false
-		}
-
-		tasks.getByName("jar") {
-			enabled = true
-		}
-
-		tasks.withType<KotlinCompile> {
-			kotlinOptions {
-				freeCompilerArgs += "-Xjsr305=strict"
-				jvmTarget = "21"
-			}
-		}
-
-		tasks.withType<Test> {
-			useJUnitPlatform()
-		}
+tasks.withType<KotlinCompile> {
+	kotlinOptions {
+		freeCompilerArgs += "-Xjsr305=strict"
+		jvmTarget = "21"
 	}
 }
 
+tasks.withType<Test> {
+	useJUnitPlatform()
+}
 
+/** Arg 에러 방지 **/
+noArg {
+	annotation("jakarta.persistence.Entity")
+	annotation("jakarta.persistence.MappedSuperclass")
+	annotation("jakarta.persistence.Embeddable")
+}

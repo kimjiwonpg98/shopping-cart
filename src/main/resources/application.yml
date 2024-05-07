@@ -1,0 +1,67 @@
+spring:
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQLDialect
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    open-in-view: false
+    properties:
+      hibernate:
+        show_sql: false
+        format_sql: false
+        use_sql_comments: false
+  datasource:
+    cart:
+      write:
+        pool-name: default-hikari-pool
+        jdbc-url: jdbc:mysql://${MYSQL_WRITE_HOST:localhost:3306/shopping_cart}?serverTimezone=UTC&characterEncoding=UTF-8&rewriteBatchedStatements=true
+        username: ${MYSQL_USER:root}
+        password: ${MYSQL_USER:hhhh}
+        maximum-pool-size: 10
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        read-only: false
+        validation-timeout: 500
+        connection-timeout: 30000
+        keepalive-time: 0
+        auto-commit: true
+      read:
+        pool-name: default-hikari-pool
+        jdbc-url: jdbc:mysql://${MYSQL_WRITE_HOST:localhost:3306/shopping_cart}?serverTimezone=UTC&characterEncoding=UTF-8&rewriteBatchedStatements=true
+        username: ${MYSQL_USER:root}
+        password: ${MYSQL_USER:hhhh}
+        maximum-pool-size: 10
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        read-only: true
+        validation-timeout: 500
+        connection-timeout: 30000
+        keepalive-time: 0
+        auto-commit: true
+  jooq:
+    sql-dialect: mysql
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+logging:
+  level:
+    org:
+      springframework:
+        jdbc: debug
+      hibernate:
+        SQL: debug
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
+            orm:
+              jdbc:
+                bind: TRACE
