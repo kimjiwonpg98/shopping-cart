@@ -2,6 +2,7 @@ package kr.co.shoppingcart.cart.database.mysql.cart.entity
 
 import jakarta.persistence.*
 import kr.co.shoppingcart.cart.database.mysql.cart.entity.CartEntity.Companion.CART_ENTITY_NAME
+import kr.co.shoppingcart.cart.database.mysql.common.entity.CommonEntity
 
 @Table(name = CART_ENTITY_NAME)
 @Entity
@@ -16,7 +17,7 @@ class CartEntity (
 
     @Column(columnDefinition = "BIGINT", nullable = false, name = "user_id")
     private val userId: Long?,
-) {
+): CommonEntity() {
     companion object {
         const val CART_ENTITY_NAME = "cart"
     }
