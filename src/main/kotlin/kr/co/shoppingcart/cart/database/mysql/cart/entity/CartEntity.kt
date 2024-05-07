@@ -3,15 +3,15 @@ package kr.co.shoppingcart.cart.database.mysql.cart.entity
 import jakarta.persistence.*
 import kr.co.shoppingcart.cart.database.mysql.cart.entity.CartEntity.Companion.CART_ENTITY_NAME
 
-@Entity
 @Table(name = CART_ENTITY_NAME)
+@Entity
 class CartEntity (
-    @Id
+    @Id()
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(columnDefinition = "BIGINT")
-    private val id: Long?,
+    @Column(columnDefinition = "BIGINT", name = "id")
+    private val id: Long,
 
-    @Column(columnDefinition = "VARCHAR", nullable = false)
+    @Column(nullable = false, length = 200)
     private val name: String,
 
     @Column(columnDefinition = "BIGINT", nullable = false, name = "user_id")
