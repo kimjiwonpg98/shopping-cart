@@ -1,4 +1,4 @@
-package kr.co.shoppingcart.common
+package kr.co.shoppingcart.cart.common
 
 import jakarta.validation.ConstraintViolationException
 import jakarta.validation.Validation

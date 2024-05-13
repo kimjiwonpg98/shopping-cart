@@ -1,4 +1,4 @@
-package kr.co.shoppingcart.config
+package kr.co.shoppingcart.cart.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

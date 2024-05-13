@@ -1,9 +1,9 @@
 spring:
   messages:
-    basename: message/messages
+    basename: messages
     encoding: UTF-8
     fallbackToSystemLocale: false
-    alwaysUseMessageFormat: true
+    alwaysUseMessageFormat: false
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MySQLDialect

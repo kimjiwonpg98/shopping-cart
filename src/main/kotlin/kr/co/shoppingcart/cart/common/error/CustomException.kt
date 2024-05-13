@@ -1,6 +1,6 @@
-package kr.co.shoppingcart.common.error
+package kr.co.shoppingcart.cart.common.error
 
-import kr.co.shoppingcart.common.error.model.ExceptionCode
+import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
 import org.springframework.http.HttpStatus
 
 class CustomException private constructor(
@@ -18,6 +18,26 @@ class CustomException private constructor(
         ): CustomException = CustomException (
             code = code,
             message = "name=${code.code}, status=${code.httpStatus.value()}",
+            cause = cause,
+            detailInformation = detailInformation
+        )
+
+        fun badRequest(
+            code: ExceptionCode,
+            cause: Throwable? = null,
+            detailInformation: String? = null
+        ): CustomException = fromErrorCode(
+            code = code,
+            cause = cause,
+            detailInformation = detailInformation
+        )
+
+        fun unauthorized(
+            code: ExceptionCode,
+            cause: Throwable? = null,
+            detailInformation: String? = null
+        ): CustomException = fromErrorCode(
+            code = code,
             cause = cause,
             detailInformation = detailInformation
         )

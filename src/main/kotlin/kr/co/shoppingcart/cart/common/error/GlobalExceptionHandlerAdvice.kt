@@ -1,8 +1,8 @@
-package kr.co.shoppingcart.common.error
+package kr.co.shoppingcart.cart.common.error
 
-import kr.co.shoppingcart.common.error.model.ExceptionCode
-import kr.co.shoppingcart.common.error.model.ExceptionResponseBody
-import kr.co.shoppingcart.common.error.translators.ExceptionCodeTranslator
+import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
+import kr.co.shoppingcart.cart.common.error.model.ExceptionResponseBody
+import kr.co.shoppingcart.cart.common.error.translators.ExceptionCodeTranslator
 import mu.KotlinLogging
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

@@ -1,4 +1,4 @@
-package kr.co.shoppingcart.common.error.model
+package kr.co.shoppingcart.cart.common.error.model
 
 data class ExceptionResponseBody (
     val code: String,

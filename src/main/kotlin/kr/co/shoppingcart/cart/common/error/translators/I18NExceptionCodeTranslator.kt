@@ -1,7 +1,7 @@
-package kr.co.shoppingcart.common.error.translators
+package kr.co.shoppingcart.cart.common.error.translators
 
-import kr.co.shoppingcart.common.error.model.ExceptionCode
-import kr.co.shoppingcart.common.error.model.ExceptionResponseBody
+import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
+import kr.co.shoppingcart.cart.common.error.model.ExceptionResponseBody
 import mu.KotlinLogging
 import org.springframework.context.MessageSource
 import org.springframework.context.i18n.LocaleContextHolder
