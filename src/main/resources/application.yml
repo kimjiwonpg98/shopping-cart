@@ -45,6 +45,8 @@ spring:
         auto-commit: true
   jooq:
     sql-dialect: mysql
+kakao:
+  client-id: ${KAKAO_CLIENT_ID:xxxx}
 
 ---
 spring:
