@@ -47,6 +47,10 @@ spring:
     sql-dialect: mysql
 kakao:
   client-id: ${KAKAO_CLIENT_ID:xxxx}
+jwt:
+  secret: ${JWT_SECRET:xxxxxzsqwsasd123afdcdfwqdsddasdqwdsacasdqwdcfv12312dsacvxcasdwhrtjh465yu1234xsddsvssdvdsdvdsvvsvdvsdsdv}
+  issuer: ${JWT_ISSUER:cart}
+
 
 ---
 spring:
