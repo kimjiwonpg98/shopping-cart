@@ -70,7 +70,7 @@ class JwtProviderTest (
         = JwtPayload(
             claims = claims,
             expiredTimestamp = expiredTimestamp,
-            uuid = UUID.randomUUID().toString(),
+            identificationValue = UUID.randomUUID().toString(),
             now = issuedAt
         )
 
