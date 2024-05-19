@@ -10,7 +10,7 @@ class CartEntity (
     @Id()
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "BIGINT", name = "id")
-    private val id: Long,
+    private val id: Long? = null,
 
     @Column(nullable = false, length = 200)
     private val name: String,

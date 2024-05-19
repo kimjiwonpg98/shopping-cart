@@ -4,7 +4,7 @@ import kr.co.shoppingcart.cart.domain.cart.vo.CartId
 import kr.co.shoppingcart.cart.domain.cart.vo.CartName
 import kr.co.shoppingcart.cart.domain.cart.vo.CartOwnerId
 
-data class Cart (
+data class Cart(
     val id: CartId,
     val name: CartName,
     val userId: CartOwnerId
@@ -17,5 +17,4 @@ data class Cart (
                 userId = CartOwnerId(userId)
             )
     }
-
 }

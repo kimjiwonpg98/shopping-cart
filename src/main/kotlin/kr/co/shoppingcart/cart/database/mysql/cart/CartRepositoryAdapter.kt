@@ -11,6 +11,11 @@ class CartRepositoryAdapter(
 ): CartRepository {
     @Transactional
     override fun createCart(name: String, userId: Long) {
-        cartEntityRepository.saveCart(name, userId)
+        cartEntityRepository.save(
+            CartEntity(
+                name = name,
+                userId = userId,
+            )
+        )
     }
 }
