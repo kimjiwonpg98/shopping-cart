@@ -8,6 +8,7 @@ import io.jsonwebtoken.security.SignatureException
 import kr.co.shoppingcart.cart.utils.DateUtil
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
+import java.util.*
 import javax.crypto.SecretKey
 
 
@@ -23,7 +24,22 @@ class JwtProvider (
     fun createJwt(jwtPayload: JwtPayload): String {
         val expiredTime = jwtPayload.now.plusSeconds(jwtPayload.expiredTimestamp)
 
-        return Jwts.builder().claim("email", jwtPayload.email)
+        val jwtBuilder = Jwts.builder()
+
+        if (jwtPayload.claims.isNullOrEmpty()) {
+            return jwtBuilder
+                .id(UUID.randomUUID().toString())
+                .subject(jwtPayload.uuid)
+                .issuer(issuer)
+                .issuedAt(DateUtil.convertZoneDateTimeToDate(jwtPayload.now))
+                .expiration(DateUtil.convertZoneDateTimeToDate(expiredTime))
+                .signWith(secretKey, Jwts.SIG.HS512)
+                .compact()
+        }
+
+        return jwtBuilder.claims(jwtPayload.claims)
+            .id(UUID.randomUUID().toString())
+            .subject(jwtPayload.uuid)
             .issuer(issuer)
             .issuedAt(DateUtil.convertZoneDateTimeToDate(jwtPayload.now))
             .expiration(DateUtil.convertZoneDateTimeToDate(expiredTime))
@@ -37,14 +53,15 @@ class JwtProvider (
                 .parseSignedClaims(jwt)
 
             return JwtPayload(
-                claimsJwt.payload[jwt, String::class.java],
+                claimsJwt.payload,
                 claimsJwt.payload.expiration.time,
+                claimsJwt.payload.subject,
             )
         } catch (e: SignatureException) {
-            // 비밀키 처리
+            /* TODO: 토큰 비밀키 에러 처리 */
             throw Error("Invalid JWT signature")
         } catch (error: ExpiredJwtException) {
-            // 유효시간 지남
+            /* TODO: 토큰 유효시간 지남 이슈 */
             throw Error("Invalid JWT signature")
         }
     }

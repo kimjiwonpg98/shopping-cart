@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import java.time.ZonedDateTime
+import java.util.*
 import javax.crypto.SecretKey
 
 @SpringBootTest
@@ -41,8 +42,9 @@ class JwtProviderTest (
     fun `jwt 생성에 성공`() {
         // given
         val secretKey: SecretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret))
+        val claims: Map<String, Any> = mapOf("email" to email)
         val jwtPayload = createJwtPayload(
-            email = email,
+            claims = claims,
             expiredTimestamp = 86400,
             issuedAt = ZonedDateTime.now()
         )
@@ -61,12 +63,14 @@ class JwtProviderTest (
             claimsJwt.payload.expiration.toString(),
             DateUtil.convertZoneDateTimeToDate(expiration).toString()
         )
+        assertNotNull(claimsJwt.payload.id)
     }
 
-    private fun createJwtPayload(email: String, expiredTimestamp: Long, issuedAt: ZonedDateTime): JwtPayload
+    private fun createJwtPayload(claims: Map<String, Any>, expiredTimestamp: Long, issuedAt: ZonedDateTime): JwtPayload
         = JwtPayload(
-            email = email,
+            claims = claims,
             expiredTimestamp = expiredTimestamp,
+            uuid = UUID.randomUUID().toString(),
             now = issuedAt
         )
 
