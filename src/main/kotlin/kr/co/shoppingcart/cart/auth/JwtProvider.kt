@@ -29,7 +29,7 @@ class JwtProvider (
         if (jwtPayload.claims.isNullOrEmpty()) {
             return jwtBuilder
                 .id(UUID.randomUUID().toString())
-                .subject(jwtPayload.uuid)
+                .subject(jwtPayload.identificationValue)
                 .issuer(issuer)
                 .issuedAt(DateUtil.convertZoneDateTimeToDate(jwtPayload.now))
                 .expiration(DateUtil.convertZoneDateTimeToDate(expiredTime))
@@ -39,7 +39,7 @@ class JwtProvider (
 
         return jwtBuilder.claims(jwtPayload.claims)
             .id(UUID.randomUUID().toString())
-            .subject(jwtPayload.uuid)
+            .subject(jwtPayload.identificationValue)
             .issuer(issuer)
             .issuedAt(DateUtil.convertZoneDateTimeToDate(jwtPayload.now))
             .expiration(DateUtil.convertZoneDateTimeToDate(expiredTime))

@@ -5,6 +5,6 @@ import java.time.ZonedDateTime
 data class JwtPayload (
     val claims: Map<String, Any>?,
     val expiredTimestamp: Long,
-    val uuid: String,
+    val identificationValue: String,
     val now: ZonedDateTime = ZonedDateTime.now()
 )
