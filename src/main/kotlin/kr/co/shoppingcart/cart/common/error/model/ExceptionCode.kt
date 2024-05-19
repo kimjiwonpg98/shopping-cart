@@ -7,11 +7,12 @@ enum class ExceptionCode (
     val httpStatus: HttpStatus,
 ) {
 
-    E_400_000(400, HttpStatus.BAD_REQUEST),
+    E_400_000(400_000, HttpStatus.BAD_REQUEST),
 
     /* 토큰 검증 후 오류 */
-    E_401_000(401, HttpStatus.UNAUTHORIZED),
+    E_401_000(401_000, HttpStatus.UNAUTHORIZED),
+    E_403_000(403_000, HttpStatus.FORBIDDEN),
 
-    E_500_000(500, HttpStatus.INTERNAL_SERVER_ERROR),
+    E_500_000(500_000, HttpStatus.INTERNAL_SERVER_ERROR),
 
 }

@@ -48,21 +48,13 @@ class JwtProvider (
     }
 
     fun verifyToken(jwt: String?): JwtPayload {
-        try {
-            val claimsJwt = Jwts.parser().verifyWith(secretKey).build()
-                .parseSignedClaims(jwt)
+        val claimsJwt = Jwts.parser().verifyWith(secretKey).build()
+            .parseSignedClaims(jwt)
 
-            return JwtPayload(
-                claimsJwt.payload,
-                claimsJwt.payload.expiration.time,
-                claimsJwt.payload.subject,
-            )
-        } catch (e: SignatureException) {
-            /* TODO: 토큰 비밀키 에러 처리 */
-            throw Error("Invalid JWT signature")
-        } catch (error: ExpiredJwtException) {
-            /* TODO: 토큰 유효시간 지남 이슈 */
-            throw Error("Invalid JWT signature")
-        }
+        return JwtPayload(
+            claimsJwt.payload,
+            claimsJwt.payload.expiration.time,
+            claimsJwt.payload.subject,
+        )
     }
 }
