@@ -33,7 +33,7 @@ class JwtFilter(
 
         val token = authorizationHeader.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1]
 
-        val jwtPayload = jwtProvider.verifyToken(token)
+        val jwtPayload: JwtPayload = jwtProvider.verifyToken(token)
         request.setAttribute(TokenInformationEnum.USER.name, jwtPayload)
         setAuthentication(jwtPayload)
         filterChain.doFilter(request, response)

@@ -1,16 +1,13 @@
 package kr.co.shoppingcart.cart.auth
 
-import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
-import io.jsonwebtoken.security.SignatureException
 import kr.co.shoppingcart.cart.utils.DateUtil
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.util.*
 import javax.crypto.SecretKey
-
 
 @Component
 class JwtProvider (
@@ -21,27 +18,27 @@ class JwtProvider (
 ) {
     private val secretKey: SecretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret))
 
-    fun createJwt(jwtPayload: JwtPayload): String {
-        val expiredTime = jwtPayload.now.plusSeconds(jwtPayload.expiredTimestamp)
+    fun createJwt(jwtPayloadDto: JwtPayloadDto): String {
+        val expiredTime = jwtPayloadDto.now.plusSeconds(jwtPayloadDto.expiredTimestamp)
 
         val jwtBuilder = Jwts.builder()
 
-        if (jwtPayload.claims.isNullOrEmpty()) {
+        if (jwtPayloadDto.claims.isNullOrEmpty()) {
             return jwtBuilder
                 .id(UUID.randomUUID().toString())
-                .subject(jwtPayload.identificationValue)
+                .subject(jwtPayloadDto.identificationValue)
                 .issuer(issuer)
-                .issuedAt(DateUtil.convertZoneDateTimeToDate(jwtPayload.now))
+                .issuedAt(DateUtil.convertZoneDateTimeToDate(jwtPayloadDto.now))
                 .expiration(DateUtil.convertZoneDateTimeToDate(expiredTime))
                 .signWith(secretKey, Jwts.SIG.HS512)
                 .compact()
         }
 
-        return jwtBuilder.claims(jwtPayload.claims)
+        return jwtBuilder.claims(jwtPayloadDto.claims)
             .id(UUID.randomUUID().toString())
-            .subject(jwtPayload.identificationValue)
+            .subject(jwtPayloadDto.identificationValue)
             .issuer(issuer)
-            .issuedAt(DateUtil.convertZoneDateTimeToDate(jwtPayload.now))
+            .issuedAt(DateUtil.convertZoneDateTimeToDate(jwtPayloadDto.now))
             .expiration(DateUtil.convertZoneDateTimeToDate(expiredTime))
             .signWith(secretKey, Jwts.SIG.HS512)
             .compact()
@@ -51,10 +48,15 @@ class JwtProvider (
         val claimsJwt = Jwts.parser().verifyWith(secretKey).build()
             .parseSignedClaims(jwt)
 
+        if (claimsJwt.payload["email"].toString().isEmpty()) {
+            return JwtPayload(
+                identificationValue = claimsJwt.payload.subject
+            )
+        }
+
         return JwtPayload(
-            claimsJwt.payload,
-            claimsJwt.payload.expiration.time,
-            claimsJwt.payload.subject,
+            identificationValue = claimsJwt.payload.subject,
+            email = claimsJwt.payload["email"] as String
         )
     }
 }

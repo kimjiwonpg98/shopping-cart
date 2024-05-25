@@ -18,11 +18,10 @@ class CartController (
     @PostMapping("/cart")
     fun saveCart(
         @Valid @RequestBody body: CreateCartRequestBodyDto,
-        /* TODO: JwtPayload가 아닌 다른 인터페이스 필요 */
         @CurrentUser currentUser: JwtPayload
-    ): ResponseEntity<Long> {
-        val cart = CreateCartCommand(cartName = body.name, userId = 1)
+    ): ResponseEntity<Unit> {
+        val cart = CreateCartCommand(cartName = body.name, userId = currentUser.identificationValue.toLong())
         cartUseCase.saveCart(cart)
-        return ResponseEntity.status(200).body(1)
+        return ResponseEntity.status(201).build()
     }
 }

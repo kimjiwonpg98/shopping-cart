@@ -66,8 +66,8 @@ class JwtProviderTest (
         assertNotNull(claimsJwt.payload.id)
     }
 
-    private fun createJwtPayload(claims: Map<String, Any>, expiredTimestamp: Long, issuedAt: ZonedDateTime): JwtPayload
-        = JwtPayload(
+    private fun createJwtPayload(claims: Map<String, Any>, expiredTimestamp: Long, issuedAt: ZonedDateTime): JwtPayloadDto
+        = JwtPayloadDto(
             claims = claims,
             expiredTimestamp = expiredTimestamp,
             identificationValue = UUID.randomUUID().toString(),
