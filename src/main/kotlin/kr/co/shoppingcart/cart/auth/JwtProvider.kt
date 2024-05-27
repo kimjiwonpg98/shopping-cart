@@ -21,20 +21,7 @@ class JwtProvider (
     fun createJwt(jwtPayloadDto: JwtPayloadDto): String {
         val expiredTime = jwtPayloadDto.now.plusSeconds(jwtPayloadDto.expiredTimestamp)
 
-        val jwtBuilder = Jwts.builder()
-
-        if (jwtPayloadDto.claims.isNullOrEmpty()) {
-            return jwtBuilder
-                .id(UUID.randomUUID().toString())
-                .subject(jwtPayloadDto.identificationValue)
-                .issuer(issuer)
-                .issuedAt(DateUtil.convertZoneDateTimeToDate(jwtPayloadDto.now))
-                .expiration(DateUtil.convertZoneDateTimeToDate(expiredTime))
-                .signWith(secretKey, Jwts.SIG.HS512)
-                .compact()
-        }
-
-        return jwtBuilder.claims(jwtPayloadDto.claims)
+        return Jwts.builder().claims(jwtPayloadDto.claims)
             .id(UUID.randomUUID().toString())
             .subject(jwtPayloadDto.identificationValue)
             .issuer(issuer)

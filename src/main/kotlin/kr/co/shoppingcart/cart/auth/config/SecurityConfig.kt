@@ -30,7 +30,7 @@ class SecurityConfig(
             .csrf { obj: CsrfConfigurer<HttpSecurity> -> obj.disable() }
             .cors { obj: CorsConfigurer<HttpSecurity> -> obj.disable() }
             .authorizeHttpRequests { requests ->
-                requests.requestMatchers("/users").permitAll()
+                requests.requestMatchers(HttpMethod.POST,"/login").permitAll()
                 requests.requestMatchers(HttpMethod.POST, "/cart").authenticated()
             }
             .sessionManagement { sessionManagement: SessionManagementConfigurer<HttpSecurity?> ->
