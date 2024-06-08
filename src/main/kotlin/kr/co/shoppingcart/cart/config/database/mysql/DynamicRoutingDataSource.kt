@@ -1,4 +1,4 @@
-package kr.co.shoppingcart.cart.config.database
+package kr.co.shoppingcart.cart.config.database.mysql
 
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource
 import org.springframework.transaction.support.TransactionSynchronizationManager

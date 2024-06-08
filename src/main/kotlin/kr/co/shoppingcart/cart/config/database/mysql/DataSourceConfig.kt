@@ -1,4 +1,4 @@
-package kr.co.shoppingcart.cart.config.database
+package kr.co.shoppingcart.cart.config.database.mysql
 
 import com.zaxxer.hikari.HikariDataSource
 import mu.KotlinLogging
