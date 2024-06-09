@@ -31,6 +31,7 @@ class SecurityConfig(
             .cors { obj: CorsConfigurer<HttpSecurity> -> obj.disable() }
             .authorizeHttpRequests { requests ->
                 requests.requestMatchers(HttpMethod.POST,"/login").permitAll()
+                requests.requestMatchers(HttpMethod.GET,"/search").permitAll()
                 requests.requestMatchers(HttpMethod.POST, "/cart").authenticated()
             }
             .sessionManagement { sessionManagement: SessionManagementConfigurer<HttpSecurity?> ->
