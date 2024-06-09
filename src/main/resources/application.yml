@@ -11,6 +11,7 @@ spring:
         database: ${MONGODB_SEARCH_DATABASE}
         user: ${MONGODB_SEARCH_USER:root}
         password: ${MONGODB_SEARCH_PASSWORD:xxx}
+        db: ${MONGODB_DB_NAME:cart}
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MySQLDialect
@@ -65,7 +66,7 @@ spring:
   jpa:
     generate-ddl: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
     show-sql: true
 logging:
   level:

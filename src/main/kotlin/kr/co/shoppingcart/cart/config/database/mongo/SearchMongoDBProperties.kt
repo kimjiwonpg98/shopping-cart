@@ -5,15 +5,17 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 
 @ConfigurationProperties(prefix = SEARCH_MONGO_DATABASE)
 data class SearchMongoDBProperties(
-    val host: String,
-    val user: String,
-    val password: String,
-    val db: String
+    private val host: String,
+    private val user: String,
+    private val password: String,
+    private val db: String
 ) {
-    fun createConnectionString() =
+    fun createConnectionString(): String =
         "mongodb+srv://$user:$password@$host/?retryWrites=true&w=majority&appName=$db&authSource=admin"
 
+    fun getDB(): String = db
+
     companion object {
-        const val SEARCH_MONGO_DATABASE = "data.mongodb.search"
+        const val SEARCH_MONGO_DATABASE = "spring.data.mongodb.search"
     }
 }
