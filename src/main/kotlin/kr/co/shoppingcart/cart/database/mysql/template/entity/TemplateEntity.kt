@@ -1,12 +1,12 @@
-package kr.co.shoppingcart.cart.database.mysql.cart.entity
+package kr.co.shoppingcart.cart.database.mysql.template.entity
 
 import jakarta.persistence.*
-import kr.co.shoppingcart.cart.database.mysql.cart.entity.CartEntity.Companion.CART_ENTITY_NAME
+import kr.co.shoppingcart.cart.database.mysql.template.entity.TemplateEntity.Companion.TEMPLATE_ENTITY_NAME
 import kr.co.shoppingcart.cart.database.mysql.common.entity.CommonEntity
 
-@Table(name = CART_ENTITY_NAME)
+@Table(name = TEMPLATE_ENTITY_NAME)
 @Entity
-class CartEntity (
+class TemplateEntity (
     @Id()
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "BIGINT", name = "id")
@@ -16,9 +16,9 @@ class CartEntity (
     private val name: String,
 
     @Column(columnDefinition = "BIGINT", nullable = false, name = "user_id")
-    private val userId: Long?,
+    private val userId: Long,
 ): CommonEntity() {
     companion object {
-        const val CART_ENTITY_NAME = "cart"
+        const val TEMPLATE_ENTITY_NAME = "template"
     }
 }

@@ -1,13 +1,13 @@
-package kr.co.shoppingcart.cart.domain.cart.command
+package kr.co.shoppingcart.cart.domain.template.command
 
 import jakarta.validation.constraints.NotNull
 import kr.co.shoppingcart.cart.common.SelfValidating
 
 
-data class CreateCartCommand(
-    @NotNull val cartName: String,
+data class CreateTemplateCommand(
+    @NotNull val name: String,
     @NotNull val userId: Long,
-): SelfValidating<CreateCartCommand>() {
+): SelfValidating<CreateTemplateCommand>() {
     init {
         this.validateSelf()
     }
