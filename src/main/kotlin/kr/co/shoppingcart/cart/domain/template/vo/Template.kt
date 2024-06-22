@@ -6,7 +6,7 @@ data class Template(
     val userId: TemplateOwnerId
 ) {
     companion object {
-        fun convertToDomain(id: Long, name: String, userId: Long): Template =
+        fun toDomain(id: Long, name: String, userId: Long): Template =
             Template(
                 id = TemplateId(id),
                 name = TemplateName(name),

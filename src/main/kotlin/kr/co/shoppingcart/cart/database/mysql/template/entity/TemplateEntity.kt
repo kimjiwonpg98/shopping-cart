@@ -10,13 +10,13 @@ class TemplateEntity (
     @Id()
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "BIGINT", name = "id")
-    private val id: Long? = null,
+    val id: Long? = null,
 
     @Column(nullable = false, length = 200)
-    private val name: String,
+    val name: String,
 
     @Column(columnDefinition = "BIGINT", nullable = false, name = "user_id")
-    private val userId: Long,
+    val userId: Long,
 ): CommonEntity() {
     companion object {
         const val TEMPLATE_ENTITY_NAME = "template"
