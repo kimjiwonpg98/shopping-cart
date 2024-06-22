@@ -35,7 +35,7 @@ class JwtProvider (
         val claimsJwt = Jwts.parser().verifyWith(secretKey).build()
             .parseSignedClaims(jwt)
 
-        if (claimsJwt.payload["email"].toString().isEmpty()) {
+        if (!claimsJwt.payload.containsKey("email")) {
             return JwtPayload(
                 identificationValue = claimsJwt.payload.subject
             )

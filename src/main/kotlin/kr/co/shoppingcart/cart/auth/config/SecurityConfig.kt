@@ -1,6 +1,7 @@
 package kr.co.shoppingcart.cart.auth.config
 
 import kr.co.shoppingcart.cart.auth.JwtFilter
+import kr.co.shoppingcart.cart.auth.enums.TokenInformationEnum
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -33,6 +34,8 @@ class SecurityConfig(
                 requests.requestMatchers(HttpMethod.POST,"/login").permitAll()
                 requests.requestMatchers(HttpMethod.GET,"/search").permitAll()
                 requests.requestMatchers(HttpMethod.POST, "/cart").authenticated()
+                requests.requestMatchers(HttpMethod.POST, "/basket").authenticated()
+                requests.requestMatchers(HttpMethod.POST, "/basket").hasAnyRole(TokenInformationEnum.USER.name)
             }
             .sessionManagement { sessionManagement: SessionManagementConfigurer<HttpSecurity?> ->
                 sessionManagement.sessionCreationPolicy(
