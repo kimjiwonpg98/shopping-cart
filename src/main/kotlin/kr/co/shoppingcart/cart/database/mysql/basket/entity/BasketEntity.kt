@@ -12,27 +12,27 @@ class BasketEntity (
     @Id()
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "BIGINT", name = "id")
-    private val id: Long? = null,
+    val id: Long? = null,
 
     @Column(nullable = false)
-    private val content: String,
+    val content: String,
 
     @Column(nullable = false, columnDefinition = "INT")
-    private val count: Long,
+    val count: Long = 1L,
 
-    @Column(nullable = false, columnDefinition = "BOOLEAN", name = "is_completed")
-    private val isCompleted: Boolean = false,
+    @Column(nullable = false, columnDefinition = "BOOLEAN", name = "is_added")
+    val isAdded: Boolean = false,
 
     @Column(nullable = false, columnDefinition = "BOOLEAN", name = "is_pinned")
-    private val isPinned: Boolean = false,
+    val isPinned: Boolean = false,
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "template_id", referencedColumnName = "id", nullable = false)
-    private val template: TemplateEntity,
+    val template: TemplateEntity,
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "category_id", referencedColumnName = "id", nullable = false)
-    private val category: CategoryEntity,
+    val category: CategoryEntity,
     ) : CommonEntity() {
     companion object {
         const val BASKET_ENTITY_NAME = "basket"
