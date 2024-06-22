@@ -10,10 +10,10 @@ data class CategoryEntity (
     @Id()
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "BIGINT", name = "id")
-    private val id: Long? = null,
+    val id: Long? = null,
 
     @Column(nullable = false, length = 200)
-    private val name: String,
+    val name: String,
 ): CommonEntity() {
     companion object {
         const val CATEGORY_ENTITY_NAME = "category"
