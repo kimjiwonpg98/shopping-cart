@@ -11,7 +11,7 @@ class CategoryRepositoryAdapter (
     private val categoryEntityRepository: CategoryEntityRepository<CategoryEntity, Long>
 ): CategoryRepository {
     @Transactional(readOnly = true)
-    override fun getAll(): List<Category> = categoryEntityRepository.getAll().map {
+    override fun getAll(): List<Category> = categoryEntityRepository.findAll().map {
         Category.toDomain(it.id!!, it.name)
     }
 

@@ -8,5 +8,5 @@ import java.util.*
 interface CategoryJpaRepository: CategoryEntityRepository<CategoryEntity, Long> {
     override fun save(categoryEntity: CategoryEntity): CategoryEntity
     override fun getById(id: Long): CategoryEntity?
-    override fun getAll(): List<CategoryEntity>
+    override fun findAll(): List<CategoryEntity>
 }
