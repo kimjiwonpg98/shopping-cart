@@ -20,8 +20,8 @@ class BasketEntity (
     @Column(nullable = false, columnDefinition = "INT")
     val count: Long = 1L,
 
-    @Column(nullable = false, columnDefinition = "BOOLEAN", name = "is_added")
-    val isAdded: Boolean = false,
+    @Column(nullable = false, columnDefinition = "BOOLEAN", name = "checked")
+    val checked: Boolean = false,
 
     @Column(nullable = false, columnDefinition = "BOOLEAN", name = "is_pinned")
     val isPinned: Boolean = false,

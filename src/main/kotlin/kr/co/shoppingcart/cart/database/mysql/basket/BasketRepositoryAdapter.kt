@@ -5,9 +5,11 @@ import kr.co.shoppingcart.cart.database.mysql.category.entity.CategoryEntity
 import kr.co.shoppingcart.cart.database.mysql.template.entity.TemplateEntity
 import kr.co.shoppingcart.cart.domain.basket.BasketRepository
 import kr.co.shoppingcart.cart.domain.basket.vo.Basket
+import kr.co.shoppingcart.cart.domain.basket.vo.BasketChecked
 import kr.co.shoppingcart.cart.domain.category.vo.Category
 import kr.co.shoppingcart.cart.domain.template.vo.Template
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 
 @Component
 class BasketRepositoryAdapter(
@@ -28,7 +30,7 @@ class BasketRepositoryAdapter(
             BasketEntity(
                 content = basket.name.name,
                 count = basket.count.count,
-                isAdded = basket.isAdded.isAdded,
+                checked = basket.checked.checked,
                 isPinned = false,
                 template = templateEntity,
                 category = categoryEntity
@@ -41,10 +43,26 @@ class BasketRepositoryAdapter(
             Basket.toDomain(
                 name = it.content,
                 count = it.count,
-                isAdded = it.isAdded,
+                checked = it.checked,
                 createTime = it.createdAt?.toLocalDateTime(),
                 category = Category.toDomain(id = it.category.id!!, name = it.category.name),
                 template = Template.toDomain(id = it.template.id!!, name = it.template.name, userId = it.template.userId)
             )
         }
+
+    override fun getById(basketId: Long): Basket? =
+        basketEntityRepository.getById(basketId)?.let { Basket.toDomain(
+            name = it.content,
+            count = it.count,
+            checked = it.checked,
+            createTime = it.createdAt?.toLocalDateTime(),
+            category = Category.toDomain(id = it.category.id!!, name = it.category.name),
+            template = Template.toDomain(id = it.template.id!!, name = it.template.name, userId = it.template.userId)
+        )}
+
+    @Transactional
+    override fun updateCheckedById(basketId: Long, checked: Boolean) {
+        basketEntityRepository.updateCheckedById(basketId, checked)
+    }
+
 }
