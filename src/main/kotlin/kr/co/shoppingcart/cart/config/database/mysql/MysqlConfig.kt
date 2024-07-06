@@ -5,6 +5,6 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 
 @Configuration
-@EnableJpaRepositories(basePackages = ["kr.co.shoppingcart"])
+@EnableJpaRepositories(basePackages = ["kr.co.shoppingcart.cart.database.mysql"])
 @EntityScan(basePackages = ["kr.co.shoppingcart"])
 class MysqlConfig

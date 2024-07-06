@@ -2,7 +2,6 @@ package kr.co.shoppingcart.cart.database.mysql.category
 
 import kr.co.shoppingcart.cart.database.mysql.category.entity.CategoryEntity
 import org.springframework.stereotype.Repository
-import java.util.*
 
 @Repository
 interface CategoryJpaRepository: CategoryEntityRepository<CategoryEntity, Long> {

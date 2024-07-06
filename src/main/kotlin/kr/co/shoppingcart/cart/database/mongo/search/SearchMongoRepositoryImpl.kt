@@ -5,6 +5,7 @@ import org.bson.Document
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.stereotype.Component
+import java.util.*
 
 fun documentOf(vararg pairs: Pair<String, Any?>) = Document(mapOf(*pairs))
 
@@ -18,6 +19,7 @@ class SearchMongoRepositoryImpl (
 
         val searchStage = documentOf(
             "\$search" to documentOf(
+                "requestId" to UUID.randomUUID().toString(),
                 "index" to "cart_search_index",
                 "compound" to documentOf(
                     "should" to listOf(

@@ -31,8 +31,6 @@ class SecurityConfig(
             .csrf { obj: CsrfConfigurer<HttpSecurity> -> obj.disable() }
             .cors { obj: CorsConfigurer<HttpSecurity> -> obj.disable() }
             .authorizeHttpRequests { requests ->
-                requests.requestMatchers(HttpMethod.POST,"/login").permitAll()
-                requests.requestMatchers(HttpMethod.GET,"/search").permitAll()
                 requests.requestMatchers(HttpMethod.POST, "/cart").authenticated()
                 requests.requestMatchers(HttpMethod.POST, "/basket").authenticated()
                 requests.requestMatchers(HttpMethod.POST, "/basket").hasAnyRole(TokenInformationEnum.USER.name)
