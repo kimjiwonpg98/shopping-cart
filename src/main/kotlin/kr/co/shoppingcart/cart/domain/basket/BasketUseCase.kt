@@ -18,9 +18,9 @@ class BasketUseCase (
 ) {
     fun create(createBasketCommand: CreateBasketCommand) {
         val category = categoryRepository.getById(createBasketCommand.categoryId)
-            ?: throw CustomException.badRequest(ExceptionCode.E_400_000)
+            ?: throw CustomException.responseBody(ExceptionCode.E_400_000)
         val template = templateRepository.getByIdAndUserId(createBasketCommand.templatedId, createBasketCommand.userId)
-            ?: throw CustomException.badRequest(ExceptionCode.E_400_000)
+            ?: throw CustomException.responseBody(ExceptionCode.E_400_000)
 
         basketRepository.save(Basket.toDomain(
             name = createBasketCommand.name,
@@ -34,13 +34,13 @@ class BasketUseCase (
 
     fun updateIsAddedByFlagAndId(updateBasketFlagCommand: UpdateBasketFlagCommand) {
         if (validatedByUserIdAndBasketId(updateBasketFlagCommand.userId, updateBasketFlagCommand.basketId)) {
-            throw CustomException.unauthorized(ExceptionCode.E_403_000)
+            throw CustomException.responseBody(ExceptionCode.E_403_000)
         }
         this.basketRepository.updateCheckedById(updateBasketFlagCommand.basketId, updateBasketFlagCommand.checked)
     }
 
     private fun validatedByUserIdAndBasketId(userId: Long, basketId: Long): Boolean {
-        val basket = basketRepository.getById(basketId) ?: throw CustomException.badRequest(ExceptionCode.E_400_000)
+        val basket = basketRepository.getById(basketId) ?: throw CustomException.responseBody(ExceptionCode.E_400_000)
         return basket.template.userId.userId == userId
     }
 

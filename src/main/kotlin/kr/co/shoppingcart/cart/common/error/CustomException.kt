@@ -22,17 +22,7 @@ class CustomException private constructor(
             detailInformation = detailInformation
         )
 
-        fun badRequest(
-            code: ExceptionCode,
-            cause: Throwable? = null,
-            detailInformation: String? = null
-        ): CustomException = fromErrorCode(
-            code = code,
-            cause = cause,
-            detailInformation = detailInformation
-        )
-
-        fun unauthorized(
+        fun responseBody(
             code: ExceptionCode,
             cause: Throwable? = null,
             detailInformation: String? = null
