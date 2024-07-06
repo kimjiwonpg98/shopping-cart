@@ -7,6 +7,7 @@ plugins {
 	kotlin("plugin.spring") version "1.9.23"
 	kotlin("plugin.jpa") version "1.9.23"
 	kotlin("plugin.noarg") version "1.9.23"
+	id("org.springdoc.openapi-gradle-plugin") version "1.9.0"
 }
 
 group = "kr.co.shopping-cart"
@@ -33,6 +34,8 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
 	implementation("io.jsonwebtoken:jjwt-api:0.12.3")
 	implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.6.0")
 
 	runtimeOnly("com.mysql:mysql-connector-j")
 	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.3")

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service
 
 @Service
 class BasketUseCase (
-    // TODO: usecase는 구현체고 interface를 만들어서 Repository랑 변경해야함
     private val basketRepository: BasketRepository,
     private val categoryRepository: CategoryRepository,
     private val templateRepository: TemplateRepository

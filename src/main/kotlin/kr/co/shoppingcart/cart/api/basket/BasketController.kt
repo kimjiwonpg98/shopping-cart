@@ -4,6 +4,8 @@ import kr.co.shoppingcart.cart.api.basket.dto.CheckedBasketReqBodyDto
 import kr.co.shoppingcart.cart.api.basket.dto.CreateBasketReqBodyDto
 import kr.co.shoppingcart.cart.auth.JwtPayload
 import kr.co.shoppingcart.cart.auth.annotation.CurrentUser
+import kr.co.shoppingcart.cart.common.error.annotations.OpenApiSpecApiException
+import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
 import kr.co.shoppingcart.cart.domain.basket.BasketUseCase
 import kr.co.shoppingcart.cart.domain.basket.command.CreateBasketCommand
 import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketFlagCommand
@@ -33,6 +35,10 @@ class BasketController (
         return ResponseEntity.status(201).build()
     }
 
+
+    @OpenApiSpecApiException([
+        ExceptionCode.E_403_000, ExceptionCode.E_400_000
+    ])
     @PatchMapping("/basket/check")
     fun check(
         @RequestBody body: CheckedBasketReqBodyDto,

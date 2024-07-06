@@ -38,6 +38,7 @@ class SecurityConfig(
                 requests.requestMatchers(HttpMethod.POST, "/basket").hasAnyRole(TokenInformationEnum.USER.name)
                 requests.requestMatchers(HttpMethod.PATCH, "/basket/check").authenticated()
                 requests.requestMatchers(HttpMethod.PATCH, "/basket/check").hasAnyRole(TokenInformationEnum.USER.name)
+                requests.anyRequest().permitAll()
             }
             .sessionManagement { sessionManagement: SessionManagementConfigurer<HttpSecurity?> ->
                 sessionManagement.sessionCreationPolicy(

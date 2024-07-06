@@ -56,6 +56,27 @@ kakao:
 jwt:
   secret: ${JWT_SECRET:xxxxxzsqwsasd123afdcdfwqdsddasdqwdsacasdqwdcfv12312dsacvxcasdwhrtjh465yu1234xsddsvssdvdsdvdsvvsvdvsdsdv}
   issuer: ${JWT_ISSUER:cart}
+springdoc:
+  show-actuator: true
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    show-common-extensions: true
+    query-config-enabled: false
+    use-root-path: true
+    operations-sorter: alpha
+    disable-swagger-default-url: false
+    display-request-duration: true
+    syntax-highlight:
+      activated: true
+      theme: idea
+    api-docs:
+      groups:
+        enabled: true
+      wait-time-in-seconds: 10000
+
 
 
 ---
@@ -82,3 +103,12 @@ logging:
             orm:
               jdbc:
                 bind: TRACE
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+springdoc:
+  swagger-ui:
+    enabled: false
