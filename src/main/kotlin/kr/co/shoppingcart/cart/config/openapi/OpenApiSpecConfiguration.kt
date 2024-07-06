@@ -6,6 +6,8 @@ import io.swagger.v3.oas.models.info.Info
 import io.swagger.v3.oas.models.info.License
 import io.swagger.v3.oas.models.security.SecurityRequirement
 import io.swagger.v3.oas.models.security.SecurityScheme
+import kr.co.shoppingcart.cart.common.error.translators.ExceptionCodeTranslator
+import org.springdoc.core.customizers.OperationCustomizer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -16,6 +18,10 @@ class OpenApiSpecConfiguration {
         .apply { addSecurityItem(SecurityRequirement().addList("bearerAuth")) }
         .apply { components = authSetting() }
         .apply { info = swaggerInfo() }
+
+    @Bean
+    fun operationCustomizer(translator: ExceptionCodeTranslator): OperationCustomizer
+        = CustomOpenApiCustomizer(translator)
 
     private fun authSetting():Components =
         Components()
