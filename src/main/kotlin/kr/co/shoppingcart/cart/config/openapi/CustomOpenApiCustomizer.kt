@@ -5,6 +5,7 @@ import io.swagger.v3.oas.models.examples.Example
 import io.swagger.v3.oas.models.media.Content
 import io.swagger.v3.oas.models.media.MediaType
 import io.swagger.v3.oas.models.responses.ApiResponse
+import kr.co.shoppingcart.cart.auth.annotation.CurrentUser
 import kr.co.shoppingcart.cart.common.error.annotations.OpenApiSpecApiException
 import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
 import kr.co.shoppingcart.cart.common.error.translators.ExceptionCodeTranslator
@@ -16,6 +17,14 @@ class CustomOpenApiCustomizer (
     private val translator: ExceptionCodeTranslator
 ): OperationCustomizer {
     override fun customize(operation: Operation, handlerMethod: HandlerMethod): Operation {
+        val hasAuthorizedClient = handlerMethod.methodParameters.any {
+            it.hasMethodAnnotation(CurrentUser::class.java)
+        }
+
+        if (!hasAuthorizedClient) {
+            operation.security = listOf()
+        }
+
         val hasMethodAnnotation = handlerMethod.hasMethodAnnotation(OpenApiSpecApiException::class.java)
 
         if (!hasMethodAnnotation) return operation
