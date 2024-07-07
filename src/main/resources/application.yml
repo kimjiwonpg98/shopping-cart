@@ -18,13 +18,15 @@ spring:
     generate-ddl: false
     hibernate:
       ddl-auto: none
-    show-sql: true
+    show-sql: false
     open-in-view: false
     properties:
       hibernate:
         show_sql: false
         format_sql: false
         use_sql_comments: false
+        # IN절로 조회하기 위함
+        default_batch_fetch_size: 100
   datasource:
     cart:
       write:
@@ -89,6 +91,10 @@ spring:
     hibernate:
       ddl-auto: none
     show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
 logging:
   level:
     org:
