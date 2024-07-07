@@ -38,13 +38,14 @@ class BasketRepositoryAdapter(
         )
     }
 
-    override fun getByTemplateId(templateId: Long): List<Basket>? =
-        basketEntityRepository.getByTemplateId(templateId).map {
+    override fun getByTemplateId(templateId: Long): List<Basket> =
+        basketEntityRepository.getByTemplateIdOrderByUpdatedAtDesc(templateId).map {
             Basket.toDomain(
                 name = it.content,
                 count = it.count,
                 checked = it.checked,
                 createTime = it.createdAt?.toLocalDateTime(),
+                updateTime = it.updatedAt?.toLocalDateTime(),
                 category = Category.toDomain(id = it.category.id!!, name = it.category.name),
                 template = Template.toDomain(id = it.template.id!!, name = it.template.name, userId = it.template.userId)
             )
@@ -56,6 +57,7 @@ class BasketRepositoryAdapter(
             count = it.count,
             checked = it.checked,
             createTime = it.createdAt?.toLocalDateTime(),
+            updateTime = it.updatedAt?.toLocalDateTime(),
             category = Category.toDomain(id = it.category.id!!, name = it.category.name),
             template = Template.toDomain(id = it.template.id!!, name = it.template.name, userId = it.template.userId)
         )}

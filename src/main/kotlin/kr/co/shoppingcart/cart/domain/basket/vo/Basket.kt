@@ -9,15 +9,25 @@ data class Basket(
     val checked: BasketChecked,
     val count: BasketCount,
     val createTime: BasketCreatedAt?,
+    val updateTime: BasketUpdatedAt?,
     val category: Category,
     val template: Template,
 ) {
     companion object {
-        fun toDomain(name: String, checked: Boolean, count: Long, createTime: LocalDateTime?, category: Category, template: Template): Basket =
+        fun toDomain(
+            name: String,
+            checked: Boolean,
+            count: Long,
+            category: Category,
+            template: Template,
+            createTime: LocalDateTime?,
+            updateTime: LocalDateTime?,
+        ): Basket =
             Basket(
                 name = BasketName(name),
                 checked = BasketChecked(checked),
                 createTime = createTime?.let { BasketCreatedAt(it) },
+                updateTime = updateTime?.let { BasketUpdatedAt(it) },
                 count = BasketCount(count),
                 category = category,
                 template = template

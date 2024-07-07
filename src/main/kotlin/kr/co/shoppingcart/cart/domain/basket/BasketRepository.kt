@@ -6,7 +6,7 @@ import kr.co.shoppingcart.cart.domain.template.vo.Template
 
 interface BasketRepository {
     fun save(basket: Basket, template: Template, category: Category): Unit
-    fun getByTemplateId(templateId: Long): List<Basket>?
+    fun getByTemplateId(templateId: Long): List<Basket>
     fun getById(basketId: Long): Basket?
     fun updateCheckedById(basketId: Long,  checked: Boolean): Unit
 }

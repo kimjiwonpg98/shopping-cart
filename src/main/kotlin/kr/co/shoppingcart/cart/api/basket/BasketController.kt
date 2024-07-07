@@ -1,15 +1,21 @@
 package kr.co.shoppingcart.cart.api.basket
 
-import kr.co.shoppingcart.cart.api.basket.dto.CheckedBasketReqBodyDto
-import kr.co.shoppingcart.cart.api.basket.dto.CreateBasketReqBodyDto
+import kr.co.shoppingcart.cart.api.basket.dto.`in`.CheckedBasketReqBodyDto
+import kr.co.shoppingcart.cart.api.basket.dto.`in`.CreateBasketReqBodyDto
+import kr.co.shoppingcart.cart.api.basket.dto.`in`.GetByTemplateIdReqDto
+import kr.co.shoppingcart.cart.api.basket.dto.out.BasketResponse
+import kr.co.shoppingcart.cart.api.basket.dto.out.GetByTemplateIdResDto
 import kr.co.shoppingcart.cart.auth.JwtPayload
 import kr.co.shoppingcart.cart.auth.annotation.CurrentUser
 import kr.co.shoppingcart.cart.common.error.annotations.OpenApiSpecApiException
 import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
 import kr.co.shoppingcart.cart.domain.basket.BasketUseCase
 import kr.co.shoppingcart.cart.domain.basket.command.CreateBasketCommand
+import kr.co.shoppingcart.cart.domain.basket.command.GetBasketsByTemplateIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketFlagCommand
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -19,7 +25,10 @@ import org.springframework.web.bind.annotation.RestController
 class BasketController (
     private val basketUseCase: BasketUseCase
 ) {
-    @PostMapping("/basket")
+    @OpenApiSpecApiException([
+        ExceptionCode.E_403_000, ExceptionCode.E_400_000
+    ])
+    @PostMapping("/v1/basket")
     fun save(
         @RequestBody body: CreateBasketReqBodyDto,
         @CurrentUser currentUser: JwtPayload
@@ -39,7 +48,7 @@ class BasketController (
     @OpenApiSpecApiException([
         ExceptionCode.E_403_000, ExceptionCode.E_400_000
     ])
-    @PatchMapping("/basket/check")
+    @PatchMapping("/v1/basket/check")
     fun check(
         @RequestBody body: CheckedBasketReqBodyDto,
         @CurrentUser currentUser: JwtPayload
@@ -52,5 +61,30 @@ class BasketController (
 
         basketUseCase.updateIsAddedByFlagAndId(basket)
         return ResponseEntity.status(200).build()
+    }
+
+    @OpenApiSpecApiException([
+        ExceptionCode.E_403_000, ExceptionCode.E_401_000
+    ])
+    @GetMapping("/v1/basket")
+    fun getByTemplateId(
+        @ModelAttribute params: GetByTemplateIdReqDto,
+        @CurrentUser currentUser: JwtPayload
+    ): ResponseEntity<GetByTemplateIdResDto> {
+        val result = basketUseCase.getOwnByTemplateId(
+            GetBasketsByTemplateIdCommand(
+                params.templateId.toLong(),
+                currentUser.identificationValue.toLong()
+            )
+        )
+
+        val (checkedItems, nonCheckedItems) = result.partition { it.checked.checked }
+
+        return ResponseEntity.status(200).body(
+            GetByTemplateIdResDto(
+                checked = checkedItems.map(BasketResponseMapper::toDomain),
+                nonChecked = nonCheckedItems.map(BasketResponseMapper::toDomain)
+            )
+        )
     }
 }

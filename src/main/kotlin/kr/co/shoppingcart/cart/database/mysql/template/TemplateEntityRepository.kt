@@ -9,4 +9,5 @@ interface TemplateEntityRepository<T, ID>: Repository<T, ID> {
     fun save(templateEntity: TemplateEntity): TemplateEntity
     fun getById(id: Long): TemplateEntity?
     fun getByIdAndUserId(id: Long, userId: Long): TemplateEntity?
+    fun getByIdWithBasket(id: Long): TemplateEntity?
 }

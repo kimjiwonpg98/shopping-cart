@@ -30,7 +30,10 @@ class TemplateController (
     }
 
     @GetMapping("/template/{id}")
-    fun getById(@RequestParam id: Long): ResponseEntity<GetTemplateByIdResponseBodyDto> {
+    fun getById(
+        @RequestParam id: Long,
+        @CurrentUser currentUser: JwtPayload
+    ): ResponseEntity<GetTemplateByIdResponseBodyDto> {
         return ResponseEntity.status(200).body(GetTemplateByIdResponseBodyDto(id = "1"))
     }
 }

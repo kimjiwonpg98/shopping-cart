@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param
 @NoRepositoryBean
 interface BasketEntityRepository<T, ID>: Repository<T, ID> {
     fun save(basketEntity: BasketEntity): BasketEntity
-    fun getByTemplateId(templateId: Long): List<BasketEntity>
+    fun getByTemplateIdOrderByUpdatedAtDesc(templateId: Long): List<BasketEntity>
     fun getByTemplateIdAndCategoryId(templateId: Long, categoryId: Long): List<BasketEntity>
     fun getById(id: Long): BasketEntity?
     @Modifying
