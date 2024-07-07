@@ -5,9 +5,6 @@ import org.bson.Document
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.stereotype.Component
-import java.util.*
-
-fun documentOf(vararg pairs: Pair<String, Any?>) = Document(mapOf(*pairs))
 
 @Component
 class SearchMongoRepositoryImpl (
@@ -17,36 +14,29 @@ class SearchMongoRepositoryImpl (
     override fun searchForKeyword(keyword: String): List<CartSearchEntity> {
         val collection = searchMongoTemplate.getCollection("search")
 
-        val searchStage = documentOf(
-            "\$search" to documentOf(
-                "requestId" to UUID.randomUUID().toString(),
-                "index" to "cart_search_index",
-                "compound" to documentOf(
-                    "should" to listOf(
-                        documentOf(
-                            "text" to documentOf(
-                                "query" to keyword,
-                                "path" to "name",
-                                "fuzzy" to documentOf(
-                                    "maxEdits" to 2,
-                                    "prefixLength" to 2,
-                                    "maxExpansions" to 10
-                                )
-                            )
-                        ),
-                        documentOf(
-                            "text" to documentOf(
-                                "query" to keyword,
-                                "path" to "category",
-                            )
-                        ),
-                    ),
-                    "minimumShouldMatch" to 1
-                )
-            )
-        )
+        val searchQuery = Document("\$search", Document().apply {
+            put("index", "cart_search_index")
+            put("compound", Document().apply {
+                put("should", listOf(
+                    Document("text", Document().apply {
+                        put("query", keyword)
+                        put("path", "name")
+                        put("fuzzy", Document().apply {
+                            put("maxEdits", 2)
+                            put("prefixLength", 2)
+                            put("maxExpansions", 10)
+                        })
+                    }),
+                    Document("text", Document().apply {
+                        put("query", keyword)
+                        put("path", "category")
+                    })
+                ))
+                put("minimumShouldMatch", 1)
+            })
+        })
 
-        val pipeline: List<Document> = listOf(searchStage)
+        val pipeline: List<Document> = listOf(searchQuery)
 
         val results = mutableListOf<CartSearchEntity>()
         collection.aggregate(pipeline).forEach { doc ->
