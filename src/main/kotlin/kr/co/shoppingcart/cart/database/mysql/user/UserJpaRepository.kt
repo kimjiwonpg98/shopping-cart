@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface UserJpaRepository: UserEntityRepository<UserEntity, Long> {
     override fun save(userEntity: UserEntity): UserEntity
+    override fun getByEmailAndLoginType(email: String, loginType: String): UserEntity?
 }

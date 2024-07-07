@@ -20,4 +20,8 @@ class UserRepositoryAdapter(
                 loginType = loginType.name
             )
         ).let(UserJpaMapper::toDomain)
+
+    @Transactional(readOnly = true)
+    override fun getByEmailAndLoginType(email: String, loginType: LoginType): User? =
+        userEntityRepository.getByEmailAndLoginType(email, loginType.name)?.let(UserJpaMapper::toDomain)
 }
