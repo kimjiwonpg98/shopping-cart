@@ -1,4 +1,4 @@
-package kr.co.shoppingcart.cart.api.template.dto
+package kr.co.shoppingcart.cart.api.template.dto.`in`
 
 import jakarta.validation.constraints.NotBlank
 

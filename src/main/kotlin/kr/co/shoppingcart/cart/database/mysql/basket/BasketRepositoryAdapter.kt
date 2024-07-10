@@ -10,6 +10,7 @@ import kr.co.shoppingcart.cart.domain.category.vo.Category
 import kr.co.shoppingcart.cart.domain.template.vo.Template
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import java.time.ZoneId
 
 @Component
 class BasketRepositoryAdapter(
@@ -47,7 +48,13 @@ class BasketRepositoryAdapter(
                 createTime = it.createdAt?.toLocalDateTime(),
                 updateTime = it.updatedAt?.toLocalDateTime(),
                 category = Category.toDomain(id = it.category.id!!, name = it.category.name),
-                template = Template.toDomain(id = it.template.id!!, name = it.template.name, userId = it.template.userId)
+                template = Template.toDomain(
+                    id = it.template.id!!,
+                    name = it.template.name,
+                    userId = it.template.userId,
+                    createdAt = it.template.createdAt?.toLocalDateTime()?.atZone(ZoneId.of("Asia/Seoul")),
+                    updatedAt = it.template.createdAt?.toLocalDateTime()?.atZone(ZoneId.of("Asia/Seoul"))
+                )
             )
         }
 
@@ -59,7 +66,13 @@ class BasketRepositoryAdapter(
             createTime = it.createdAt?.toLocalDateTime(),
             updateTime = it.updatedAt?.toLocalDateTime(),
             category = Category.toDomain(id = it.category.id!!, name = it.category.name),
-            template = Template.toDomain(id = it.template.id!!, name = it.template.name, userId = it.template.userId)
+            template = Template.toDomain(
+                id = it.template.id!!,
+                name = it.template.name,
+                userId = it.template.userId,
+                createdAt = it.template.createdAt?.toLocalDateTime()?.atZone(ZoneId.of("Asia/Seoul")),
+                updatedAt = it.template.createdAt?.toLocalDateTime()?.atZone(ZoneId.of("Asia/Seoul"))
+            )
         )}
 
     @Transactional

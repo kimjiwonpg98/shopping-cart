@@ -5,6 +5,7 @@ import kr.co.shoppingcart.cart.domain.template.TemplateRepository
 import kr.co.shoppingcart.cart.domain.template.vo.Template
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import java.time.ZoneId
 
 @Component
 class TemplateRepositoryAdapter(
@@ -27,7 +28,9 @@ class TemplateRepositoryAdapter(
             return Template.toDomain(
                 id = it.id!!,
                 name = it.name,
-                userId = it.userId
+                userId = it.userId,
+                createdAt = it.createdAt?.toLocalDateTime()?.atZone(ZoneId.of("Asia/Seoul")),
+                updatedAt = it.createdAt?.toLocalDateTime()?.atZone(ZoneId.of("Asia/Seoul"))
             )
         }
 
@@ -38,7 +41,9 @@ class TemplateRepositoryAdapter(
             return Template.toDomain(
                 id = it.id!!,
                 name = it.name,
-                userId = it.userId
+                userId = it.userId,
+                createdAt = it.createdAt?.toLocalDateTime()?.atZone(ZoneId.of("Asia/Seoul")),
+                updatedAt = it.createdAt?.toLocalDateTime()?.atZone(ZoneId.of("Asia/Seoul"))
             )
         }
 
