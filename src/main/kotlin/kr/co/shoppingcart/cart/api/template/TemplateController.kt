@@ -7,13 +7,8 @@ import kr.co.shoppingcart.cart.auth.JwtPayload
 import kr.co.shoppingcart.cart.auth.annotation.CurrentUser
 import kr.co.shoppingcart.cart.domain.template.TemplateUseCase
 import kr.co.shoppingcart.cart.domain.template.command.CreateTemplateCommand
-import org.springframework.data.repository.query.Param
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 class TemplateController (
@@ -35,5 +30,13 @@ class TemplateController (
         @CurrentUser currentUser: JwtPayload
     ): ResponseEntity<GetTemplateByIdResponseBodyDto> {
         return ResponseEntity.status(200).body(GetTemplateByIdResponseBodyDto(id = "1"))
+    }
+
+    @PatchMapping("/template/visibility")
+    fun updateVisibilityById(
+        @RequestParam id: Long,
+        @CurrentUser currentUser: JwtPayload
+    ): ResponseEntity<Unit> {
+        return ResponseEntity.status(200).build();
     }
 }
