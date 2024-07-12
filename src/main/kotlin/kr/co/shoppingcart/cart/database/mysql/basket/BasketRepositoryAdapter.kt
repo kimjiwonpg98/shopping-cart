@@ -52,6 +52,7 @@ class BasketRepositoryAdapter(
                     id = it.template.id!!,
                     name = it.template.name,
                     userId = it.template.userId,
+                    isPublic = it.template.isPublic,
                     createdAt = it.template.createdAt?.toLocalDateTime()?.atZone(ZoneId.of("Asia/Seoul")),
                     updatedAt = it.template.createdAt?.toLocalDateTime()?.atZone(ZoneId.of("Asia/Seoul"))
                 )
@@ -70,6 +71,7 @@ class BasketRepositoryAdapter(
                 id = it.template.id!!,
                 name = it.template.name,
                 userId = it.template.userId,
+                isPublic = it.template.isPublic,
                 createdAt = it.template.createdAt?.toLocalDateTime()?.atZone(ZoneId.of("Asia/Seoul")),
                 updatedAt = it.template.createdAt?.toLocalDateTime()?.atZone(ZoneId.of("Asia/Seoul"))
             )

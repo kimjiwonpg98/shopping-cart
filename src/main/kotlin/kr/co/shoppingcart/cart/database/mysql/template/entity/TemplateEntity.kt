@@ -19,7 +19,7 @@ class TemplateEntity (
     val userId: Long,
 
     @Column(columnDefinition = "BOOLEAN", nullable = false, name = "is_public")
-    val isPublic: Boolean = false,
+    var isPublic: Boolean = false,
 ): CommonEntity() {
     companion object {
         const val TEMPLATE_ENTITY_NAME = "template"

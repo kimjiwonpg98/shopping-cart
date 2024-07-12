@@ -2,6 +2,7 @@ package kr.co.shoppingcart.cart.api.template
 
 import jakarta.validation.Valid
 import kr.co.shoppingcart.cart.api.template.dto.`in`.CreateTemplateRequestBodyDto
+import kr.co.shoppingcart.cart.api.template.dto.`in`.UpdateTemplateSharedRequestParamsDto
 import kr.co.shoppingcart.cart.api.template.dto.out.GetTemplateByIdResponseBodyDto
 import kr.co.shoppingcart.cart.auth.JwtPayload
 import kr.co.shoppingcart.cart.auth.annotation.CurrentUser
@@ -10,6 +11,7 @@ import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
 import kr.co.shoppingcart.cart.domain.template.TemplateUseCase
 import kr.co.shoppingcart.cart.domain.template.command.CreateTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.GetTemplateByIdAndUserIdCommand
+import kr.co.shoppingcart.cart.domain.template.command.UpdateTemplateSharedByIdCommand
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -44,11 +46,18 @@ class TemplateController (
         ))
     }
 
-    @PatchMapping("/template/{id}/visibility")
-    fun updateVisibilityById(
+    @OpenApiSpecApiException([ExceptionCode.E_401_000])
+    @PatchMapping("/template/{id}/share")
+    fun updateSharedById(
         @PathVariable id: String,
+        @ModelAttribute params: UpdateTemplateSharedRequestParamsDto,
         @CurrentUser currentUser: JwtPayload
     ): ResponseEntity<Unit> {
+        templateUseCase.updateSharedById(UpdateTemplateSharedByIdCommand(
+            id = id.toLong(),
+            userId = currentUser.identificationValue.toLong(),
+            isShared = params.isShared,
+        ))
         return ResponseEntity.status(200).build();
     }
 }

@@ -29,6 +29,7 @@ class TemplateRepositoryAdapter(
                 id = it.id!!,
                 name = it.name,
                 userId = it.userId,
+                isPublic = it.isPublic,
                 createdAt = it.createdAt?.toLocalDateTime()?.atZone(ZoneId.of("Asia/Seoul")),
                 updatedAt = it.createdAt?.toLocalDateTime()?.atZone(ZoneId.of("Asia/Seoul"))
             )
@@ -42,10 +43,17 @@ class TemplateRepositoryAdapter(
                 id = it.id!!,
                 name = it.name,
                 userId = it.userId,
+                isPublic = it.isPublic,
                 createdAt = it.createdAt?.toLocalDateTime()?.atZone(ZoneId.of("Asia/Seoul")),
                 updatedAt = it.createdAt?.toLocalDateTime()?.atZone(ZoneId.of("Asia/Seoul"))
             )
         }
+
+    @Transactional
+    override fun updateSharedById(id: Long, isShared: Boolean) {
+        val template = templateEntityRepository.getById(id)
+        template!!.isPublic = isShared
+    }
 
 }
 

@@ -6,4 +6,5 @@ interface TemplateRepository {
     fun create(name: String, userId: Long)
     fun getById(id: Long): Template?
     fun getByIdAndUserId(id: Long, userId: Long): Template?
+    fun updateSharedById(id: Long, isShared: Boolean)
 }
