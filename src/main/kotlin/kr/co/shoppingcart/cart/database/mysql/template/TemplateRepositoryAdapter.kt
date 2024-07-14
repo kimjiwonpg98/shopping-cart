@@ -1,9 +1,9 @@
 package kr.co.shoppingcart.cart.database.mysql.template
 
 import kr.co.shoppingcart.cart.database.mysql.template.entity.TemplateEntity
+import kr.co.shoppingcart.cart.database.mysql.template.mapper.TemplateEntityMapper
 import kr.co.shoppingcart.cart.domain.template.TemplateRepository
 import kr.co.shoppingcart.cart.domain.template.vo.Template
-import kr.co.shoppingcart.cart.utils.DateUtil.convertZonedDateTimeToSeoulTime
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
@@ -15,45 +15,24 @@ class TemplateRepositoryAdapter(
     override fun create(
         name: String,
         userId: Long,
-    ) {
-        templateEntityRepository.save(
-            TemplateEntity(
-                name = name,
-                userId = userId,
-            ),
-        )
-    }
+    ): Template =
+        templateEntityRepository
+            .save(
+                TemplateEntity(
+                    name = name,
+                    userId = userId,
+                ),
+            ).let(TemplateEntityMapper::toDomain)
 
     @Transactional(readOnly = true)
     override fun getById(id: Long): Template? =
-        templateEntityRepository.getById(id).let {
-            if (it === null) return null
-            return Template.toDomain(
-                id = it.id!!,
-                name = it.name,
-                userId = it.userId,
-                isPublic = it.isPublic,
-                createdAt = it.createdAt?.let { convertZonedDateTimeToSeoulTime(it) },
-                updatedAt = it.updatedAt?.let { convertZonedDateTimeToSeoulTime(it) },
-            )
-        }
+        templateEntityRepository.getById(id)?.let(TemplateEntityMapper::toDomain)
 
     @Transactional(readOnly = true)
     override fun getByIdAndUserId(
         id: Long,
         userId: Long,
-    ): Template? =
-        templateEntityRepository.getByIdAndUserId(id, userId).let {
-            if (it === null) return null
-            return Template.toDomain(
-                id = it.id!!,
-                name = it.name,
-                userId = it.userId,
-                isPublic = it.isPublic,
-                createdAt = it.createdAt?.let { convertZonedDateTimeToSeoulTime(it) },
-                updatedAt = it.updatedAt?.let { convertZonedDateTimeToSeoulTime(it) },
-            )
-        }
+    ): Template? = templateEntityRepository.getByIdAndUserId(id, userId)?.let(TemplateEntityMapper::toDomain)
 
     @Transactional
     override fun updateSharedById(
