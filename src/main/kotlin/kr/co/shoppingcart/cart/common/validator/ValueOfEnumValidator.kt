@@ -10,7 +10,10 @@ class ValueOfEnumValidator : ConstraintValidator<ValueOfEnum, CharSequence?> {
         acceptedValues = annotation.enumClass.java.enumConstants.map { it.name }
     }
 
-    override fun isValid(value: CharSequence?, context: ConstraintValidatorContext): Boolean {
+    override fun isValid(
+        value: CharSequence?,
+        context: ConstraintValidatorContext,
+    ): Boolean {
         if (value == null) return true
         return acceptedValues!!.contains(value.toString())
     }

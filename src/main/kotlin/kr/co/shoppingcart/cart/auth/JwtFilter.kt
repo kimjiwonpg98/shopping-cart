@@ -12,17 +12,16 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
-import java.util.*
 
 @Component
 class JwtFilter(
-    private val jwtProvider: JwtProvider
-): OncePerRequestFilter() {
+    private val jwtProvider: JwtProvider,
+) : OncePerRequestFilter() {
     @Throws(CustomException::class)
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
-        filterChain: FilterChain
+        filterChain: FilterChain,
     ) {
         val authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION)
 
@@ -31,7 +30,10 @@ class JwtFilter(
             return
         }
 
-        val token = authorizationHeader.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1]
+        val token =
+            authorizationHeader.split(" ".toRegex()).dropLastWhile {
+                it.isEmpty()
+            }.toTypedArray()[1]
         val jwtPayload: JwtPayload = jwtProvider.verifyToken(token)
         request.setAttribute(TokenInformationEnum.USER.name, jwtPayload)
         setAuthentication(jwtPayload)

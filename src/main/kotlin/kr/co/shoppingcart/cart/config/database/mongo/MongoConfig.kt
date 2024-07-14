@@ -8,6 +8,6 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @ConfigurationPropertiesScan("kr.co.shoppingcart.cart.config.database.mongo")
 @EnableMongoRepositories(
     basePackages = ["kr.co.shoppingcart.cart.database.mongo"],
-    mongoTemplateRef = "search-mongodb-template"
+    mongoTemplateRef = "search-mongodb-template",
 )
 class MongoConfig

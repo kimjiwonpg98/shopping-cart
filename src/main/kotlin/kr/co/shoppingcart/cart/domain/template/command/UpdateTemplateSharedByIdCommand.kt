@@ -9,8 +9,8 @@ data class UpdateTemplateSharedByIdCommand(
     @field:NotNull
     val userId: Long,
     @field:NotNull
-    val isShared: Boolean
-): SelfValidating<UpdateTemplateSharedByIdCommand>() {
+    val isShared: Boolean,
+) : SelfValidating<UpdateTemplateSharedByIdCommand>() {
     init {
         this.validateSelf()
     }

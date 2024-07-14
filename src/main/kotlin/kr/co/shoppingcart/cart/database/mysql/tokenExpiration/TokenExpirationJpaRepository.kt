@@ -6,7 +6,9 @@ import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 
 @Repository
-interface TokenExpirationJpaRepository: TokenExpirationEntityRepository<TokenExpirationEntity, Long> {
+interface TokenExpirationJpaRepository : TokenExpirationEntityRepository<TokenExpirationEntity, Long> {
     @Query("SELECT t FROM tokenExp t WHERE t.name = :name")
-    override fun getByName(@Param("name") name: String): TokenExpirationEntity?
+    override fun getByName(
+        @Param("name") name: String,
+    ): TokenExpirationEntity?
 }

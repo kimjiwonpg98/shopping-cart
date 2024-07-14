@@ -7,8 +7,8 @@ data class GetTemplateByIdAndUserIdCommand(
     @field:NotNull
     val id: String,
     @field:NotNull
-    val userId: Long
-): SelfValidating<GetTemplateByIdAndUserIdCommand>() {
+    val userId: Long,
+) : SelfValidating<GetTemplateByIdAndUserIdCommand>() {
     init {
         this.validateSelf()
     }

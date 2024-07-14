@@ -5,12 +5,12 @@ import kr.co.shoppingcart.cart.common.SelfValidating
 import kr.co.shoppingcart.cart.common.validator.ValueOfEnum
 import kr.co.shoppingcart.cart.domain.user.enums.LoginType
 
-data class LoginCommand (
+data class LoginCommand(
     @field:Email
     val email: String,
     @field:ValueOfEnum(enumClass = LoginType::class, message = "E_400_000")
     val loginType: String,
-): SelfValidating<LoginCommand>() {
+) : SelfValidating<LoginCommand>() {
     init {
         this.validateSelf()
     }

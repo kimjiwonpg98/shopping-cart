@@ -5,8 +5,8 @@ import kr.co.shoppingcart.cart.common.SelfValidating
 
 data class GetBasketsByTemplateIdCommand(
     @NotNull val templateId: Long,
-    @NotNull val userId: Long
-): SelfValidating<GetBasketsByTemplateIdCommand>() {
+    @NotNull val userId: Long,
+) : SelfValidating<GetBasketsByTemplateIdCommand>() {
     init {
         this.validateSelf()
     }

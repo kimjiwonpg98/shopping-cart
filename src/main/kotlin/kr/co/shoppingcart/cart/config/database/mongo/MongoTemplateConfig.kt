@@ -10,12 +10,11 @@ import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory
 
 @Configuration
 @EnableConfigurationProperties(SearchMongoDBProperties::class)
-class MongoTemplateConfig (
+class MongoTemplateConfig(
     private val searchMongoDBProperties: SearchMongoDBProperties,
 ) {
     @Bean(name = [SEARCH_MONGODB_CLIENT])
-    fun searchMongoClient(): MongoClient =
-        MongoClients.create(searchMongoDBProperties.createConnectionString())
+    fun searchMongoClient(): MongoClient = MongoClients.create(searchMongoDBProperties.createConnectionString())
 
     @Bean(name = [SEARCH_MONGODB_FACTORY])
     fun searchMongoFactory(): SimpleMongoClientDatabaseFactory =

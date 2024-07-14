@@ -12,7 +12,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.method.support.ModelAndViewContainer
 
 @Component
-class AuthAccountResolver: HandlerMethodArgumentResolver {
+class AuthAccountResolver : HandlerMethodArgumentResolver {
     override fun supportsParameter(parameter: MethodParameter): Boolean {
         return parameter.hasParameterAnnotation(CurrentUser::class.java)
     }
@@ -21,7 +21,7 @@ class AuthAccountResolver: HandlerMethodArgumentResolver {
         parameter: MethodParameter,
         mavContainer: ModelAndViewContainer?,
         webRequest: NativeWebRequest,
-        binderFactory: WebDataBinderFactory?
+        binderFactory: WebDataBinderFactory?,
     ): Any? {
         val request = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes).request
         return request.getAttribute(TokenInformationEnum.USER.name)

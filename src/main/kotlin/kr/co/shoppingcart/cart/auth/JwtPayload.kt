@@ -1,6 +1,6 @@
 package kr.co.shoppingcart.cart.auth
 
-data class JwtPayload (
+data class JwtPayload(
     val email: String? = null,
-    val identificationValue: String
+    val identificationValue: String,
 )

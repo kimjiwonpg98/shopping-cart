@@ -30,7 +30,7 @@ data class Basket(
                 updateTime = updateTime?.let { BasketUpdatedAt(it) },
                 count = BasketCount(count),
                 category = category,
-                template = template
+                template = template,
             )
     }
 }

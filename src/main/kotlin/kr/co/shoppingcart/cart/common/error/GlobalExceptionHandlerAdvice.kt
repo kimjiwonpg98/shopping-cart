@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 
 @ControllerAdvice
-class GlobalExceptionHandlerAdvice (
-  private val translator: ExceptionCodeTranslator
+class GlobalExceptionHandlerAdvice(
+    private val translator: ExceptionCodeTranslator,
 ) {
     @ExceptionHandler(value = [CustomException::class])
     fun apiException(error: CustomException): ResponseEntity<ExceptionResponseBody> {
@@ -25,7 +25,9 @@ class GlobalExceptionHandlerAdvice (
         return ResponseEntity.status(error.httpStatus).body(errorBody)
     }
 
-    @ExceptionHandler(value = [SignatureException::class, InsufficientAuthenticationException::class])
+    @ExceptionHandler(
+        value = [SignatureException::class, InsufficientAuthenticationException::class],
+    )
     fun handleSignatureException(): ResponseEntity<ExceptionResponseBody> {
         val errorBody = translator.translate(ExceptionCode.E_401_000)
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorBody)
@@ -43,7 +45,7 @@ class GlobalExceptionHandlerAdvice (
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorBody)
     }
 
-    /* 의도하지 않은 에러 */
+    // 의도하지 않은 에러
     @ExceptionHandler(value = [Exception::class])
     fun handleException(error: Exception): ResponseEntity<ExceptionResponseBody> {
         logger.error { "[Unintended] Error - message: ${error.message} cause: ${error.cause}" }

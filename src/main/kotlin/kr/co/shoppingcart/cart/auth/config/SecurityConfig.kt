@@ -16,7 +16,6 @@ import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 
-
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
@@ -33,14 +32,20 @@ class SecurityConfig(
             .authorizeHttpRequests { requests ->
                 requests.requestMatchers(HttpMethod.POST, "/cart").authenticated()
                 requests.requestMatchers(HttpMethod.POST, "/basket").authenticated()
-                requests.requestMatchers(HttpMethod.POST, "/basket").hasAnyRole(TokenInformationEnum.USER.name)
+                requests.requestMatchers(
+                    HttpMethod.POST,
+                    "/basket",
+                ).hasAnyRole(TokenInformationEnum.USER.name)
                 requests.requestMatchers(HttpMethod.PATCH, "/basket/check").authenticated()
-                requests.requestMatchers(HttpMethod.PATCH, "/basket/check").hasAnyRole(TokenInformationEnum.USER.name)
+                requests.requestMatchers(
+                    HttpMethod.PATCH,
+                    "/basket/check",
+                ).hasAnyRole(TokenInformationEnum.USER.name)
                 requests.anyRequest().permitAll()
             }
             .sessionManagement { sessionManagement: SessionManagementConfigurer<HttpSecurity?> ->
                 sessionManagement.sessionCreationPolicy(
-                    SessionCreationPolicy.STATELESS
+                    SessionCreationPolicy.STATELESS,
                 )
             }
             .addFilterBefore(jwtFilter, BasicAuthenticationFilter::class.java)

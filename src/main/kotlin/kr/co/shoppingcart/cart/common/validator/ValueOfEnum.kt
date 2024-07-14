@@ -8,11 +8,11 @@ import kotlin.reflect.KClass
     AnnotationTarget.FIELD,
     AnnotationTarget.TYPE_PARAMETER,
     AnnotationTarget.VALUE_PARAMETER,
-    AnnotationTarget.ANNOTATION_CLASS
+    AnnotationTarget.ANNOTATION_CLASS,
 )
 @Retention(AnnotationRetention.RUNTIME)
 @Constraint(validatedBy = [ValueOfEnumValidator::class])
-annotation class ValueOfEnum (
+annotation class ValueOfEnum(
     val enumClass: KClass<out Enum<*>>,
     val message: String,
     val groups: Array<KClass<*>> = [],

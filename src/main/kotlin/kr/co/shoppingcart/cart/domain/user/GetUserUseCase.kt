@@ -8,8 +8,8 @@ import kr.co.shoppingcart.cart.domain.user.vo.User
 import org.springframework.stereotype.Service
 
 @Service
-class GetUserUseCase (
-    private val userRepository: UserRepository
+class GetUserUseCase(
+    private val userRepository: UserRepository,
 ) {
     fun getByEmailAndLoginType(loginCommand: LoginCommand): User =
         userRepository.getByEmailAndLoginType(loginCommand.email, LoginType.valueOf(loginCommand.loginType))

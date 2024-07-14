@@ -1,13 +1,13 @@
-package kr.co.shoppingcart.cart.external.kakao.`in`
+package kr.co.shoppingcart.cart.external.kakao.request
 
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
 
-data class GetGrantCodeRequest (
+data class GetGrantCodeRequest(
     val clientId: String,
     val redirectUri: String,
     val responseType: String = "code",
-    val scope: List<String>
+    val scope: List<String>,
 ) {
     fun toQueryParams(): MultiValueMap<String, String> {
         val queryMap = LinkedMultiValueMap<String, String>()

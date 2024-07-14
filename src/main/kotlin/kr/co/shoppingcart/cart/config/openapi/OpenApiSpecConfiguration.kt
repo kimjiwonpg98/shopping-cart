@@ -14,26 +14,29 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 class OpenApiSpecConfiguration {
     @Bean
-    fun openApi(): OpenAPI = OpenAPI()
-        .apply { addSecurityItem(SecurityRequirement().addList("bearerAuth")) }
-        .apply { components = authSetting() }
-        .apply { info = swaggerInfo() }
+    fun openApi(): OpenAPI =
+        OpenAPI()
+            .apply { addSecurityItem(SecurityRequirement().addList("bearerAuth")) }
+            .apply { components = authSetting() }
+            .apply { info = swaggerInfo() }
 
     @Bean
-    fun operationCustomizer(translator: ExceptionCodeTranslator): OperationCustomizer
-        = CustomOpenApiCustomizer(translator)
+    fun operationCustomizer(translator: ExceptionCodeTranslator): OperationCustomizer =
+        CustomOpenApiCustomizer(translator)
 
-    private fun authSetting():Components =
+    private fun authSetting(): Components =
         Components()
-            .addSecuritySchemes("bearerAuth", SecurityScheme()
-                .name("Authorization")
-                .type(SecurityScheme.Type.HTTP)
-                .scheme("Bearer")
-                .bearerFormat("JWT")
-                .`in`(SecurityScheme.In.HEADER)
+            .addSecuritySchemes(
+                "bearerAuth",
+                SecurityScheme()
+                    .name("Authorization")
+                    .type(SecurityScheme.Type.HTTP)
+                    .scheme("Bearer")
+                    .bearerFormat("JWT")
+                    .`in`(SecurityScheme.In.HEADER),
             )
 
-    private fun swaggerInfo():Info {
+    private fun swaggerInfo(): Info {
         val license = License().apply { name = "basket" }
         return Info()
             .version("v0.0.1")

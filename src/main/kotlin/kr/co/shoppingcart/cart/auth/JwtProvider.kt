@@ -6,15 +6,15 @@ import io.jsonwebtoken.security.Keys
 import kr.co.shoppingcart.cart.utils.DateUtil
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
-import java.util.*
+import java.util.UUID
 import javax.crypto.SecretKey
 
 @Component
-class JwtProvider (
+class JwtProvider(
     @Value("\${jwt.secret}")
     private val secret: String,
     @Value("\${jwt.issuer}")
-    private val issuer: String
+    private val issuer: String,
 ) {
     private val secretKey: SecretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret))
 
@@ -32,18 +32,19 @@ class JwtProvider (
     }
 
     fun verifyToken(jwt: String?): JwtPayload {
-        val claimsJwt = Jwts.parser().verifyWith(secretKey).build()
-            .parseSignedClaims(jwt)
+        val claimsJwt =
+            Jwts.parser().verifyWith(secretKey).build()
+                .parseSignedClaims(jwt)
 
         if (!claimsJwt.payload.containsKey("email")) {
             return JwtPayload(
-                identificationValue = claimsJwt.payload.subject
+                identificationValue = claimsJwt.payload.subject,
             )
         }
 
         return JwtPayload(
             identificationValue = claimsJwt.payload.subject,
-            email = claimsJwt.payload["email"] as String
+            email = claimsJwt.payload["email"] as String,
         )
     }
 }

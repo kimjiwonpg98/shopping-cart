@@ -5,8 +5,10 @@ import org.springframework.data.repository.NoRepositoryBean
 import org.springframework.data.repository.Repository
 
 @NoRepositoryBean
-interface CategoryEntityRepository<T, ID>: Repository<T, ID> {
+interface CategoryEntityRepository<T, ID> : Repository<T, ID> {
     fun save(categoryEntity: CategoryEntity): CategoryEntity
-    fun getById(id:Long): CategoryEntity?
+
+    fun getById(id: Long): CategoryEntity?
+
     fun findAll(): List<CategoryEntity>
 }

@@ -6,5 +6,5 @@ data class ExampleHolder(
     val example: Example,
     val name: String,
     val code: Int,
-    val statusCode: Int
+    val statusCode: Int,
 )

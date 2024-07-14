@@ -11,34 +11,42 @@ import java.time.ZonedDateTime
 @Component
 class TokenServiceImpl(
     private val tokenExpirationRepositoryAdapter: TokenExpirationRepositoryAdapter,
-    private val jwtProvider: JwtProvider
+    private val jwtProvider: JwtProvider,
 ) : TokenService {
-    override fun createAccessToken(userId: Long, loginType: String): String {
+    override fun createAccessToken(
+        userId: Long,
+        loginType: String,
+    ): String {
         val tokenInfo = getTokenExpByType(loginType) ?: throw BadRequestException()
 
         val claims = mapOf("scope" to "MASTER")
 
-        val jwtPayload = JwtPayloadDto(
-            claims = claims,
-            identificationValue = userId.toString(),
-            now = ZonedDateTime.now(),
-            expiredTimestamp = tokenInfo.tokenTTL.ttl
-        )
+        val jwtPayload =
+            JwtPayloadDto(
+                claims = claims,
+                identificationValue = userId.toString(),
+                now = ZonedDateTime.now(),
+                expiredTimestamp = tokenInfo.tokenTTL.ttl,
+            )
 
         return jwtProvider.createJwt(jwtPayload)
     }
 
-    override fun createRefreshToken(userId: Long, loginType: String): String {
+    override fun createRefreshToken(
+        userId: Long,
+        loginType: String,
+    ): String {
         val tokenInfo = getTokenExpByType(loginType) ?: throw BadRequestException()
 
         val claims = mapOf("scope" to "REFRESH")
 
-        val jwtPayload = JwtPayloadDto(
-            claims = claims,
-            identificationValue = userId.toString(),
-            now = ZonedDateTime.now(),
-            expiredTimestamp = tokenInfo.refreshTokenTTL.refreshTokenTtl
-        )
+        val jwtPayload =
+            JwtPayloadDto(
+                claims = claims,
+                identificationValue = userId.toString(),
+                now = ZonedDateTime.now(),
+                expiredTimestamp = tokenInfo.refreshTokenTTL.refreshTokenTtl,
+            )
 
         return jwtProvider.createJwt(jwtPayload)
     }
@@ -48,5 +56,7 @@ class TokenServiceImpl(
     }
 
     private fun getTokenExpByType(loginType: String): TokenExpiration? =
-        tokenExpirationRepositoryAdapter.getByName(loginType)
+        tokenExpirationRepositoryAdapter.getByName(
+            loginType,
+        )
 }

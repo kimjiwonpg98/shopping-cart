@@ -8,28 +8,30 @@ class CustomException private constructor(
     cause: Throwable? = null,
     val code: ExceptionCode = ExceptionCode.E_500_000,
     val httpStatus: HttpStatus = code.httpStatus,
-    val detailInformation: String? = null
-    ) : Exception(message, cause) {
+    val detailInformation: String? = null,
+) : Exception(message, cause) {
     companion object {
         private fun fromErrorCode(
             code: ExceptionCode,
             cause: Throwable? = null,
-            detailInformation: String? = null
-        ): CustomException = CustomException (
-            code = code,
-            message = "name=${code.code}, status=${code.httpStatus.value()}",
-            cause = cause,
-            detailInformation = detailInformation
-        )
+            detailInformation: String? = null,
+        ): CustomException =
+            CustomException(
+                code = code,
+                message = "name=${code.code}, status=${code.httpStatus.value()}",
+                cause = cause,
+                detailInformation = detailInformation,
+            )
 
         fun responseBody(
             code: ExceptionCode,
             cause: Throwable? = null,
-            detailInformation: String? = null
-        ): CustomException = fromErrorCode(
-            code = code,
-            cause = cause,
-            detailInformation = detailInformation
-        )
+            detailInformation: String? = null,
+        ): CustomException =
+            fromErrorCode(
+                code = code,
+                cause = cause,
+                detailInformation = detailInformation,
+            )
     }
 }

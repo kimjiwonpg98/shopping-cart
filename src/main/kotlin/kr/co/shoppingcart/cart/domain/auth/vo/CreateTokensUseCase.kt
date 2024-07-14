@@ -7,10 +7,13 @@ import kr.co.shoppingcart.cart.domain.user.vo.User
 import org.springframework.stereotype.Service
 
 @Service
-class CreateTokensUseCase (
-    private val tokenService: TokenService
+class CreateTokensUseCase(
+    private val tokenService: TokenService,
 ) {
-    fun createTokensByUser(loginCommand: LoginCommand, user: User): Tokens {
+    fun createTokensByUser(
+        loginCommand: LoginCommand,
+        user: User,
+    ): Tokens {
         val accessToken = tokenService.createAccessToken(user.userId.id, loginCommand.loginType)
         val refreshToken = tokenService.createRefreshToken(user.userId.id, loginCommand.loginType)
 

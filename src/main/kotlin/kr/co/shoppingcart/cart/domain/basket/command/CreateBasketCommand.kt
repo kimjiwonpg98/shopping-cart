@@ -10,7 +10,7 @@ data class CreateBasketCommand(
     @NotNull val userId: Long,
     val checked: Boolean? = false,
     val count: Long? = 1,
-): SelfValidating<CreateBasketCommand>() {
+) : SelfValidating<CreateBasketCommand>() {
     init {
         this.validateSelf()
     }

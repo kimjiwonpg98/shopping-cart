@@ -8,9 +8,9 @@ import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.stereotype.Component
 
 @Component
-class I18NExceptionCodeTranslator (
-    private val messageSource: MessageSource
-): ExceptionCodeTranslator {
+class I18NExceptionCodeTranslator(
+    private val messageSource: MessageSource,
+) : ExceptionCodeTranslator {
     override fun translate(key: ExceptionCode): ExceptionResponseBody =
         ExceptionResponseBody(
             code = translate("${key.name}.code"),

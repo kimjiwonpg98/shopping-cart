@@ -13,18 +13,18 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import java.time.ZonedDateTime
-import java.util.*
+import java.util.UUID
 import javax.crypto.SecretKey
 
 @SpringBootTest
 @DisplayName("jwt 생성 및 검증 테스트")
-class JwtProviderTest (
+class JwtProviderTest(
     @Value("\${jwt.secret}")
     private val secret: String,
     @Value("\${jwt.issuer}")
     private val issuer: String,
     @Autowired
-    private var jwtProvider: JwtProvider
+    private var jwtProvider: JwtProvider,
 ) {
     @Test
     fun contextLoads() {
@@ -43,39 +43,44 @@ class JwtProviderTest (
         // given
         val secretKey: SecretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret))
         val claims: Map<String, Any> = mapOf("email" to email)
-        val jwtPayload = createJwtPayload(
-            claims = claims,
-            expiredTimestamp = 86400,
-            issuedAt = ZonedDateTime.now()
-        )
+        val jwtPayload =
+            createJwtPayload(
+                claims = claims,
+                expiredTimestamp = 86400,
+                issuedAt = ZonedDateTime.now(),
+            )
         val expiration = jwtPayload.now.plusSeconds(jwtPayload.expiredTimestamp)
 
         // when
         val jwt: String = jwtProvider.createJwt(jwtPayload)
 
         // then
-        val claimsJwt = Jwts.parser().verifyWith(secretKey).build()
-            .parseSignedClaims(jwt)
+        val claimsJwt =
+            Jwts.parser().verifyWith(secretKey).build()
+                .parseSignedClaims(jwt)
 
         assertEquals(claimsJwt.payload.issuer, issuer)
         assertEquals(claimsJwt.payload["email"], email)
         assertEquals(
             claimsJwt.payload.expiration.toString(),
-            DateUtil.convertZoneDateTimeToDate(expiration).toString()
+            DateUtil.convertZoneDateTimeToDate(expiration).toString(),
         )
         assertNotNull(claimsJwt.payload.id)
     }
 
-    private fun createJwtPayload(claims: Map<String, Any>, expiredTimestamp: Long, issuedAt: ZonedDateTime): JwtPayloadDto
-        = JwtPayloadDto(
+    private fun createJwtPayload(
+        claims: Map<String, Any>,
+        expiredTimestamp: Long,
+        issuedAt: ZonedDateTime,
+    ): JwtPayloadDto =
+        JwtPayloadDto(
             claims = claims,
             expiredTimestamp = expiredTimestamp,
             identificationValue = UUID.randomUUID().toString(),
-            now = issuedAt
+            now = issuedAt,
         )
 
     companion object {
         private val email = "test@test.com"
     }
-
 }

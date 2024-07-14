@@ -1,7 +1,7 @@
 package kr.co.shoppingcart.cart.api.basket
 
-import kr.co.shoppingcart.cart.api.basket.dto.out.BasketResponse
-import kr.co.shoppingcart.cart.api.category.out.CategoryResponse
+import kr.co.shoppingcart.cart.api.basket.dto.response.BasketResponse
+import kr.co.shoppingcart.cart.api.category.response.CategoryResponse
 import kr.co.shoppingcart.cart.domain.basket.vo.Basket
 
 object BasketResponseMapper {
@@ -12,6 +12,6 @@ object BasketResponseMapper {
             checked = basket.checked.checked,
             createTime = basket.createTime!!.createdAt,
             updateTime = basket.updateTime!!.updatedAt,
-            category = CategoryResponse.toDomain(basket.category)
+            category = CategoryResponse.toDomain(basket.category),
         )
 }

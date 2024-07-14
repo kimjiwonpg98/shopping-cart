@@ -25,7 +25,7 @@ data class Template(
                 userId = TemplateOwnerId(userId),
                 isPublic = TemplateIsPublic(isPublic),
                 createdAt = createdAt?.let { TemplateCreatedAt(it) },
-                updatedAt = updatedAt?.let { TemplateUpdatedAt(it) }
+                updatedAt = updatedAt?.let { TemplateUpdatedAt(it) },
             )
     }
 }

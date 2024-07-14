@@ -7,18 +7,19 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
 @Component
-class CategoryRepositoryAdapter (
-    private val categoryEntityRepository: CategoryEntityRepository<CategoryEntity, Long>
-): CategoryRepository {
+class CategoryRepositoryAdapter(
+    private val categoryEntityRepository: CategoryEntityRepository<CategoryEntity, Long>,
+) : CategoryRepository {
     @Transactional(readOnly = true)
-    override fun getAll(): List<Category> = categoryEntityRepository.findAll().map {
-        Category.toDomain(it.id!!, it.name)
-    }
+    override fun getAll(): List<Category> =
+        categoryEntityRepository.findAll().map {
+            Category.toDomain(it.id!!, it.name)
+        }
 
     @Transactional(readOnly = true)
-    override fun getById(id: Long): Category? = categoryEntityRepository.getById(id).let {
+    override fun getById(id: Long): Category? =
+        categoryEntityRepository.getById(id).let {
             if (it === null) return null
             return Category.toDomain(it.id!!, it.name)
         }
-
 }

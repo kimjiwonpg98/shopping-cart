@@ -19,7 +19,11 @@ class DateUtilTest {
 
     companion object {
         private val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss")
-        private val zoneDateTime = ZonedDateTime.parse("2024.05.18 16:00:00", dateTimeFormatter.withZone(java.time.ZoneId.systemDefault()))
+        private val zoneDateTime =
+            ZonedDateTime.parse(
+                "2024.05.18 16:00:00",
+                dateTimeFormatter.withZone(java.time.ZoneId.systemDefault()),
+            )
         private val dateTime = SimpleDateFormat("yyyy.MM.dd HH:mm:ss").parse("2024.05.18 16:00:00")
     }
 }

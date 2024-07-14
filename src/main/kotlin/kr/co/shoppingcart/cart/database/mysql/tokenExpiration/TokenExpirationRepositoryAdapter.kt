@@ -9,8 +9,8 @@ import org.springframework.transaction.annotation.Transactional
 
 @Component
 class TokenExpirationRepositoryAdapter(
-    private val tokenExpirationEntityRepository: TokenExpirationEntityRepository<TokenExpirationEntity, Long>
-): TokenExpirationRepository {
+    private val tokenExpirationEntityRepository: TokenExpirationEntityRepository<TokenExpirationEntity, Long>,
+) : TokenExpirationRepository {
     @Transactional(readOnly = true)
     override fun getByName(name: String): TokenExpiration? =
         tokenExpirationEntityRepository.getByName(name)?.let(TokenJpaMapper::toDomain)

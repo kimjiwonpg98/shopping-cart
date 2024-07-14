@@ -8,7 +8,7 @@ data class SearchMongoDBProperties(
     private val host: String,
     private val user: String,
     private val password: String,
-    private val db: String
+    private val db: String,
 ) {
     fun createConnectionString(): String =
         "mongodb+srv://$user:$password@$host/?retryWrites=true&w=majority&appName=$db&authSource=admin"

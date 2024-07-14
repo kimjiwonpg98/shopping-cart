@@ -5,9 +5,15 @@ import org.springframework.data.repository.NoRepositoryBean
 import org.springframework.data.repository.Repository
 
 @NoRepositoryBean
-interface TemplateEntityRepository<T, ID>: Repository<T, ID> {
+interface TemplateEntityRepository<T, ID> : Repository<T, ID> {
     fun save(templateEntity: TemplateEntity): TemplateEntity
+
     fun getById(id: Long): TemplateEntity?
-    fun getByIdAndUserId(id: Long, userId: Long): TemplateEntity?
+
+    fun getByIdAndUserId(
+        id: Long,
+        userId: Long,
+    ): TemplateEntity?
+
     fun getByIdWithBasket(id: Long): TemplateEntity?
 }

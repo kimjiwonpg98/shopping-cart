@@ -4,7 +4,11 @@ import kr.co.shoppingcart.cart.database.mysql.user.entity.UserEntity
 import org.springframework.stereotype.Repository
 
 @Repository
-interface UserJpaRepository: UserEntityRepository<UserEntity, Long> {
+interface UserJpaRepository : UserEntityRepository<UserEntity, Long> {
     override fun save(userEntity: UserEntity): UserEntity
-    override fun getByEmailAndLoginType(email: String, loginType: String): UserEntity?
+
+    override fun getByEmailAndLoginType(
+        email: String,
+        loginType: String,
+    ): UserEntity?
 }

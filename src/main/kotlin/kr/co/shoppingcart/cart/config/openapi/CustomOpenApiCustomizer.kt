@@ -13,28 +13,39 @@ import org.springdoc.core.customizers.OperationCustomizer
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.web.method.HandlerMethod
 
-class CustomOpenApiCustomizer (
-    private val translator: ExceptionCodeTranslator
-): OperationCustomizer {
-    override fun customize(operation: Operation, handlerMethod: HandlerMethod): Operation {
-        val hasAuthorizedClient = handlerMethod.methodParameters.any {
-            it.hasMethodAnnotation(CurrentUser::class.java)
-        }
+class CustomOpenApiCustomizer(
+    private val translator: ExceptionCodeTranslator,
+) : OperationCustomizer {
+    override fun customize(
+        operation: Operation,
+        handlerMethod: HandlerMethod,
+    ): Operation {
+        val hasAuthorizedClient =
+            handlerMethod.methodParameters.any {
+                it.hasMethodAnnotation(CurrentUser::class.java)
+            }
 
         if (!hasAuthorizedClient) {
             operation.security = listOf()
         }
 
-        val hasMethodAnnotation = handlerMethod.hasMethodAnnotation(OpenApiSpecApiException::class.java)
+        val hasMethodAnnotation =
+            handlerMethod.hasMethodAnnotation(
+                OpenApiSpecApiException::class.java,
+            )
 
         if (!hasMethodAnnotation) return operation
 
-        val openApiSpecApiException = handlerMethod.getMethodAnnotation(OpenApiSpecApiException::class.java)!!
-        val exampleGroups = openApiSpecApiException
-            .values
-            .toSet()
-            .map(::exampleHolder)
-            .groupBy(ExampleHolder::statusCode)
+        val openApiSpecApiException =
+            handlerMethod.getMethodAnnotation(
+                OpenApiSpecApiException::class.java,
+            )!!
+        val exampleGroups =
+            openApiSpecApiException
+                .values
+                .toSet()
+                .map(::exampleHolder)
+                .groupBy(ExampleHolder::statusCode)
 
         val responses = operation.responses
         exampleGroups.forEach { (code, exampleHolders) ->
@@ -51,23 +62,23 @@ class CustomOpenApiCustomizer (
         return operation
     }
 
-
     private fun exampleHolder(exceptionCode: ExceptionCode): ExampleHolder {
         val apiExceptionResponseBody = translator.translate(exceptionCode)
         return ExampleHolder(
             example(apiExceptionResponseBody.message, apiExceptionResponseBody),
             exceptionCode.name,
             exceptionCode.code,
-            exceptionCode.httpStatus.value()
+            exceptionCode.httpStatus.value(),
         )
-
     }
 
-    private fun <T> example(description: String, value: T): Example {
+    private fun <T> example(
+        description: String,
+        value: T,
+    ): Example {
         val example = Example()
         example.description = description
         example.value = value
         return example
     }
-
 }

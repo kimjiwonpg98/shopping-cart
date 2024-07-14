@@ -1,10 +1,9 @@
 package kr.co.shoppingcart.cart.api.basket
 
-import kr.co.shoppingcart.cart.api.basket.dto.`in`.CheckedBasketReqBodyDto
-import kr.co.shoppingcart.cart.api.basket.dto.`in`.CreateBasketReqBodyDto
-import kr.co.shoppingcart.cart.api.basket.dto.`in`.GetByTemplateIdReqDto
-import kr.co.shoppingcart.cart.api.basket.dto.out.BasketResponse
-import kr.co.shoppingcart.cart.api.basket.dto.out.GetByTemplateIdResDto
+import kr.co.shoppingcart.cart.api.basket.dto.request.CheckedBasketReqBodyDto
+import kr.co.shoppingcart.cart.api.basket.dto.request.CreateBasketReqBodyDto
+import kr.co.shoppingcart.cart.api.basket.dto.request.GetByTemplateIdReqDto
+import kr.co.shoppingcart.cart.api.basket.dto.response.GetByTemplateIdResDto
 import kr.co.shoppingcart.cart.auth.JwtPayload
 import kr.co.shoppingcart.cart.auth.annotation.CurrentUser
 import kr.co.shoppingcart.cart.common.error.annotations.OpenApiSpecApiException
@@ -22,69 +21,77 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class BasketController (
-    private val basketUseCase: BasketUseCase
+class BasketController(
+    private val basketUseCase: BasketUseCase,
 ) {
-    @OpenApiSpecApiException([
-        ExceptionCode.E_403_000, ExceptionCode.E_400_000
-    ])
+    @OpenApiSpecApiException(
+        [
+            ExceptionCode.E_403_000, ExceptionCode.E_400_000,
+        ],
+    )
     @PostMapping("/v1/basket")
     fun save(
         @RequestBody body: CreateBasketReqBodyDto,
-        @CurrentUser currentUser: JwtPayload
+        @CurrentUser currentUser: JwtPayload,
     ): ResponseEntity<Unit> {
-        val basket = CreateBasketCommand(
-            templatedId = body.templateId,
-            name = body.name,
-            categoryId = body.categoryId,
-            count = body.count,
-            userId = currentUser.identificationValue.toLong()
-        )
+        val basket =
+            CreateBasketCommand(
+                templatedId = body.templateId,
+                name = body.name,
+                categoryId = body.categoryId,
+                count = body.count,
+                userId = currentUser.identificationValue.toLong(),
+            )
         basketUseCase.create(basket)
         return ResponseEntity.status(201).build()
     }
 
-
-    @OpenApiSpecApiException([
-        ExceptionCode.E_403_000, ExceptionCode.E_400_000
-    ])
+    @OpenApiSpecApiException(
+        [
+            ExceptionCode.E_403_000, ExceptionCode.E_400_000,
+        ],
+    )
     @PatchMapping("/v1/basket/check")
     fun check(
         @RequestBody body: CheckedBasketReqBodyDto,
-        @CurrentUser currentUser: JwtPayload
+        @CurrentUser currentUser: JwtPayload,
     ): ResponseEntity<Unit> {
-        val basket = UpdateBasketFlagCommand(
-            userId = currentUser.identificationValue.toLong(),
-            basketId = body.basketId,
-            checked = body.checked
-        )
+        val basket =
+            UpdateBasketFlagCommand(
+                userId = currentUser.identificationValue.toLong(),
+                basketId = body.basketId,
+                checked = body.checked,
+            )
 
         basketUseCase.updateIsAddedByFlagAndId(basket)
         return ResponseEntity.status(200).build()
     }
 
-    @OpenApiSpecApiException([
-        ExceptionCode.E_403_000, ExceptionCode.E_401_000
-    ])
+    @OpenApiSpecApiException(
+        [
+            ExceptionCode.E_403_000, ExceptionCode.E_401_000,
+        ],
+    )
     @GetMapping("/v1/basket")
     fun getByTemplateId(
         @ModelAttribute params: GetByTemplateIdReqDto,
-        @CurrentUser currentUser: JwtPayload
+        @CurrentUser currentUser: JwtPayload,
     ): ResponseEntity<GetByTemplateIdResDto> {
-        val result = basketUseCase.getOwnByTemplateId(
-            GetBasketsByTemplateIdCommand(
-                params.templateId.toLong(),
-                currentUser.identificationValue.toLong()
+        val result =
+            basketUseCase.getOwnByTemplateId(
+                GetBasketsByTemplateIdCommand(
+                    params.templateId.toLong(),
+                    currentUser.identificationValue.toLong(),
+                ),
             )
-        )
 
         val (checkedItems, nonCheckedItems) = result.partition { it.checked.checked }
 
         return ResponseEntity.status(200).body(
             GetByTemplateIdResDto(
                 checked = checkedItems.map(BasketResponseMapper::toDomain),
-                nonChecked = nonCheckedItems.map(BasketResponseMapper::toDomain)
-            )
+                nonChecked = nonCheckedItems.map(BasketResponseMapper::toDomain),
+            ),
         )
     }
 }

@@ -9,15 +9,18 @@ import java.time.ZoneId
 
 @Component
 class TemplateRepositoryAdapter(
-    private val templateEntityRepository: TemplateEntityRepository<TemplateEntity, Long>
-): TemplateRepository {
+    private val templateEntityRepository: TemplateEntityRepository<TemplateEntity, Long>,
+) : TemplateRepository {
     @Transactional
-    override fun create(name: String, userId: Long) {
+    override fun create(
+        name: String,
+        userId: Long,
+    ) {
         templateEntityRepository.save(
             TemplateEntity(
                 name = name,
                 userId = userId,
-            )
+            ),
         )
     }
 
@@ -31,12 +34,15 @@ class TemplateRepositoryAdapter(
                 userId = it.userId,
                 isPublic = it.isPublic,
                 createdAt = it.createdAt?.toLocalDateTime()?.atZone(ZoneId.of("Asia/Seoul")),
-                updatedAt = it.createdAt?.toLocalDateTime()?.atZone(ZoneId.of("Asia/Seoul"))
+                updatedAt = it.createdAt?.toLocalDateTime()?.atZone(ZoneId.of("Asia/Seoul")),
             )
         }
 
     @Transactional(readOnly = true)
-    override fun getByIdAndUserId(id: Long, userId: Long): Template? =
+    override fun getByIdAndUserId(
+        id: Long,
+        userId: Long,
+    ): Template? =
         templateEntityRepository.getByIdAndUserId(id, userId).let {
             if (it === null) return null
             return Template.toDomain(
@@ -45,16 +51,16 @@ class TemplateRepositoryAdapter(
                 userId = it.userId,
                 isPublic = it.isPublic,
                 createdAt = it.createdAt?.toLocalDateTime()?.atZone(ZoneId.of("Asia/Seoul")),
-                updatedAt = it.createdAt?.toLocalDateTime()?.atZone(ZoneId.of("Asia/Seoul"))
+                updatedAt = it.createdAt?.toLocalDateTime()?.atZone(ZoneId.of("Asia/Seoul")),
             )
         }
 
     @Transactional
-    override fun updateSharedById(id: Long, isShared: Boolean) {
+    override fun updateSharedById(
+        id: Long,
+        isShared: Boolean,
+    ) {
         val template = templateEntityRepository.getById(id)
         template!!.isPublic = isShared
     }
-
 }
-
-

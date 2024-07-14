@@ -4,4 +4,4 @@ import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.data.repository.NoRepositoryBean
 
 @NoRepositoryBean
-interface SearchEntityRepository<T, ID>: MongoRepository<T, ID>
+interface SearchEntityRepository<T, ID> : MongoRepository<T, ID>

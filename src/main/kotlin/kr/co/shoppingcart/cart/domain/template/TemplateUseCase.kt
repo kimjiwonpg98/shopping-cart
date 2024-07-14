@@ -8,25 +8,30 @@ import kr.co.shoppingcart.cart.domain.template.command.UpdateTemplateSharedByIdC
 import org.springframework.stereotype.Service
 
 @Service
-class TemplateUseCase (
+class TemplateUseCase(
     private val templateRepository: TemplateRepository,
 ) {
-    fun save(createTemplateCommand: CreateTemplateCommand) = templateRepository.create(
-        name = createTemplateCommand.name,
-        userId = createTemplateCommand.userId
-    )
+    fun save(createTemplateCommand: CreateTemplateCommand) =
+        templateRepository.create(
+            name = createTemplateCommand.name,
+            userId = createTemplateCommand.userId,
+        )
 
     fun getByIdAndUserId(getTemplateByIdAndUserIdCommand: GetTemplateByIdAndUserIdCommand) =
         templateRepository.getByIdAndUserId(
             getTemplateByIdAndUserIdCommand.id.toLong(),
-            getTemplateByIdAndUserIdCommand.userId
+            getTemplateByIdAndUserIdCommand.userId,
         ) ?: throw CustomException.responseBody(ExceptionCode.E_401_000)
 
     fun updateSharedById(updateTemplateSharedByIdCommand: UpdateTemplateSharedByIdCommand) {
-        val template = templateRepository.getByIdAndUserId(
+        val template =
+            templateRepository.getByIdAndUserId(
+                updateTemplateSharedByIdCommand.id,
+                updateTemplateSharedByIdCommand.userId,
+            ) ?: throw CustomException.responseBody(ExceptionCode.E_401_000)
+        templateRepository.updateSharedById(
             updateTemplateSharedByIdCommand.id,
-            updateTemplateSharedByIdCommand.userId
-        ) ?: throw CustomException.responseBody(ExceptionCode.E_401_000)
-        templateRepository.updateSharedById(updateTemplateSharedByIdCommand.id, updateTemplateSharedByIdCommand.isShared)
+            updateTemplateSharedByIdCommand.isShared,
+        )
     }
 }

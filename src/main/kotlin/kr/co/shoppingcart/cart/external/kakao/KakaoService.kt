@@ -1,7 +1,7 @@
 package kr.co.shoppingcart.cart.external.kakao
 
 import kr.co.shoppingcart.cart.external.ThirdPartyLoginClient
-import kr.co.shoppingcart.cart.external.kakao.`in`.GetGrantCodeRequest
+import kr.co.shoppingcart.cart.external.kakao.request.GetGrantCodeRequest
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
@@ -15,13 +15,14 @@ class KakaoService(
     private val clientId: String,
     @Qualifier("kakaoWebClient")
     private val kakaoWebClient: WebClient,
-): ThirdPartyLoginClient {
+) : ThirdPartyLoginClient {
     override fun getGrantCode(): String? {
-        val query = GetGrantCodeRequest(
-            clientId = clientId,
-            redirectUri = "https://google.com",
-            scope = listOf("account_email")
-        ).toQueryParams()
+        val query =
+            GetGrantCodeRequest(
+                clientId = clientId,
+                redirectUri = "https://google.com",
+                scope = listOf("account_email"),
+            ).toQueryParams()
 
         return kakaoWebClient.get()
             .uri {
@@ -40,7 +41,6 @@ class KakaoService(
             }
             .block()
     }
-
 
     companion object {
         private const val GET_GRANT_CODE_URI = "https://kauth.kakao.com/oauth/authorize"

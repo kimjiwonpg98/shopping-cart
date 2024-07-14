@@ -6,8 +6,8 @@ import kr.co.shoppingcart.cart.domain.user.vo.User
 import org.springframework.stereotype.Service
 
 @Service
-class CreateUserUseCase (
-    private val userRepository: UserRepository
+class CreateUserUseCase(
+    private val userRepository: UserRepository,
 ) {
     fun createUser(loginCommand: LoginCommand): User =
         userRepository.create(loginCommand.email, LoginType.valueOf(loginCommand.loginType))

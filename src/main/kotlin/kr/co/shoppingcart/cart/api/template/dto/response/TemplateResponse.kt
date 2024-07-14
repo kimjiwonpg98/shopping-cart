@@ -1,8 +1,8 @@
-package kr.co.shoppingcart.cart.api.template.dto.out
+package kr.co.shoppingcart.cart.api.template.dto.response
 
 import java.time.ZonedDateTime
 
-data class TemplateResponse (
+data class TemplateResponse(
     val id: Long,
     val name: String,
     val userId: Long,

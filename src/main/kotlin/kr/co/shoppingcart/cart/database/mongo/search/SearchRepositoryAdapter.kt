@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class SearchRepositoryAdapter(
-    private val customSearchRepository: CustomSearchRepository
-): SearchRepository {
+    private val customSearchRepository: CustomSearchRepository,
+) : SearchRepository {
     override fun findByKeyword(keyword: String): List<SearchResult> {
         val result = customSearchRepository.searchForKeyword(keyword)
         return result.map { SearchResult.convertToDomain(it.name, it.category) }
