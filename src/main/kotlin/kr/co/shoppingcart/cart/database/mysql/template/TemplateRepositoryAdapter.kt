@@ -3,9 +3,9 @@ package kr.co.shoppingcart.cart.database.mysql.template
 import kr.co.shoppingcart.cart.database.mysql.template.entity.TemplateEntity
 import kr.co.shoppingcart.cart.domain.template.TemplateRepository
 import kr.co.shoppingcart.cart.domain.template.vo.Template
+import kr.co.shoppingcart.cart.utils.DateUtil.convertZonedDateTimeToSeoulTime
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import java.time.ZoneId
 
 @Component
 class TemplateRepositoryAdapter(
@@ -33,8 +33,8 @@ class TemplateRepositoryAdapter(
                 name = it.name,
                 userId = it.userId,
                 isPublic = it.isPublic,
-                createdAt = it.createdAt?.toLocalDateTime()?.atZone(ZoneId.of("Asia/Seoul")),
-                updatedAt = it.createdAt?.toLocalDateTime()?.atZone(ZoneId.of("Asia/Seoul")),
+                createdAt = it.createdAt?.let { convertZonedDateTimeToSeoulTime(it) },
+                updatedAt = it.updatedAt?.let { convertZonedDateTimeToSeoulTime(it) },
             )
         }
 
@@ -50,8 +50,8 @@ class TemplateRepositoryAdapter(
                 name = it.name,
                 userId = it.userId,
                 isPublic = it.isPublic,
-                createdAt = it.createdAt?.toLocalDateTime()?.atZone(ZoneId.of("Asia/Seoul")),
-                updatedAt = it.createdAt?.toLocalDateTime()?.atZone(ZoneId.of("Asia/Seoul")),
+                createdAt = it.createdAt?.let { convertZonedDateTimeToSeoulTime(it) },
+                updatedAt = it.updatedAt?.let { convertZonedDateTimeToSeoulTime(it) },
             )
         }
 
