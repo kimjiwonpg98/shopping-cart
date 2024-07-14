@@ -6,7 +6,7 @@ interface TemplateRepository {
     fun create(
         name: String,
         userId: Long,
-    )
+    ): Template
 
     fun getById(id: Long): Template?
 

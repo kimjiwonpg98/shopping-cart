@@ -33,6 +33,8 @@ class BasketUseCase(
                 count = createBasketCommand.count ?: 1,
                 createTime = null,
                 updateTime = null,
+                templateId = null,
+                categoryId = null,
             ),
             template,
             category,

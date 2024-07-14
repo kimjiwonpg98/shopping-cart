@@ -16,9 +16,4 @@ interface BasketEntityRepository<T, ID> : Repository<T, ID> {
     ): List<BasketEntity>
 
     fun getById(id: Long): BasketEntity?
-
-    fun updateCheckedById(
-        id: Long,
-        checked: Boolean,
-    )
 }

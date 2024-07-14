@@ -15,12 +15,4 @@ interface BasketJpaRepository : BasketEntityRepository<BasketEntity, Long> {
     ): List<BasketEntity>
 
     override fun getById(id: Long): BasketEntity?
-
-    override fun updateCheckedById(
-        id: Long,
-        checked: Boolean,
-    ) {
-        val basket = getById(id)
-        basket!!.checked = checked
-    }
 }

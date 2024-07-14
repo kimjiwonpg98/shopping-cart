@@ -9,6 +9,7 @@ import kr.co.shoppingcart.cart.auth.annotation.CurrentUser
 import kr.co.shoppingcart.cart.common.error.annotations.OpenApiSpecApiException
 import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
 import kr.co.shoppingcart.cart.domain.template.TemplateUseCase
+import kr.co.shoppingcart.cart.domain.template.command.CopyTemplateInCompleteCommand
 import kr.co.shoppingcart.cart.domain.template.command.CreateTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.GetTemplateByIdAndUserIdCommand
 import kr.co.shoppingcart.cart.domain.template.command.UpdateTemplateSharedByIdCommand
@@ -39,7 +40,7 @@ class TemplateController(
         return ResponseEntity.status(201).build()
     }
 
-    @OpenApiSpecApiException([ExceptionCode.E_401_000])
+    @OpenApiSpecApiException([ExceptionCode.E_401_000, ExceptionCode.E_403_000])
     @GetMapping("/template/{id}")
     fun getById(
         @PathVariable id: String,
@@ -59,7 +60,7 @@ class TemplateController(
         )
     }
 
-    @OpenApiSpecApiException([ExceptionCode.E_401_000])
+    @OpenApiSpecApiException([ExceptionCode.E_401_000, ExceptionCode.E_403_000])
     @PatchMapping("/template/{id}/share")
     fun updateSharedById(
         @PathVariable id: String,
@@ -74,5 +75,29 @@ class TemplateController(
             ),
         )
         return ResponseEntity.status(200).build()
+    }
+
+    @OpenApiSpecApiException([ExceptionCode.E_401_000, ExceptionCode.E_403_000])
+    @PostMapping("/template/{id}/copy/incomplete")
+    fun copyTemplateIncomplete(
+        @PathVariable id: String,
+        @CurrentUser currentUser: JwtPayload,
+    ): ResponseEntity<Unit> {
+        templateUseCase.copyTemplateInComplete(
+            CopyTemplateInCompleteCommand(
+                id = id.toLong(),
+                userId = currentUser.identificationValue.toLong(),
+            ),
+        )
+        return ResponseEntity.status(201).build()
+    }
+
+    @OpenApiSpecApiException([ExceptionCode.E_401_000, ExceptionCode.E_403_000])
+    @PostMapping("/template/{id}/copy")
+    fun copyTemplateAll(
+        @PathVariable id: String,
+        @CurrentUser currentUser: JwtPayload,
+    ) {
+        // TODO: 추가 필요
     }
 }

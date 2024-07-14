@@ -19,4 +19,6 @@ interface BasketRepository {
         basketId: Long,
         checked: Boolean,
     ): Unit
+
+    fun bulkSave(basket: List<Basket>)
 }
