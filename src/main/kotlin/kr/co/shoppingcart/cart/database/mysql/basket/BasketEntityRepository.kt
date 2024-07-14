@@ -13,7 +13,5 @@ interface BasketEntityRepository<T, ID>: Repository<T, ID> {
     fun getByTemplateIdOrderByUpdatedAtDesc(templateId: Long): List<BasketEntity>
     fun getByTemplateIdAndCategoryId(templateId: Long, categoryId: Long): List<BasketEntity>
     fun getById(id: Long): BasketEntity?
-    @Modifying
-    @Query("UPDATE BasketEntity SET checked = :checked WHERE id= :id")
-    fun updateCheckedById(@Param("id") id: Long, @Param("checked") checked: Boolean): Int
+    fun updateCheckedById(id: Long, checked: Boolean)
 }

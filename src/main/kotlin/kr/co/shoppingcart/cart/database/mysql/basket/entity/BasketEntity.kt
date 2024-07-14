@@ -21,7 +21,7 @@ class BasketEntity (
     val count: Long = 1L,
 
     @Column(nullable = false, columnDefinition = "BOOLEAN", name = "checked")
-    val checked: Boolean = false,
+    var checked: Boolean = false,
 
     @Column(nullable = false, columnDefinition = "BOOLEAN", name = "is_pinned")
     val isPinned: Boolean = false,
