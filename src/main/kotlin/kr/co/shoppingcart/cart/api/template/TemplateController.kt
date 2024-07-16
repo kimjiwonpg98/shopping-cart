@@ -83,7 +83,7 @@ class TemplateController(
         @PathVariable id: String,
         @CurrentUser currentUser: JwtPayload,
     ): ResponseEntity<Unit> {
-        templateUseCase.copyTemplateInComplete(
+        templateUseCase.copyOwnTemplateInComplete(
             CopyTemplateInCompleteCommand(
                 id = id.toLong(),
                 userId = currentUser.identificationValue.toLong(),
@@ -97,7 +97,14 @@ class TemplateController(
     fun copyTemplateAll(
         @PathVariable id: String,
         @CurrentUser currentUser: JwtPayload,
-    ) {
-        // TODO: 추가 필요
+    ): ResponseEntity<Unit> {
+        templateUseCase.copyOwnTemplate(
+            CopyTemplateInCompleteCommand(
+                id = id.toLong(),
+                userId = currentUser.identificationValue.toLong(),
+            ),
+        )
+
+        return ResponseEntity.status(201).build()
     }
 }

@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional
 import kr.co.shoppingcart.cart.common.error.CustomException
 import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
 import kr.co.shoppingcart.cart.domain.basket.BasketRepository
+import kr.co.shoppingcart.cart.domain.basket.vo.Basket
 import kr.co.shoppingcart.cart.domain.template.command.CopyTemplateInCompleteCommand
 import kr.co.shoppingcart.cart.domain.template.command.CreateTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.GetTemplateByIdAndUserIdCommand
@@ -43,19 +44,46 @@ class TemplateUseCase(
     }
 
     @Transactional
-    fun copyTemplateInComplete(copyTemplateInCompleteCommand: CopyTemplateInCompleteCommand) {
+    fun copyOwnTemplateInComplete(copyTemplateInCompleteCommand: CopyTemplateInCompleteCommand) {
         val template =
             templateRepository.getByIdAndUserId(
                 copyTemplateInCompleteCommand.id,
                 copyTemplateInCompleteCommand.userId,
             ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
 
-        val basket = basketRepository.getByTemplateId(copyTemplateInCompleteCommand.id)
-        val (checkedItems, nonCheckedItems) = basket.partition { it.checked.checked }
+        val newTemplate = templateRepository.create(name = template.name.name, userId = template.userId.userId)
+
+        val baskets = basketRepository.getByTemplateId(copyTemplateInCompleteCommand.id)
+        if (baskets.isEmpty()) return
+
+        val (checkedItems, nonCheckedItems) = baskets.partition { it.checked.checked }
+
+        this.createNewBasketsByTemplateId(nonCheckedItems, newTemplate.id.id)
+    }
+
+    @Transactional
+    fun copyOwnTemplate(copyTemplateInCompleteCommand: CopyTemplateInCompleteCommand) {
+        val template =
+            templateRepository.getByIdAndUserId(
+                copyTemplateInCompleteCommand.id,
+                copyTemplateInCompleteCommand.userId,
+            ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
 
         val newTemplate = templateRepository.create(name = template.name.name, userId = template.userId.userId)
-        nonCheckedItems.map { it.templateId!!.templateId = newTemplate.id.id }
-        basketRepository.bulkSave(nonCheckedItems)
+
+        val baskets = basketRepository.getByTemplateId(copyTemplateInCompleteCommand.id)
+        if (baskets.isEmpty()) return
+
+        this.createNewBasketsByTemplateId(baskets, newTemplate.id.id)
+    }
+
+    @Transactional(Transactional.TxType.MANDATORY)
+    fun createNewBasketsByTemplateId(
+        baskets: List<Basket>,
+        templateId: Long,
+    ) {
+        baskets.map { it.templateId!!.templateId = templateId }
+        basketRepository.bulkSave(baskets)
     }
 
     private fun checkedOwnerByUserIdAndId(

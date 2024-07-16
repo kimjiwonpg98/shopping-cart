@@ -10,7 +10,7 @@ import java.sql.PreparedStatement
 class BasketJdbcRepository(
     private val jdbcTemplate: JdbcTemplate,
 ) {
-    fun bulkInsert(basketEntities: List<BasketJdbcEntity>) {
+    fun bulkInsert(basketEntities: List<BasketJdbcEntity>): Int {
         val sql =
             "INSERT INTO basket(count, content, checked, is_pinned, template_id, category_id) VALUES (?, ?, ?, ?, ?, ?)"
 
@@ -32,6 +32,7 @@ class BasketJdbcRepository(
                 override fun getBatchSize(): Int = basketEntities.size
             }
 
-        jdbcTemplate.batchUpdate(sql, batch)
+        val result = jdbcTemplate.batchUpdate(sql, batch)
+        return result.size
     }
 }
