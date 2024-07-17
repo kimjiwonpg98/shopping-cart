@@ -5,10 +5,13 @@ import kr.co.shoppingcart.cart.common.error.CustomException
 import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
 import kr.co.shoppingcart.cart.domain.basket.BasketRepository
 import kr.co.shoppingcart.cart.domain.basket.vo.Basket
+import kr.co.shoppingcart.cart.domain.template.command.CopyOwnTemplateCommand
+import kr.co.shoppingcart.cart.domain.template.command.CopyTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.CopyTemplateInCompleteCommand
 import kr.co.shoppingcart.cart.domain.template.command.CreateTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.GetTemplateByIdAndUserIdCommand
 import kr.co.shoppingcart.cart.domain.template.command.UpdateTemplateSharedByIdCommand
+import kr.co.shoppingcart.cart.domain.template.vo.Template
 import org.springframework.stereotype.Service
 
 @Service
@@ -62,16 +65,33 @@ class TemplateUseCase(
     }
 
     @Transactional
-    fun copyOwnTemplate(copyTemplateInCompleteCommand: CopyTemplateInCompleteCommand) {
+    fun copyOwnTemplate(copyOwnTemplateCommand: CopyOwnTemplateCommand) {
         val template =
             templateRepository.getByIdAndUserId(
-                copyTemplateInCompleteCommand.id,
-                copyTemplateInCompleteCommand.userId,
+                copyOwnTemplateCommand.id,
+                copyOwnTemplateCommand.userId,
             ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
 
         val newTemplate = templateRepository.create(name = template.name.name, userId = template.userId.userId)
 
-        val baskets = basketRepository.getByTemplateId(copyTemplateInCompleteCommand.id)
+        val baskets = basketRepository.getByTemplateId(copyOwnTemplateCommand.id)
+        if (baskets.isEmpty()) return
+
+        this.createNewBasketsByTemplateId(baskets, newTemplate.id.id)
+    }
+
+    @Transactional
+    fun copyTemplate(copyTemplateCommand: CopyTemplateCommand) {
+        val template =
+            templateRepository.getById(
+                copyTemplateCommand.id,
+            ) ?: throw CustomException.responseBody(ExceptionCode.E_404_001)
+
+        if (!isPublicTemplate(template)) throw CustomException.responseBody(ExceptionCode.E_403_001)
+
+        val newTemplate = templateRepository.create(name = template.name.name, userId = template.userId.userId)
+
+        val baskets = basketRepository.getByTemplateId(copyTemplateCommand.id)
         if (baskets.isEmpty()) return
 
         this.createNewBasketsByTemplateId(baskets, newTemplate.id.id)
@@ -97,4 +117,6 @@ class TemplateUseCase(
             )
         return template != null
     }
+
+    private fun isPublicTemplate(template: Template): Boolean = template.isPublic.isPublic
 }

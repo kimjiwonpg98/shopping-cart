@@ -9,6 +9,8 @@ import kr.co.shoppingcart.cart.auth.annotation.CurrentUser
 import kr.co.shoppingcart.cart.common.error.annotations.OpenApiSpecApiException
 import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
 import kr.co.shoppingcart.cart.domain.template.TemplateUseCase
+import kr.co.shoppingcart.cart.domain.template.command.CopyOwnTemplateCommand
+import kr.co.shoppingcart.cart.domain.template.command.CopyTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.CopyTemplateInCompleteCommand
 import kr.co.shoppingcart.cart.domain.template.command.CreateTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.GetTemplateByIdAndUserIdCommand
@@ -99,7 +101,23 @@ class TemplateController(
         @CurrentUser currentUser: JwtPayload,
     ): ResponseEntity<Unit> {
         templateUseCase.copyOwnTemplate(
-            CopyTemplateInCompleteCommand(
+            CopyOwnTemplateCommand(
+                id = id.toLong(),
+                userId = currentUser.identificationValue.toLong(),
+            ),
+        )
+
+        return ResponseEntity.status(201).build()
+    }
+
+    @OpenApiSpecApiException([ExceptionCode.E_401_000, ExceptionCode.E_403_000])
+    @PostMapping("/template/public/{id}/copy")
+    fun copyPublicTemplateAll(
+        @PathVariable id: String,
+        @CurrentUser currentUser: JwtPayload,
+    ): ResponseEntity<Unit> {
+        templateUseCase.copyTemplate(
+            CopyTemplateCommand(
                 id = id.toLong(),
                 userId = currentUser.identificationValue.toLong(),
             ),
