@@ -33,7 +33,7 @@ spring:
         pool-name: default-hikari-pool
         jdbc-url: jdbc:mysql://${MYSQL_WRITE_HOST:localhost:3306/shopping_cart}?serverTimezone=UTC&characterEncoding=UTF-8&rewriteBatchedStatements=true
         username: ${MYSQL_USER:root}
-        password: ${MYSQL_USER:hhhh}
+        password: ${MYSQL_PASSWORD:hhhh}
         maximum-pool-size: 10
         driver-class-name: com.mysql.cj.jdbc.Driver
         read-only: false
@@ -43,9 +43,9 @@ spring:
         auto-commit: true
       read:
         pool-name: default-hikari-pool
-        jdbc-url: jdbc:mysql://${MYSQL_WRITE_HOST:localhost:3306/shopping_cart}?serverTimezone=UTC&characterEncoding=UTF-8&rewriteBatchedStatements=true
+        jdbc-url: jdbc:mysql://${MYSQL_READ_HOST:localhost:3306/shopping_cart}?serverTimezone=UTC&characterEncoding=UTF-8&rewriteBatchedStatements=true
         username: ${MYSQL_USER:root}
-        password: ${MYSQL_USER:hhhh}
+        password: ${MYSQL_PASSWORD:hhhh}
         maximum-pool-size: 10
         driver-class-name: com.mysql.cj.jdbc.Driver
         read-only: true

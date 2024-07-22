@@ -87,3 +87,9 @@ subprojects {
 tasks.named("spotlessApply").configure {
     dependsOn("ktlintFormat")
 }
+
+tasks.getByName<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
+    archiveBaseName.set("cart")
+    archiveFileName.set("cart.jar")
+    archiveVersion.set("0.0.0")
+}
