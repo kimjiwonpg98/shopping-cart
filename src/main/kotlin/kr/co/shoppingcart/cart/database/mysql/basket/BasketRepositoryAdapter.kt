@@ -9,6 +9,9 @@ import kr.co.shoppingcart.cart.domain.basket.BasketRepository
 import kr.co.shoppingcart.cart.domain.basket.vo.Basket
 import kr.co.shoppingcart.cart.domain.category.vo.Category
 import kr.co.shoppingcart.cart.domain.template.vo.Template
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
@@ -48,6 +51,24 @@ class BasketRepositoryAdapter(
 
     override fun getByTemplateId(templateId: Long): List<Basket> =
         basketEntityRepository.getByTemplateIdOrderByUpdatedAtDesc(templateId).map(BasketEntityMapper::toDomain)
+
+    override fun getByTemplateIdWithPageNation(
+        templateId: Long,
+        page: Long,
+        size: Long,
+    ): List<Basket> {
+        val sort: Sort =
+            Sort.by(
+                Sort.Order(Sort.Direction.ASC, "checked"),
+                Sort.Order(Sort.Direction.DESC, "updatedAt"),
+            )
+        val pageable: Pageable = PageRequest.of(page.toInt(), size.toInt(), sort)
+        return basketEntityRepository
+            .findByTemplateId(
+                templateId,
+                pageable,
+            ).map(BasketEntityMapper::toDomain)
+    }
 
     override fun getById(basketId: Long): Basket? =
         basketEntityRepository.getById(basketId)?.let(BasketEntityMapper::toDomain)

@@ -13,6 +13,12 @@ interface BasketRepository {
 
     fun getByTemplateId(templateId: Long): List<Basket>
 
+    fun getByTemplateIdWithPageNation(
+        templateId: Long,
+        page: Long,
+        size: Long,
+    ): List<Basket>
+
     fun getById(basketId: Long): Basket?
 
     fun updateCheckedById(
