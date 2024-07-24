@@ -59,7 +59,7 @@ class BasketUseCase(
         templateRepository.getByIdAndUserId(command.templateId, command.userId)
             ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
 
-        return this.getByTemplateId(command.templateId)
+        return this.getByTemplateId(command.templateId, command.page, command.size)
     }
 
     private fun validatedByUserIdAndBasketId(
@@ -70,5 +70,9 @@ class BasketUseCase(
         return basket.template.userId.userId == userId
     }
 
-    private fun getByTemplateId(templateId: Long): List<Basket> = basketRepository.getByTemplateId(templateId)
+    private fun getByTemplateId(
+        templateId: Long,
+        page: Long,
+        size: Long,
+    ): List<Basket> = basketRepository.getByTemplateIdWithPageNation(templateId, page, size)
 }
