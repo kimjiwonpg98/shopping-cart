@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController
 class TemplateController(
     private val templateUseCase: TemplateUseCase,
 ) {
-    @PostMapping("/template")
+    @PostMapping("/v1/template")
     fun save(
         @Valid @RequestBody body: CreateTemplateRequestBodyDto,
         @CurrentUser currentUser: JwtPayload,
@@ -43,7 +43,7 @@ class TemplateController(
     }
 
     @OpenApiSpecApiException([ExceptionCode.E_401_000, ExceptionCode.E_403_000])
-    @GetMapping("/template/{id}")
+    @GetMapping("/v1/template/{id}")
     fun getById(
         @PathVariable id: String,
         @CurrentUser currentUser: JwtPayload,
@@ -63,7 +63,7 @@ class TemplateController(
     }
 
     @OpenApiSpecApiException([ExceptionCode.E_401_000, ExceptionCode.E_403_000])
-    @PatchMapping("/template/{id}/share")
+    @PatchMapping("/v1/template/{id}/share")
     fun updateSharedById(
         @PathVariable id: String,
         @ModelAttribute params: UpdateTemplateSharedRequestParamsDto,
@@ -80,7 +80,7 @@ class TemplateController(
     }
 
     @OpenApiSpecApiException([ExceptionCode.E_401_000, ExceptionCode.E_403_000])
-    @PostMapping("/template/{id}/copy/incomplete")
+    @PostMapping("/v1/template/{id}/copy/incomplete")
     fun copyTemplateIncomplete(
         @PathVariable id: String,
         @CurrentUser currentUser: JwtPayload,
@@ -95,7 +95,7 @@ class TemplateController(
     }
 
     @OpenApiSpecApiException([ExceptionCode.E_401_000, ExceptionCode.E_403_000])
-    @PostMapping("/template/{id}/copy")
+    @PostMapping("/v1/template/{id}/copy")
     fun copyTemplateAll(
         @PathVariable id: String,
         @CurrentUser currentUser: JwtPayload,
@@ -111,7 +111,7 @@ class TemplateController(
     }
 
     @OpenApiSpecApiException([ExceptionCode.E_401_000, ExceptionCode.E_403_000])
-    @PostMapping("/template/public/{id}/copy")
+    @PostMapping("/v1/template/public/{id}/copy")
     fun copyPublicTemplateAll(
         @PathVariable id: String,
         @CurrentUser currentUser: JwtPayload,

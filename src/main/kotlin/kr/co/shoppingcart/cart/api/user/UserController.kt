@@ -21,7 +21,7 @@ class UserController(
     private val createTokensUseCase: CreateTokensUseCase,
 ) {
     @OpenApiSpecApiException([ExceptionCode.E_401_000])
-    @PostMapping("/login")
+    @PostMapping("/v1/login")
     fun login(
         @RequestBody user: LoginRequestBodyDto,
     ): ResponseEntity<LoginResponseBodyDto> {
@@ -43,7 +43,7 @@ class UserController(
         return ResponseEntity.status(HttpStatus.CREATED).body(responseBody)
     }
 
-    @PostMapping("/user")
+    @PostMapping("/v1/user")
     fun signup(
         @RequestBody user: LoginRequestBodyDto,
     ): ResponseEntity<Unit> {

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 class SearchController(
     private val searchUseCase: SearchUseCase,
 ) {
-    @GetMapping("/search")
+    @GetMapping("/v1/search")
     fun search(
         @Valid @ModelAttribute
         searchRequestDto: SearchRequestDto,
