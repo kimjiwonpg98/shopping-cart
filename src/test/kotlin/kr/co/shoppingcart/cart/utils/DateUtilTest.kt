@@ -13,7 +13,7 @@ class DateUtilTest {
     @DisplayName("ZoneDateTime 시간 -> Date 형식으로 변경")
     @Test
     fun convertZoneDateTimeToDateTest() {
-        val testDate: Date = DateUtil.convertZoneDateTimeToDate(zoneDateTime)
+        val testDate: Date = DateUtil.convertZoneDateTimeToDate(systemZoneDateTime)
         assertEquals(testDate, dateTime)
     }
 
@@ -21,15 +21,20 @@ class DateUtilTest {
     @Test
     fun convertZonedDateTimeToSeoulTimeTest() {
         val testDate: ZonedDateTime = DateUtil.convertZonedDateTimeToSeoulTime(utcDateTime)
-        assertEquals(testDate, zoneDateTime)
+        assertEquals(testDate, seoulZoneDateTime)
     }
 
     companion object {
         private val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss")
-        private val zoneDateTime =
+        private val seoulZoneDateTime =
             ZonedDateTime.parse(
                 "2024.05.18 16:00:00",
                 dateTimeFormatter.withZone(java.time.ZoneId.of("Asia/Seoul")),
+            )
+        private val systemZoneDateTime =
+            ZonedDateTime.parse(
+                "2024.05.18 16:00:00",
+                dateTimeFormatter.withZone(java.time.ZoneId.systemDefault()),
             )
         private val dateTime = SimpleDateFormat("yyyy.MM.dd HH:mm:ss").parse("2024.05.18 16:00:00")
         private val utcDateTime =
