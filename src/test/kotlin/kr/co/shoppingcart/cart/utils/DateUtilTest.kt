@@ -29,7 +29,7 @@ class DateUtilTest {
         private val zoneDateTime =
             ZonedDateTime.parse(
                 "2024.05.18 16:00:00",
-                dateTimeFormatter.withZone(java.time.ZoneId.systemDefault()),
+                dateTimeFormatter.withZone(java.time.ZoneId.of("Asia/Seoul")),
             )
         private val dateTime = SimpleDateFormat("yyyy.MM.dd HH:mm:ss").parse("2024.05.18 16:00:00")
         private val utcDateTime =
