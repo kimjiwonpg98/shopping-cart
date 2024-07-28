@@ -9,32 +9,25 @@ import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.test.context.SpringBootTest
 import java.time.ZonedDateTime
 import java.util.UUID
 import javax.crypto.SecretKey
 
-@SpringBootTest
 @DisplayName("jwt 생성 및 검증 테스트")
-class JwtProviderTest(
-    @Value("\${jwt.secret}")
-    private val secret: String,
-    @Value("\${jwt.issuer}")
-    private val issuer: String,
-    @Autowired
-    private var jwtProvider: JwtProvider,
-) {
-    @Test
-    fun contextLoads() {
-        assertNotNull(secret)
-        assertNotNull(issuer)
-    }
+class JwtProviderTest {
+    private lateinit var jwtProvider: JwtProvider
+    private val secret: String =
+        @Suppress("ktlint:standard:max-line-length")
+        "secre123sdf23fdvberhrfwefewfwefwfwfewfdcsdwf2ttesttesttestsetsetstsetsdfsdfsdfdsfsdfdsfsdfsfsetstetsetet"
+    private val issuer: String = "test"
 
     @BeforeEach
     fun setUp() {
-        jwtProvider = JwtProvider(secret, issuer)
+        jwtProvider =
+            JwtProvider(
+                secret,
+                issuer,
+            )
     }
 
     @Test
@@ -56,7 +49,10 @@ class JwtProviderTest(
 
         // then
         val claimsJwt =
-            Jwts.parser().verifyWith(secretKey).build()
+            Jwts
+                .parser()
+                .verifyWith(secretKey)
+                .build()
                 .parseSignedClaims(jwt)
 
         assertEquals(claimsJwt.payload.issuer, issuer)
