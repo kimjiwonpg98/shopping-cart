@@ -1,4 +1,4 @@
-package kr.co.shoppingcart.cart.domain
+package kr.co.shoppingcart.cart.domain.vo
 
 import kr.co.shoppingcart.cart.domain.user.enums.LoginType
 import kr.co.shoppingcart.cart.domain.user.vo.User
