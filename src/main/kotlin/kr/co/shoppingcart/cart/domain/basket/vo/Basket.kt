@@ -2,7 +2,7 @@ package kr.co.shoppingcart.cart.domain.basket.vo
 
 import kr.co.shoppingcart.cart.domain.category.vo.Category
 import kr.co.shoppingcart.cart.domain.template.vo.Template
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 data class Basket(
     val name: BasketName,
@@ -24,8 +24,8 @@ data class Basket(
             template: Template,
             templateId: Long?,
             categoryId: Long?,
-            createTime: LocalDateTime?,
-            updateTime: LocalDateTime?,
+            createdTime: ZonedDateTime?,
+            updatedTime: ZonedDateTime?,
         ): Basket =
             Basket(
                 name = BasketName(name),
@@ -33,8 +33,8 @@ data class Basket(
                 count = BasketCount(count),
                 category = category,
                 template = template,
-                createTime = createTime?.let { BasketCreatedAt(it) },
-                updateTime = updateTime?.let { BasketUpdatedAt(it) },
+                createTime = createdTime?.let { BasketCreatedAt(it) },
+                updateTime = updatedTime?.let { BasketUpdatedAt(it) },
                 templateId = templateId?.let { BasketTemplateId(it) },
                 categoryId = categoryId?.let { BasketCategoryId(it) },
             )

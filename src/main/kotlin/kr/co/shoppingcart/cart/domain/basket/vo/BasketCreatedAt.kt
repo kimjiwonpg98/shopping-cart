@@ -1,7 +1,7 @@
 package kr.co.shoppingcart.cart.domain.basket.vo
 
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 data class BasketCreatedAt(
-    val createdAt: LocalDateTime,
+    val createdAt: ZonedDateTime,
 )
