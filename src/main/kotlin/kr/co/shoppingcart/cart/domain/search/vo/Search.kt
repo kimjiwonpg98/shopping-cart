@@ -1,15 +1,15 @@
 package kr.co.shoppingcart.cart.domain.search.vo
 
-data class SearchResult(
+data class Search(
     val category: SearchCategory,
     val name: SearchName,
 ) {
     companion object {
-        fun convertToDomain(
+        fun toDomain(
             name: String,
             category: String,
-        ): SearchResult =
-            SearchResult(
+        ): Search =
+            Search(
                 name = SearchName(name),
                 category = SearchCategory(category),
             )
