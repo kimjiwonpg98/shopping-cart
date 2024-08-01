@@ -33,9 +33,14 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    // db
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
+    // cache
+    implementation("org.springframework.boot:spring-boot-starter-cache")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
+
     implementation("io.jsonwebtoken:jjwt-api:0.12.3")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
