@@ -25,4 +25,24 @@ class CalculateUtilTest {
 
         assertEquals(35, percent)
     }
+
+    @Test
+    fun `타켓이 0이면 결과값은 0이다`() {
+        val totalCount = 14L
+        val targetCount = 0L
+
+        val percent = CalculateUtil.percentInFiveIncrement(totalCount, targetCount)
+
+        assertEquals(0, percent)
+    }
+
+    @Test
+    fun `타켓이 전체와 같으면 결과값은 100이다`() {
+        val totalCount = 14L
+        val targetCount = 14L
+
+        val percent = CalculateUtil.percentInFiveIncrement(totalCount, targetCount)
+
+        assertEquals(100, percent)
+    }
 }
