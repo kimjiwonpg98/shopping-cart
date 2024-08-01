@@ -20,6 +20,12 @@ class CustomOpenApiCustomizer(
         operation: Operation,
         handlerMethod: HandlerMethod,
     ): Operation {
+        operation.parameters =
+            operation.parameters?.filter { parameter ->
+                val methodParameter = handlerMethod.methodParameters.find { it.parameter.name == parameter.name }
+                methodParameter?.hasParameterAnnotation(CurrentUser::class.java) != true
+            }
+
         val hasAuthorizedClient =
             handlerMethod.methodParameters.any {
                 it.hasMethodAnnotation(CurrentUser::class.java)
