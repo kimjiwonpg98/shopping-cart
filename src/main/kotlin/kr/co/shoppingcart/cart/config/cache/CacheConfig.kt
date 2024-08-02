@@ -21,7 +21,7 @@ class CacheConfig {
                 .stream(CacheType.entries.toTypedArray())
                 .map {
                     CaffeineCache(
-                        it.name,
+                        it.cacheName,
                         Caffeine
                             .newBuilder()
                             .recordStats()
