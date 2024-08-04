@@ -1,9 +1,9 @@
 package kr.co.shoppingcart.cart.database.mysql.user
 
 import kr.co.shoppingcart.cart.database.mysql.user.entity.UserEntity
+import kr.co.shoppingcart.cart.database.mysql.user.mapper.UserEntityMapper
 import kr.co.shoppingcart.cart.domain.user.UserRepository
 import kr.co.shoppingcart.cart.domain.user.enums.LoginType
-import kr.co.shoppingcart.cart.domain.user.mapper.UserJpaMapper
 import kr.co.shoppingcart.cart.domain.user.vo.User
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -17,20 +17,22 @@ class UserRepositoryAdapter(
         email: String,
         loginType: LoginType,
     ): User =
-        userEntityRepository.save(
-            UserEntity(
-                email = email,
-                loginType = loginType.name,
-            ),
-        ).let(UserJpaMapper::toDomain)
+        userEntityRepository
+            .save(
+                UserEntity(
+                    email = email,
+                    loginType = loginType.name,
+                ),
+            ).let(UserEntityMapper::toDomain)
 
     @Transactional(readOnly = true)
     override fun getByEmailAndLoginType(
         email: String,
         loginType: LoginType,
     ): User? =
-        userEntityRepository.getByEmailAndLoginType(
-            email,
-            loginType.name,
-        )?.let(UserJpaMapper::toDomain)
+        userEntityRepository
+            .getByEmailAndLoginType(
+                email,
+                loginType.name,
+            )?.let(UserEntityMapper::toDomain)
 }
