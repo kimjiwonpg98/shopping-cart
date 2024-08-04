@@ -5,7 +5,7 @@ import kr.co.shoppingcart.cart.api.template.dto.request.CreateTemplateRequestBod
 import kr.co.shoppingcart.cart.api.template.dto.request.GetWIthPercentRequestParamsDto
 import kr.co.shoppingcart.cart.api.template.dto.request.UpdateTemplateSharedRequestParamsDto
 import kr.co.shoppingcart.cart.api.template.dto.response.GetTemplateByIdResponseBodyDto
-import kr.co.shoppingcart.cart.api.template.dto.response.TemplateWithPercentResponse
+import kr.co.shoppingcart.cart.api.template.dto.response.GetTemplateResponseBodyDto
 import kr.co.shoppingcart.cart.auth.JwtPayload
 import kr.co.shoppingcart.cart.auth.annotation.CurrentUser
 import kr.co.shoppingcart.cart.common.error.annotations.OpenApiSpecApiException
@@ -134,7 +134,7 @@ class TemplateController(
     fun getAll(
         @CurrentUser currentUser: JwtPayload,
         @ModelAttribute params: GetWIthPercentRequestParamsDto,
-    ): ResponseEntity<List<TemplateWithPercentResponse>> {
+    ): ResponseEntity<GetTemplateResponseBodyDto> {
         val command =
             GetWithCompletePercentAndPreviewCommand(
                 currentUser.identificationValue.toLong(),
@@ -144,7 +144,9 @@ class TemplateController(
             )
         val templates = templateUseCase.getWithCompletePercentAndPreview(command)
         return ResponseEntity.ok().body(
-            templates.map(TemplateResponseMapper::toResponseWithPercent),
+            GetTemplateResponseBodyDto(
+                result = templates.map(TemplateResponseMapper::toResponseWithPercent),
+            ),
         )
     }
 }
