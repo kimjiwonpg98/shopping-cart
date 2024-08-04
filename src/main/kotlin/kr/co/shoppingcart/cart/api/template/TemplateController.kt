@@ -2,8 +2,10 @@ package kr.co.shoppingcart.cart.api.template
 
 import jakarta.validation.Valid
 import kr.co.shoppingcart.cart.api.template.dto.request.CreateTemplateRequestBodyDto
+import kr.co.shoppingcart.cart.api.template.dto.request.GetWIthPercentRequestParamsDto
 import kr.co.shoppingcart.cart.api.template.dto.request.UpdateTemplateSharedRequestParamsDto
 import kr.co.shoppingcart.cart.api.template.dto.response.GetTemplateByIdResponseBodyDto
+import kr.co.shoppingcart.cart.api.template.dto.response.TemplateWithPercentResponse
 import kr.co.shoppingcart.cart.auth.JwtPayload
 import kr.co.shoppingcart.cart.auth.annotation.CurrentUser
 import kr.co.shoppingcart.cart.common.error.annotations.OpenApiSpecApiException
@@ -14,6 +16,7 @@ import kr.co.shoppingcart.cart.domain.template.command.CopyTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.CopyTemplateInCompleteCommand
 import kr.co.shoppingcart.cart.domain.template.command.CreateTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.GetTemplateByIdAndUserIdCommand
+import kr.co.shoppingcart.cart.domain.template.command.GetWithCompletePercentAndPreviewCommand
 import kr.co.shoppingcart.cart.domain.template.command.UpdateTemplateSharedByIdCommand
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -57,7 +60,7 @@ class TemplateController(
 
         return ResponseEntity.status(200).body(
             GetTemplateByIdResponseBodyDto(
-                result = template.let(TemplateResponseMapper::toDomain),
+                result = template.let(TemplateResponseMapper::toResponse),
             ),
         )
     }
@@ -124,5 +127,24 @@ class TemplateController(
         )
 
         return ResponseEntity.status(201).build()
+    }
+
+    @OpenApiSpecApiException([ExceptionCode.E_401_000, ExceptionCode.E_403_000])
+    @GetMapping("/v1/templates")
+    fun getAll(
+        @CurrentUser currentUser: JwtPayload,
+        @ModelAttribute params: GetWIthPercentRequestParamsDto,
+    ): ResponseEntity<List<TemplateWithPercentResponse>> {
+        val command =
+            GetWithCompletePercentAndPreviewCommand(
+                currentUser.identificationValue.toLong(),
+                params.page?.toLong() ?: 0,
+                params.size?.toLong() ?: 10,
+                3,
+            )
+        val templates = templateUseCase.getWithCompletePercentAndPreview(command)
+        return ResponseEntity.ok().body(
+            templates.map(TemplateResponseMapper::toResponseWithPercent),
+        )
     }
 }

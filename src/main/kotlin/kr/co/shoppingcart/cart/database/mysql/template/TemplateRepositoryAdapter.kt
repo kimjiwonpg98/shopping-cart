@@ -1,15 +1,19 @@
 package kr.co.shoppingcart.cart.database.mysql.template
 
 import kr.co.shoppingcart.cart.database.mysql.template.entity.TemplateEntity
+import kr.co.shoppingcart.cart.database.mysql.template.jdbc.TemplateJdbcRepository
 import kr.co.shoppingcart.cart.database.mysql.template.mapper.TemplateEntityMapper
+import kr.co.shoppingcart.cart.database.mysql.template.mapper.TemplateWithCheckedCountEntityMapper
 import kr.co.shoppingcart.cart.domain.template.TemplateRepository
 import kr.co.shoppingcart.cart.domain.template.vo.Template
+import kr.co.shoppingcart.cart.domain.template.vo.TemplateWithCheckedCount
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
 @Component
 class TemplateRepositoryAdapter(
     private val templateEntityRepository: TemplateEntityRepository<TemplateEntity, Long>,
+    private val templateJdbcRepository: TemplateJdbcRepository,
 ) : TemplateRepository {
     @Transactional
     override fun create(
@@ -42,4 +46,13 @@ class TemplateRepositoryAdapter(
         val template = templateEntityRepository.getById(id)
         template!!.isPublic = isShared
     }
+
+    override fun getWithCompletePercent(
+        userId: Long,
+        page: Long,
+        size: Long,
+    ): List<TemplateWithCheckedCount> =
+        templateJdbcRepository.getWithCheckedCount(userId, page, size).map {
+            TemplateWithCheckedCountEntityMapper.toDomain(it)
+        }
 }
