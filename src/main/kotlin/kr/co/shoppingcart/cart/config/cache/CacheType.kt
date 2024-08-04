@@ -5,5 +5,5 @@ enum class CacheType(
     val expireAfterSeconds: Long,
     val maximumCachedSize: Long,
 ) {
-    BASKET_CACHE(cacheName = "basket", expireAfterSeconds = 3 * 60 * 1000, maximumCachedSize = 1 * 1024 * 1024),
+    TEMPLATE_CACHE(cacheName = "template", expireAfterSeconds = 3 * 60 * 1000, maximumCachedSize = 1 * 1024 * 1024),
 }
