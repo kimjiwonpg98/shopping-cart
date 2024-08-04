@@ -10,8 +10,10 @@ import kr.co.shoppingcart.cart.domain.template.command.CopyTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.CopyTemplateInCompleteCommand
 import kr.co.shoppingcart.cart.domain.template.command.CreateTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.GetTemplateByIdAndUserIdCommand
+import kr.co.shoppingcart.cart.domain.template.command.GetWithCompletePercentAndPreviewCommand
 import kr.co.shoppingcart.cart.domain.template.command.UpdateTemplateSharedByIdCommand
 import kr.co.shoppingcart.cart.domain.template.vo.Template
+import kr.co.shoppingcart.cart.domain.template.vo.TemplateWithCheckedCount
 import org.springframework.stereotype.Service
 
 @Service
@@ -105,6 +107,15 @@ class TemplateUseCase(
         baskets.map { it.templateId!!.templateId = templateId }
         basketRepository.bulkSave(baskets)
     }
+
+    fun getWithCompletePercentAndPreview(
+        getWithCompletePercentAndPreviewCommand: GetWithCompletePercentAndPreviewCommand,
+    ): List<TemplateWithCheckedCount> =
+        templateRepository.getWithCompletePercent(
+            getWithCompletePercentAndPreviewCommand.userId,
+            getWithCompletePercentAndPreviewCommand.page,
+            getWithCompletePercentAndPreviewCommand.size,
+        )
 
     private fun checkedOwnerByUserIdAndId(
         userId: Long,

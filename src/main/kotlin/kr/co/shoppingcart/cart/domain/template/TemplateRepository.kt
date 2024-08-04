@@ -1,6 +1,7 @@
 package kr.co.shoppingcart.cart.domain.template
 
 import kr.co.shoppingcart.cart.domain.template.vo.Template
+import kr.co.shoppingcart.cart.domain.template.vo.TemplateWithCheckedCount
 
 interface TemplateRepository {
     fun create(
@@ -19,4 +20,10 @@ interface TemplateRepository {
         id: Long,
         isShared: Boolean,
     )
+
+    fun getWithCompletePercent(
+        userId: Long,
+        page: Long,
+        size: Long,
+    ): List<TemplateWithCheckedCount>
 }
