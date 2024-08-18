@@ -73,6 +73,16 @@ class BasketRepositoryAdapter(
     override fun getById(basketId: Long): Basket? =
         basketEntityRepository.getById(basketId)?.let(BasketEntityMapper::toDomain)
 
+    override fun getByTemplateIdAndSizeOrderByUpdatedDesc(
+        templateId: Long,
+        size: Int,
+    ): List<Basket> =
+        basketEntityRepository
+            .getByTemplateIdOrderByUpdatedAtDesc(
+                templateId,
+                PageRequest.of(0, size),
+            ).map(BasketEntityMapper::toDomain)
+
     @Transactional
     override fun updateCheckedById(
         basketId: Long,

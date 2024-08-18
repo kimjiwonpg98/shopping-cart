@@ -11,6 +11,11 @@ interface BasketEntityRepository<T, ID> : Repository<T, ID> {
 
     fun getByTemplateIdOrderByUpdatedAtDesc(templateId: Long): List<BasketEntity>
 
+    fun getByTemplateIdOrderByUpdatedAtDesc(
+        templateId: Long,
+        pageable: Pageable,
+    ): List<BasketEntity>
+
     fun findByTemplateId(
         templateId: Long,
         pageable: Pageable,

@@ -8,6 +8,7 @@ import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketFlagCommand
 import kr.co.shoppingcart.cart.domain.basket.vo.Basket
 import kr.co.shoppingcart.cart.domain.category.CategoryRepository
 import kr.co.shoppingcart.cart.domain.template.TemplateRepository
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 
 @Service
@@ -61,6 +62,15 @@ class BasketUseCase(
 
         return this.getByTemplateId(command.templateId, command.page, command.size)
     }
+
+    @Cacheable(
+        value = ["template"],
+        key = "#templateId",
+    )
+    fun getByTemplateIdAndSizeOrderByUpdatedDesc(
+        templateId: Long,
+        size: Int,
+    ): List<Basket> = basketRepository.getByTemplateIdAndSizeOrderByUpdatedDesc(templateId, size)
 
     private fun validatedByUserIdAndBasketId(
         userId: Long,
