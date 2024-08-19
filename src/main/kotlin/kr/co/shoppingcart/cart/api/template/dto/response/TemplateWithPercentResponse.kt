@@ -9,4 +9,5 @@ data class TemplateWithPercentResponse(
     val percent: Int,
     val createTime: ZonedDateTime,
     val updateTime: ZonedDateTime,
+    val preview: List<String>,
 )

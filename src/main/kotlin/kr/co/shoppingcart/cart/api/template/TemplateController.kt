@@ -10,6 +10,7 @@ import kr.co.shoppingcart.cart.auth.JwtPayload
 import kr.co.shoppingcart.cart.auth.annotation.CurrentUser
 import kr.co.shoppingcart.cart.common.error.annotations.OpenApiSpecApiException
 import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
+import kr.co.shoppingcart.cart.domain.basket.BasketUseCase
 import kr.co.shoppingcart.cart.domain.template.TemplateUseCase
 import kr.co.shoppingcart.cart.domain.template.command.CopyOwnTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.CopyTemplateCommand
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class TemplateController(
     private val templateUseCase: TemplateUseCase,
+    private val basketUseCase: BasketUseCase,
 ) {
     @PostMapping("/v1/template")
     fun save(
@@ -133,19 +135,29 @@ class TemplateController(
     @GetMapping("/v1/templates")
     fun getAll(
         @CurrentUser currentUser: JwtPayload,
-        @ModelAttribute params: GetWIthPercentRequestParamsDto,
+        @ModelAttribute params: GetWIthPercentRequestParamsDto?,
     ): ResponseEntity<GetTemplateResponseBodyDto> {
         val command =
             GetWithCompletePercentAndPreviewCommand(
                 currentUser.identificationValue.toLong(),
-                params.page?.toLong() ?: 0,
-                params.size?.toLong() ?: 10,
-                3,
+                params?.page?.toLong() ?: 0,
+                params?.size?.toLong() ?: 10,
             )
         val templates = templateUseCase.getWithCompletePercentAndPreview(command)
+
         return ResponseEntity.ok().body(
             GetTemplateResponseBodyDto(
-                result = templates.map(TemplateResponseMapper::toResponseWithPercent),
+                result =
+                    templates.map { template ->
+                        val basketNames =
+                            basketUseCase
+                                .getByTemplateIdAndSizeOrderByUpdatedDesc(
+                                    templateId = template.id.id,
+                                    size =
+                                        params?.previewCount?.toInt() ?: 3,
+                                ).map { it.name.name }
+                        TemplateResponseMapper.toResponseWithPercent(template, basketNames)
+                    },
             ),
         )
     }

@@ -6,6 +6,7 @@ import io.swagger.v3.oas.models.info.Info
 import io.swagger.v3.oas.models.info.License
 import io.swagger.v3.oas.models.security.SecurityRequirement
 import io.swagger.v3.oas.models.security.SecurityScheme
+import io.swagger.v3.oas.models.servers.Server
 import kr.co.shoppingcart.cart.common.error.translators.ExceptionCodeTranslator
 import org.springdoc.core.customizers.OperationCustomizer
 import org.springframework.context.annotation.Bean
@@ -19,6 +20,8 @@ class OpenApiSpecConfiguration {
             .apply { addSecurityItem(SecurityRequirement().addList("bearerAuth")) }
             .apply { components = authSetting() }
             .apply { info = swaggerInfo() }
+            .apply { addServersItem(Server().url("https://ggadam-dev.shop/").description("개발 서버")) }
+            .apply { addServersItem(Server().url("http://localhost:8080/").description("로컬 서버")) }
 
     @Bean
     fun operationCustomizer(translator: ExceptionCodeTranslator): OperationCustomizer =
@@ -31,9 +34,9 @@ class OpenApiSpecConfiguration {
                 SecurityScheme()
                     .name("Authorization")
                     .type(SecurityScheme.Type.HTTP)
-                    .scheme("Bearer")
-                    .bearerFormat("JWT")
-                    .`in`(SecurityScheme.In.HEADER),
+                    .`in`(SecurityScheme.In.HEADER)
+                    .scheme("bearer")
+                    .bearerFormat("JWT"),
             )
 
     private fun swaggerInfo(): Info {

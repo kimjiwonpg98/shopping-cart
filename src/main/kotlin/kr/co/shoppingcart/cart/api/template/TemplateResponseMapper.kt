@@ -16,7 +16,10 @@ object TemplateResponseMapper {
             updateTime = template.updatedAt!!.updatedAt,
         )
 
-    fun toResponseWithPercent(templateWithCheckedCount: TemplateWithCheckedCount): TemplateWithPercentResponse =
+    fun toResponseWithPercent(
+        templateWithCheckedCount: TemplateWithCheckedCount,
+        preview: List<String>,
+    ): TemplateWithPercentResponse =
         TemplateWithPercentResponse(
             id = templateWithCheckedCount.id.id,
             name = templateWithCheckedCount.name.name,
@@ -28,5 +31,6 @@ object TemplateResponseMapper {
                     templateWithCheckedCount.checkedCount.count + templateWithCheckedCount.unCheckedCount.count,
                     templateWithCheckedCount.checkedCount.count,
                 ),
+            preview = preview,
         )
 }

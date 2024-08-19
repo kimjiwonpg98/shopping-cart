@@ -7,4 +7,6 @@ data class GetWIthPercentRequestParamsDto(
     val page: String?,
     @field:NumberFormat
     val size: String?,
+    @field:NumberFormat
+    val previewCount: String?,
 )
