@@ -5,6 +5,11 @@ import kr.co.shoppingcart.cart.domain.category.vo.Category
 object MockCategory {
     fun getCategory(i: Long): Category = Category.toDomain(i, "test")
 
+    fun getOptionalCategory(
+        i: Long,
+        flag: Boolean,
+    ): Category? = if (!flag) getCategory(i) else null
+
     fun getCategories(): List<Category> {
         val categories = mutableListOf<Category>()
         for (i in 0..5) {
