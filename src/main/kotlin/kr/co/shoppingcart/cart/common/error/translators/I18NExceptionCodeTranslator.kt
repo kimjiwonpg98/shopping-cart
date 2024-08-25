@@ -11,11 +11,15 @@ import org.springframework.stereotype.Component
 class I18NExceptionCodeTranslator(
     private val messageSource: MessageSource,
 ) : ExceptionCodeTranslator {
-    override fun translate(key: ExceptionCode): ExceptionResponseBody =
+    override fun translate(
+        key: ExceptionCode,
+        detail: String?,
+    ): ExceptionResponseBody =
         ExceptionResponseBody(
             code = translate("${key.name}.code"),
             message = translate("${key.name}.message"),
             title = translate("${key.name}.title"),
+            detail = detail,
         )
 
     private fun translate(code: String): String {

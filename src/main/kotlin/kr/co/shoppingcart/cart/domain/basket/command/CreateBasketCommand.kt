@@ -1,13 +1,22 @@
 package kr.co.shoppingcart.cart.domain.basket.command
 
+import jakarta.validation.constraints.Min
+import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import kr.co.shoppingcart.cart.common.SelfValidating
 
 data class CreateBasketCommand(
-    @NotNull val templatedId: Long,
-    @NotNull val name: String,
-    @NotNull val categoryId: Long,
-    @NotNull val userId: Long,
+    @field:Min(1)
+    @field:NotNull
+    val templatedId: Long,
+    @field:NotBlank
+    @field:NotNull
+    val name: String,
+    @field:Min(1)
+    @field:NotNull
+    val categoryId: Long,
+    @field:NotNull
+    val userId: Long,
     val checked: Boolean? = false,
     val count: Long? = 1,
 ) : SelfValidating<CreateBasketCommand>() {

@@ -9,7 +9,7 @@ class CustomException private constructor(
     val code: ExceptionCode = ExceptionCode.E_500_000,
     val httpStatus: HttpStatus = code.httpStatus,
     val detailInformation: String? = null,
-) : Exception(message, cause) {
+) : RuntimeException(message, cause) {
     companion object {
         private fun fromErrorCode(
             code: ExceptionCode,

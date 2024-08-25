@@ -10,19 +10,28 @@ import mu.KotlinLogging
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.InsufficientAuthenticationException
-import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.bind.annotation.RestControllerAdvice
 
-@ControllerAdvice
+@RestControllerAdvice
 class GlobalExceptionHandlerAdvice(
     private val translator: ExceptionCodeTranslator,
 ) {
     @ExceptionHandler(value = [CustomException::class])
     fun apiException(error: CustomException): ResponseEntity<ExceptionResponseBody> {
-        logger.error { error.cause }
-
-        val errorBody = translator.translate(error.code)
-        return ResponseEntity.status(error.httpStatus).body(errorBody)
+        logger.error {
+            "[Unintended] Error - message: ${error.message} cause: ${error.cause} detail: ${error.detailInformation}"
+        }
+        when {
+            error.detailInformation != null -> {
+                val errorBody = translator.translate(error.code, error.detailInformation)
+                return ResponseEntity.status(error.httpStatus).body(errorBody)
+            }
+            else -> {
+                val errorBody = translator.translate(error.code)
+                return ResponseEntity.status(error.httpStatus).body(errorBody)
+            }
+        }
     }
 
     @ExceptionHandler(
