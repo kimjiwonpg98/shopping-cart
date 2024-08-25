@@ -6,6 +6,7 @@ data class TemplateResponse(
     val id: Long,
     val name: String,
     val userId: Long,
+    val isPublic: Boolean,
     val createTime: ZonedDateTime,
     val updateTime: ZonedDateTime,
 )
