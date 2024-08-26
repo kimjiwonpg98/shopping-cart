@@ -20,6 +20,7 @@ import kr.co.shoppingcart.cart.domain.template.command.GetTemplateByIdAndUserIdC
 import kr.co.shoppingcart.cart.domain.template.command.GetWithCompletePercentAndPreviewCommand
 import kr.co.shoppingcart.cart.domain.template.command.UpdateTemplateSharedByIdCommand
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PatchMapping
@@ -160,5 +161,13 @@ class TemplateController(
                     },
             ),
         )
+    }
+
+    @OpenApiSpecApiException([ExceptionCode.E_401_000, ExceptionCode.E_403_000])
+    @DeleteMapping("/v1/template/{id}")
+    fun deleteById(
+        @PathVariable id: String,
+        @CurrentUser currentUser: JwtPayload,
+    ) {
     }
 }
