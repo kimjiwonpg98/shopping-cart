@@ -15,6 +15,8 @@ data class Basket(
     val category: Category,
     val template: Template,
 ) {
+    fun validatedByUserId(userId: Long): Boolean = this.template.userId.userId == userId
+
     companion object {
         fun toDomain(
             name: String,

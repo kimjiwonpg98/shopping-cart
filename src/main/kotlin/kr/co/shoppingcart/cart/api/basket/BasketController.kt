@@ -48,7 +48,7 @@ class BasketController(
 
     @OpenApiSpecApiException(
         [
-            ExceptionCode.E_403_000, ExceptionCode.E_400_000,
+            ExceptionCode.E_403_000, ExceptionCode.E_404_002,
         ],
     )
     @PatchMapping("/v1/basket/check")

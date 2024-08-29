@@ -43,13 +43,14 @@ class BasketUseCase(
     }
 
     fun updateIsAddedByFlagAndId(updateBasketFlagCommand: UpdateBasketFlagCommand) {
-        if (!validatedByUserIdAndBasketId(
-                updateBasketFlagCommand.userId,
-                updateBasketFlagCommand.basketId,
-            )
-        ) {
+        val basket =
+            basketRepository.getById(updateBasketFlagCommand.basketId)
+                ?: throw CustomException.responseBody(ExceptionCode.E_404_002)
+
+        if (!basket.validatedByUserId(updateBasketFlagCommand.userId)) {
             throw CustomException.responseBody(ExceptionCode.E_403_000)
         }
+
         this.basketRepository.updateCheckedById(
             updateBasketFlagCommand.basketId,
             updateBasketFlagCommand.checked,
@@ -71,14 +72,6 @@ class BasketUseCase(
         templateId: Long,
         size: Int,
     ): List<Basket> = basketRepository.getByTemplateIdAndSizeOrderByUpdatedDesc(templateId, size)
-
-    private fun validatedByUserIdAndBasketId(
-        userId: Long,
-        basketId: Long,
-    ): Boolean {
-        val basket = basketRepository.getById(basketId) ?: throw CustomException.responseBody(ExceptionCode.E_400_000)
-        return basket.template.userId.userId == userId
-    }
 
     private fun getByTemplateId(
         templateId: Long,

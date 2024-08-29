@@ -4,9 +4,9 @@ import jakarta.validation.constraints.NotNull
 import kr.co.shoppingcart.cart.common.SelfValidating
 
 data class UpdateBasketFlagCommand(
-    @NotNull val basketId: Long,
-    @NotNull val checked: Boolean,
-    @NotNull val userId: Long,
+    @field:NotNull val basketId: Long,
+    @field:NotNull val checked: Boolean,
+    @field:NotNull val userId: Long,
 ) : SelfValidating<CreateBasketCommand>() {
     init {
         this.validateSelf()

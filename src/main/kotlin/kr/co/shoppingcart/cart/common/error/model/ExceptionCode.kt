@@ -15,6 +15,7 @@ enum class ExceptionCode(
 
     E_404_000(404_000, HttpStatus.NOT_FOUND),
     E_404_001(404_001, HttpStatus.NOT_FOUND),
+    E_404_002(404_002, HttpStatus.NOT_FOUND),
 
     E_500_000(500_000, HttpStatus.INTERNAL_SERVER_ERROR),
 }
