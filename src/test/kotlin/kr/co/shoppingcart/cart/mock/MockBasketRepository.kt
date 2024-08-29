@@ -22,7 +22,11 @@ class MockBasketRepository : BasketRepository {
         size: Long,
     ): List<Basket> = MockBasket.getBaskets()
 
-    override fun getById(basketId: Long): Basket? = MockBasket.getBasket(basketId)
+    override fun getById(basketId: Long): Basket? =
+        MockBasket.getOptionalBasket(
+            basketId,
+            basketId == BASKET_ID_RETURN_NULL,
+        )
 
     override fun getByTemplateIdAndSizeOrderByUpdatedDesc(
         templateId: Long,
@@ -36,5 +40,9 @@ class MockBasketRepository : BasketRepository {
     }
 
     override fun bulkSave(basket: List<Basket>) {
+    }
+
+    companion object {
+        private const val BASKET_ID_RETURN_NULL = 100L
     }
 }

@@ -15,6 +15,11 @@ object MockTemplate {
             ZonedDateTime.now(),
         )
 
+    fun getOptionalTemplate(
+        i: Long,
+        flag: Boolean,
+    ): Template? = if (!flag) getTemplate(i) else null
+
     fun getTemplates(): List<Template> {
         val templates = mutableListOf<Template>()
         for (i in 0..5) {

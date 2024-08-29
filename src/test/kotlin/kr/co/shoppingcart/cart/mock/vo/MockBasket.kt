@@ -13,6 +13,10 @@ import kr.co.shoppingcart.cart.domain.template.vo.Template
 import java.time.ZonedDateTime
 
 object MockBasket {
+    /**
+     * user는 1로 고정
+     * i로 basketId만 수정
+     * */
     fun getBasket(i: Long): Basket =
         Basket(
             name = BasketName("test"),
@@ -37,4 +41,9 @@ object MockBasket {
         }
         return baskets
     }
+
+    fun getOptionalBasket(
+        i: Long,
+        flag: Boolean,
+    ): Basket? = if (!flag) getBasket(i) else null
 }
