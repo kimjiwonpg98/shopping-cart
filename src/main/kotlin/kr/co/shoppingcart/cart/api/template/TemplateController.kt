@@ -16,6 +16,7 @@ import kr.co.shoppingcart.cart.domain.template.command.CopyOwnTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.CopyTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.CopyTemplateInCompleteCommand
 import kr.co.shoppingcart.cart.domain.template.command.CreateTemplateCommand
+import kr.co.shoppingcart.cart.domain.template.command.DeleteByTemplateIdCommand
 import kr.co.shoppingcart.cart.domain.template.command.GetTemplateByIdAndUserIdCommand
 import kr.co.shoppingcart.cart.domain.template.command.GetWithCompletePercentAndPreviewCommand
 import kr.co.shoppingcart.cart.domain.template.command.UpdateTemplateSharedByIdCommand
@@ -168,6 +169,14 @@ class TemplateController(
     fun deleteById(
         @PathVariable id: String,
         @CurrentUser currentUser: JwtPayload,
-    ) {
+    ): ResponseEntity<Unit> {
+        val command =
+            DeleteByTemplateIdCommand(
+                templateId = id.toLong(),
+                userId = currentUser.identificationValue.toLong(),
+            )
+        templateUseCase.deleteByIdAndUserId(command)
+
+        return ResponseEntity.accepted().build()
     }
 }

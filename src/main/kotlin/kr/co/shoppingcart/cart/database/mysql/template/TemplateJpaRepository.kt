@@ -24,4 +24,6 @@ interface TemplateJpaRepository : TemplateEntityRepository<TemplateEntity, Long>
     override fun getByIdWithBasket(
         @Param("id") id: Long,
     ): TemplateEntity?
+
+    override fun deleteById(id: Long)
 }

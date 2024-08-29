@@ -9,6 +9,7 @@ import kr.co.shoppingcart.cart.domain.template.command.CopyOwnTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.CopyTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.CopyTemplateInCompleteCommand
 import kr.co.shoppingcart.cart.domain.template.command.CreateTemplateCommand
+import kr.co.shoppingcart.cart.domain.template.command.DeleteByTemplateIdCommand
 import kr.co.shoppingcart.cart.domain.template.command.GetTemplateByIdAndUserIdCommand
 import kr.co.shoppingcart.cart.domain.template.command.GetWithCompletePercentAndPreviewCommand
 import kr.co.shoppingcart.cart.domain.template.command.UpdateTemplateSharedByIdCommand
@@ -116,6 +117,20 @@ class TemplateUseCase(
             getWithCompletePercentAndPreviewCommand.page,
             getWithCompletePercentAndPreviewCommand.size,
         )
+
+    fun deleteByIdAndUserId(deleteByTemplateIdCommand: DeleteByTemplateIdCommand) {
+        val isOwner =
+            this.checkedOwnerByUserIdAndId(
+                deleteByTemplateIdCommand.userId,
+                deleteByTemplateIdCommand.templateId,
+            )
+
+        if (!isOwner) {
+            throw CustomException.responseBody(ExceptionCode.E_403_000)
+        }
+
+        templateRepository.deleteById(deleteByTemplateIdCommand.templateId)
+    }
 
     private fun checkedOwnerByUserIdAndId(
         userId: Long,

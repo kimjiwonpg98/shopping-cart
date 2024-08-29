@@ -26,4 +26,6 @@ interface TemplateRepository {
         page: Long,
         size: Long,
     ): List<TemplateWithCheckedCount>
+
+    fun deleteById(id: Long)
 }

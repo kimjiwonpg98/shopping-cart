@@ -55,4 +55,6 @@ class TemplateRepositoryAdapter(
         templateJdbcRepository.getWithCheckedCount(userId, page, size).map {
             TemplateWithCheckedCountEntityMapper.toDomain(it)
         }
+
+    override fun deleteById(id: Long) = templateEntityRepository.deleteById(id)
 }
