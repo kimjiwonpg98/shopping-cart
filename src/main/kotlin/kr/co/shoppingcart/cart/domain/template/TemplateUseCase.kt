@@ -30,7 +30,7 @@ class TemplateUseCase(
 
     fun getByIdAndUserId(getTemplateByIdAndUserIdCommand: GetTemplateByIdAndUserIdCommand) =
         templateRepository.getByIdAndUserId(
-            getTemplateByIdAndUserIdCommand.id.toLong(),
+            getTemplateByIdAndUserIdCommand.id,
             getTemplateByIdAndUserIdCommand.userId,
         ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
 

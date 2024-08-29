@@ -52,7 +52,7 @@ class TemplateController(
     @OpenApiSpecApiException([ExceptionCode.E_401_000, ExceptionCode.E_403_000])
     @GetMapping("/v1/template/{id}")
     fun getById(
-        @PathVariable id: String,
+        @PathVariable id: Long,
         @CurrentUser currentUser: JwtPayload,
     ): ResponseEntity<GetTemplateByIdResponseBodyDto> {
         val command =
