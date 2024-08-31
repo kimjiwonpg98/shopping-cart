@@ -76,7 +76,7 @@ class BasketUseCaseTest {
 
     @Nested
     @DisplayName("조회 테스트")
-    inner class get {
+    inner class Get {
         @Test
         fun `물품이 없을 시 에러 발생`() {
             val exception =
