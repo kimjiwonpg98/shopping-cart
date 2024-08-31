@@ -20,7 +20,7 @@ class GlobalExceptionHandlerAdvice(
     @ExceptionHandler(value = [CustomException::class])
     fun apiException(error: CustomException): ResponseEntity<ExceptionResponseBody> {
         logger.error {
-            "[Unintended] Error - message: ${error.message} cause: ${error.cause} detail: ${error.detailInformation}"
+            "[API] Error - message: ${error.message} cause: ${error.cause} detail: ${error.detailInformation}"
         }
         when {
             error.detailInformation != null -> {
