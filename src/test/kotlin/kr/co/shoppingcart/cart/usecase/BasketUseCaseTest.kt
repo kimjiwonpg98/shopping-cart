@@ -7,6 +7,7 @@ import kr.co.shoppingcart.cart.domain.basket.command.CreateBasketCommand
 import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketFlagCommand
 import kr.co.shoppingcart.cart.mock.MockBasketRepository
 import kr.co.shoppingcart.cart.mock.MockCategoryRepository
+import kr.co.shoppingcart.cart.mock.MockPermissionsRepository
 import kr.co.shoppingcart.cart.mock.MockTemplateRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
@@ -18,8 +19,10 @@ class BasketUseCaseTest {
     private val basketRepository = MockBasketRepository()
     private val categoryRepository = MockCategoryRepository()
     private val templateRepository = MockTemplateRepository()
+    private val permissionsRepository = MockPermissionsRepository()
 
-    private val basketUseCase = BasketUseCase(basketRepository, categoryRepository, templateRepository)
+    private val basketUseCase =
+        BasketUseCase(basketRepository, categoryRepository, templateRepository, permissionsRepository)
 
     @Nested
     @DisplayName("생성 테스트")
