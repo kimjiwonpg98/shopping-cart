@@ -45,7 +45,7 @@ class TemplateController(
                 name = body.name,
                 userId = currentUser.identificationValue.toLong(),
             )
-        templateUseCase.save(cart)
+        templateUseCase.createByApi(cart)
         return ResponseEntity.status(201).build()
     }
 

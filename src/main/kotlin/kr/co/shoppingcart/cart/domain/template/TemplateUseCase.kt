@@ -1,10 +1,10 @@
 package kr.co.shoppingcart.cart.domain.template
 
-import jakarta.transaction.Transactional
 import kr.co.shoppingcart.cart.common.error.CustomException
 import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
 import kr.co.shoppingcart.cart.domain.basket.BasketRepository
 import kr.co.shoppingcart.cart.domain.basket.vo.Basket
+import kr.co.shoppingcart.cart.domain.permissions.PermissionsRepository
 import kr.co.shoppingcart.cart.domain.template.command.CopyOwnTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.CopyTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.CopyTemplateInCompleteCommand
@@ -16,17 +16,17 @@ import kr.co.shoppingcart.cart.domain.template.command.UpdateTemplateSharedByIdC
 import kr.co.shoppingcart.cart.domain.template.vo.Template
 import kr.co.shoppingcart.cart.domain.template.vo.TemplateWithCheckedCount
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class TemplateUseCase(
     private val templateRepository: TemplateRepository,
     private val basketRepository: BasketRepository,
+    private val permissionsRepository: PermissionsRepository,
 ) {
-    fun save(createTemplateCommand: CreateTemplateCommand) =
-        templateRepository.create(
-            name = createTemplateCommand.name,
-            userId = createTemplateCommand.userId,
-        )
+    fun createByApi(createTemplateCommand: CreateTemplateCommand): Template =
+        this.create(createTemplateCommand.name, createTemplateCommand.userId)
 
     fun getByIdAndUserId(getTemplateByIdAndUserIdCommand: GetTemplateByIdAndUserIdCommand) =
         templateRepository.getByIdAndUserId(
@@ -57,7 +57,7 @@ class TemplateUseCase(
                 copyTemplateInCompleteCommand.userId,
             ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
 
-        val newTemplate = templateRepository.create(name = template.name.name, userId = template.userId.userId)
+        val newTemplate = this.create(name = template.name.name, userId = template.userId.userId)
 
         val baskets = basketRepository.getByTemplateId(copyTemplateInCompleteCommand.id)
         if (baskets.isEmpty()) return
@@ -75,7 +75,7 @@ class TemplateUseCase(
                 copyOwnTemplateCommand.userId,
             ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
 
-        val newTemplate = templateRepository.create(name = template.name.name, userId = template.userId.userId)
+        val newTemplate = this.create(name = template.name.name, userId = template.userId.userId)
 
         val baskets = basketRepository.getByTemplateId(copyOwnTemplateCommand.id)
         if (baskets.isEmpty()) return
@@ -92,7 +92,7 @@ class TemplateUseCase(
 
         if (!isPublicTemplate(template)) throw CustomException.responseBody(ExceptionCode.E_403_001)
 
-        val newTemplate = templateRepository.create(name = template.name.name, userId = template.userId.userId)
+        val newTemplate = this.create(name = template.name.name, userId = template.userId.userId)
 
         val baskets = basketRepository.getByTemplateId(copyTemplateCommand.id)
         if (baskets.isEmpty()) return
@@ -100,7 +100,7 @@ class TemplateUseCase(
         this.createNewBasketsByTemplateId(baskets, newTemplate.id.id)
     }
 
-    @Transactional(Transactional.TxType.MANDATORY)
+    @Transactional(propagation = Propagation.MANDATORY)
     fun createNewBasketsByTemplateId(
         baskets: List<Basket>,
         templateId: Long,
@@ -130,6 +130,22 @@ class TemplateUseCase(
         }
 
         templateRepository.deleteById(deleteByTemplateIdCommand.templateId)
+    }
+
+    fun create(
+        name: String,
+        userId: Long,
+    ): Template {
+        val template =
+            templateRepository.create(
+                name = name,
+                userId = userId,
+            )
+        permissionsRepository.createOwnerPermission(
+            userId,
+            template.id.id,
+        )
+        return template
     }
 
     private fun checkedOwnerByUserIdAndId(
