@@ -7,10 +7,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 class KakaoProperties(
     private val baseurl: String,
     private val clientId: String,
+    private val kakaoRedirectUrl: String,
 ) {
     fun getBaseUrl(): String = baseurl
 
     fun getClientId(): String = clientId
+
+    fun getKakaoRedirectUrl(): String = kakaoRedirectUrl
 
     companion object {
         const val KAKAO_PROPERTIES = "client.kakao"

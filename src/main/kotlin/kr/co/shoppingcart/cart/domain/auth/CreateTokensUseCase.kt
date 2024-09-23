@@ -1,4 +1,4 @@
-package kr.co.shoppingcart.cart.domain.auth.vo
+package kr.co.shoppingcart.cart.domain.auth
 
 import kr.co.shoppingcart.cart.domain.auth.service.TokenService
 import kr.co.shoppingcart.cart.domain.auth.vo.tokens.Tokens

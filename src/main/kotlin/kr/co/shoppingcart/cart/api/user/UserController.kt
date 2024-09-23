@@ -4,7 +4,7 @@ import kr.co.shoppingcart.cart.api.user.dto.request.LoginRequestBodyDto
 import kr.co.shoppingcart.cart.api.user.dto.response.LoginResponseBodyDto
 import kr.co.shoppingcart.cart.common.error.annotations.OpenApiSpecApiException
 import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
-import kr.co.shoppingcart.cart.domain.auth.vo.CreateTokensUseCase
+import kr.co.shoppingcart.cart.domain.auth.CreateTokensUseCase
 import kr.co.shoppingcart.cart.domain.user.CreateUserUseCase
 import kr.co.shoppingcart.cart.domain.user.GetUserUseCase
 import kr.co.shoppingcart.cart.domain.user.command.LoginCommand
