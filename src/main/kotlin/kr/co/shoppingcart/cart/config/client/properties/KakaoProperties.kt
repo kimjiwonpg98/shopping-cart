@@ -5,11 +5,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 
 @ConfigurationProperties(prefix = KAKAO_PROPERTIES)
 class KakaoProperties(
-    private val baseurl: String,
+    private val baseUrl: String,
+    private val authBaseUrl: String,
     private val clientId: String,
     private val kakaoRedirectUrl: String,
 ) {
-    fun getBaseUrl(): String = baseurl
+    fun getBaseUrl(): String = baseUrl
+
+    fun getAuthBaseUrl(): String = authBaseUrl
 
     fun getClientId(): String = clientId
 

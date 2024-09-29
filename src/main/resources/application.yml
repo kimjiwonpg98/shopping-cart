@@ -56,7 +56,8 @@ spring:
 client:
   kakao:
     client-id: ${KAKAO_CLIENT_ID:xxxx}
-    baseurl: ${KAKAO_BASE_URL:https://kauth.kakao.com}
+    auth-base-url: ${KAKAO_AUTH_BASE_URL:https://kauth.kakao.com}
+    base-url: ${KAKAO_BASE_URL:https://kapi.kakao.com}
     kakao-redirect-url: ${KAKAO_REDIRECT_URL:http://localhost:8080/v1/kakao/code}
 jwt:
   secret: ${JWT_SECRET:xxxxxzsqwsasd123afdcdfwqdsddasdqwdsacasdqwdcfv12312dsacvxcasdwhrtjh465yu1234xsddsvssdvdsdvdsvvsvdvsdsdv}

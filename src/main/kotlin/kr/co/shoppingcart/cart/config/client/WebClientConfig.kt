@@ -14,7 +14,11 @@ class WebClientConfig(
     @Bean(name = [KAKAO_WEB_CLIENT])
     fun kakaoWebClient(): WebClient = WebClient.builder().baseUrl(kakaoProperties.getBaseUrl()).build()
 
+    @Bean(name = [KAKAO_AUTH_WEB_CLIENT])
+    fun kakaoAuthWebClient(): WebClient = WebClient.builder().baseUrl(kakaoProperties.getAuthBaseUrl()).build()
+
     companion object {
         const val KAKAO_WEB_CLIENT = "kakaoWebClient"
+        const val KAKAO_AUTH_WEB_CLIENT = "kakaoAuthWebClient"
     }
 }
