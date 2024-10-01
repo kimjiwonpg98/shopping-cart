@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import kr.co.shoppingcart.cart.database.mysql.common.entity.CommonEntity
 import kr.co.shoppingcart.cart.database.mysql.user.entity.UserEntity.Companion.USER_ENTITY_NAME
+import java.util.Date
 
 @Entity(name = USER_ENTITY_NAME)
 class UserEntity(
@@ -18,6 +19,10 @@ class UserEntity(
     val email: String?,
     @Column(nullable = false, length = 30, name = "login_type")
     val loginType: String,
+    @Column(nullable = true, length = 2)
+    val gender: String?,
+    @Column(nullable = true)
+    val birth: Date?,
 ) : CommonEntity() {
     companion object {
         const val USER_ENTITY_NAME = "user"
