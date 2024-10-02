@@ -10,6 +10,8 @@ data class LoginCommand(
     val email: String,
     @field:ValueOfEnum(enumClass = LoginType::class, message = "E_400_000")
     val loginType: String,
+    val gender: String?,
+    val birth: String?,
 ) : SelfValidating<LoginCommand>() {
     init {
         this.validateSelf()

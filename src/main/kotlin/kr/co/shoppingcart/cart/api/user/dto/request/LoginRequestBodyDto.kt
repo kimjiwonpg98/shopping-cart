@@ -8,4 +8,6 @@ data class LoginRequestBodyDto(
     val email: String,
     @field:NotNull
     val loginType: String,
+    val gender: String?,
+    val birth: String?,
 )

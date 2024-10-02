@@ -10,5 +10,10 @@ class CreateUserUseCase(
     private val userRepository: UserRepository,
 ) {
     fun createUser(loginCommand: LoginCommand): User =
-        userRepository.create(loginCommand.email, LoginType.valueOf(loginCommand.loginType))
+        userRepository.create(
+            loginCommand.email,
+            LoginType.valueOf(loginCommand.loginType),
+            loginCommand.gender,
+            loginCommand.birth,
+        )
 }

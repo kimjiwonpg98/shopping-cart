@@ -16,12 +16,16 @@ class UserRepositoryAdapter(
     override fun create(
         email: String,
         loginType: LoginType,
+        gender: String?,
+        birth: String?,
     ): User =
         userEntityRepository
             .save(
                 UserEntity(
                     email = email,
                     loginType = loginType.name,
+                    gender = gender,
+                    birth = birth,
                 ),
             ).let(UserEntityMapper::toDomain)
 

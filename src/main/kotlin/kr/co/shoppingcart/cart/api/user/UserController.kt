@@ -29,6 +29,8 @@ class UserController(
             LoginCommand(
                 user.email,
                 user.loginType,
+                user.gender,
+                user.birth,
             )
 
         val userInfo = getUserUseCase.getByEmailAndLoginType(loginCommand)
@@ -51,6 +53,8 @@ class UserController(
             LoginCommand(
                 user.email,
                 user.loginType,
+                user.gender,
+                user.birth,
             )
         createUserUseCase.createUser(loginCommand)
         return ResponseEntity.status(HttpStatus.CREATED).build()

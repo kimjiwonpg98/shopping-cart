@@ -13,7 +13,7 @@ class UserTest {
         // given 테스트 변수로 생략
 
         // when
-        val user: User = User.toDomain(email, loginType, userId)
+        val user: User = User.toDomain(email, loginType, userId, gender, birth)
 
         // then
         assertEquals(user.userId.id, userId)
@@ -27,7 +27,7 @@ class UserTest {
         // given 테스트 변수로 생략
 
         // when
-        val user: User = User.toDomain(email, loginType, userId)
+        val user: User = User.toDomain(email, loginType, userId, gender, birth)
 
         // then
         assertEquals(user.loginType.loginType, LoginType.valueOf(loginType))
@@ -38,5 +38,7 @@ class UserTest {
         private val email = "test@test.com"
         private val loginType = "KAKAO"
         private val userId = 1L
+        private val gender = "F"
+        private val birth = "1990"
     }
 }

@@ -7,6 +7,8 @@ interface UserRepository {
     fun create(
         email: String,
         loginType: LoginType = LoginType.KAKAO,
+        gender: String?,
+        birth: String?,
     ): User
 
     fun getByEmailAndLoginType(
