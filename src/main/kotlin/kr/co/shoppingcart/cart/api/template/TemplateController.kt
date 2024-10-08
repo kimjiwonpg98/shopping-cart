@@ -151,13 +151,18 @@ class TemplateController(
             GetTemplateResponseBodyDto(
                 result =
                     templates.map { template ->
-                        val basketNames =
-                            basketUseCase
-                                .getByTemplateIdAndSizeOrderByUpdatedDesc(
-                                    templateId = template.id.id,
-                                    size =
-                                        params?.previewCount?.toInt() ?: 3,
-                                ).map { it.name.name }
+                        if (template.checkedCount.count != 0L && template.unCheckedCount.count != 0L) {
+                            val basketNames =
+                                basketUseCase
+                                    .getByTemplateIdAndSizeOrderByUpdatedDesc(
+                                        templateId = template.id.id,
+                                        size =
+                                            params?.previewCount?.toIntOrNull() ?: 3,
+                                    ).map { it.name.name }
+                            TemplateResponseMapper.toResponseWithPercent(template, basketNames)
+                        }
+                        val basketNames = emptyList<String>()
+
                         TemplateResponseMapper.toResponseWithPercent(template, basketNames)
                     },
             ),

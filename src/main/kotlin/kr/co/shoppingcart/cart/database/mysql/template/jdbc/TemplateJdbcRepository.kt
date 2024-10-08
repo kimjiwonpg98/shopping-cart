@@ -14,7 +14,7 @@ class TemplateJdbcRepository(
         page: Long,
         size: Long,
     ): List<TemplateWithCheckedCountDto> {
-        val firstLimit = page * size
+        val firstLimit = (page - 1) * size
         val sql =
             """
             SELECT
@@ -27,7 +27,7 @@ class TemplateJdbcRepository(
                 t.created_at AS createdAt,
                 t.updated_at AS updatedAt
             FROM template AS t
-            INNER JOIN basket AS b ON t.id = b.template_id
+            LEFT JOIN basket AS b ON t.id = b.template_id
             WHERE t.user_id = ?
             GROUP BY t.id
             ORDER BY t.id DESC
