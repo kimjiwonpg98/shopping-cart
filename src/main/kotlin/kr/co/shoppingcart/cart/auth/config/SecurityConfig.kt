@@ -37,6 +37,7 @@ class SecurityConfig(
                 requests.requestMatchers(HttpMethod.POST, "/v1").hasAnyRole(TokenInformationEnum.USER.name)
                 requests.requestMatchers(HttpMethod.DELETE, "/v1").hasAnyRole(TokenInformationEnum.USER.name)
                 requests.requestMatchers(HttpMethod.PATCH, "/v1").hasAnyRole(TokenInformationEnum.USER.name)
+                requests.anyRequest().permitAll()
             }.oauth2Login { oauth2Configurer ->
                 oauth2Configurer
 //                    .loginPage("http://localhost:3000/login") // 메인 페이지로 redirect
