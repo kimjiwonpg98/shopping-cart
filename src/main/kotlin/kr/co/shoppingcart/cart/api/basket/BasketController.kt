@@ -82,17 +82,14 @@ class BasketController(
                 GetBasketsByTemplateIdCommand(
                     params.templateId.toLong(),
                     currentUser.identificationValue.toLong(),
-                    params.page?.toLong() ?: 0,
+                    params.page?.toLong()?.minus(1) ?: 0,
                     params.size?.toLong() ?: 10,
                 ),
             )
 
-        val (checkedItems, nonCheckedItems) = result.partition { it.checked.checked }
-
         return ResponseEntity.status(200).body(
             GetByTemplateIdResDto(
-                checked = checkedItems.map(BasketResponseMapper::toDomain),
-                nonChecked = nonCheckedItems.map(BasketResponseMapper::toDomain),
+                result = result.map(BasketResponseMapper::toDomain),
             ),
         )
     }
