@@ -4,6 +4,7 @@ import jakarta.validation.Valid
 import kr.co.shoppingcart.cart.api.template.dto.request.CreateTemplateRequestBodyDto
 import kr.co.shoppingcart.cart.api.template.dto.request.GetWIthPercentRequestParamsDto
 import kr.co.shoppingcart.cart.api.template.dto.request.UpdateTemplateSharedRequestParamsDto
+import kr.co.shoppingcart.cart.api.template.dto.response.CreateTemplateResponseBodyDto
 import kr.co.shoppingcart.cart.api.template.dto.response.GetTemplateByIdResponseBodyDto
 import kr.co.shoppingcart.cart.api.template.dto.response.GetTemplateResponseBodyDto
 import kr.co.shoppingcart.cart.auth.JwtPayload
@@ -39,14 +40,18 @@ class TemplateController(
     fun save(
         @Valid @RequestBody body: CreateTemplateRequestBodyDto,
         @CurrentUser currentUser: JwtPayload,
-    ): ResponseEntity<Unit> {
-        val cart =
+    ): ResponseEntity<CreateTemplateResponseBodyDto> {
+        val template =
             CreateTemplateCommand(
                 name = body.name,
                 userId = currentUser.identificationValue.toLong(),
             )
-        templateUseCase.createByApi(cart)
-        return ResponseEntity.status(201).build()
+        val result = templateUseCase.createByApi(template)
+        return ResponseEntity.status(201).body(
+            CreateTemplateResponseBodyDto(
+                result = result.let(TemplateResponseMapper::toResponse),
+            ),
+        )
     }
 
     @OpenApiSpecApiException([ExceptionCode.E_401_000, ExceptionCode.E_403_000])

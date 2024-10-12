@@ -19,7 +19,7 @@ class BasketUseCase(
     private val templateRepository: TemplateRepository,
     private val permissionsRepository: PermissionsRepository,
 ) {
-    fun create(createBasketCommand: CreateBasketCommand) {
+    fun create(createBasketCommand: CreateBasketCommand): Basket {
         val category =
             categoryRepository.getById(createBasketCommand.categoryId)
                 ?: throw CustomException.responseBody(ExceptionCode.E_400_000)
@@ -37,7 +37,7 @@ class BasketUseCase(
             throw CustomException.responseBody(ExceptionCode.E_403_000)
         }
 
-        basketRepository.save(
+        return basketRepository.save(
             Basket.toDomain(
                 name = createBasketCommand.name,
                 checked = createBasketCommand.checked ?: false,

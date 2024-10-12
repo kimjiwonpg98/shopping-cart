@@ -9,7 +9,7 @@ interface BasketRepository {
         basket: Basket,
         template: Template,
         category: Category,
-    ): Unit
+    ): Basket
 
     fun getByTemplateId(templateId: Long): List<Basket>
 

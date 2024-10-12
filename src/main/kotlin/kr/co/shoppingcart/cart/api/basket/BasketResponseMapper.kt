@@ -5,7 +5,7 @@ import kr.co.shoppingcart.cart.api.category.response.CategoryResponse
 import kr.co.shoppingcart.cart.domain.basket.vo.Basket
 
 object BasketResponseMapper {
-    fun toDomain(basket: Basket): BasketResponse =
+    fun toResponse(basket: Basket): BasketResponse =
         BasketResponse(
             name = basket.name.name,
             count = basket.count.count,

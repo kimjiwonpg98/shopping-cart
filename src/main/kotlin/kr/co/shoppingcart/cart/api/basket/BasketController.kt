@@ -3,6 +3,7 @@ package kr.co.shoppingcart.cart.api.basket
 import kr.co.shoppingcart.cart.api.basket.dto.request.CheckedBasketReqBodyDto
 import kr.co.shoppingcart.cart.api.basket.dto.request.CreateBasketReqBodyDto
 import kr.co.shoppingcart.cart.api.basket.dto.request.GetByTemplateIdReqDto
+import kr.co.shoppingcart.cart.api.basket.dto.response.CreateBasketResDto
 import kr.co.shoppingcart.cart.api.basket.dto.response.GetByTemplateIdResDto
 import kr.co.shoppingcart.cart.auth.JwtPayload
 import kr.co.shoppingcart.cart.auth.annotation.CurrentUser
@@ -33,7 +34,7 @@ class BasketController(
     fun save(
         @RequestBody body: CreateBasketReqBodyDto,
         @CurrentUser currentUser: JwtPayload,
-    ): ResponseEntity<Unit> {
+    ): ResponseEntity<CreateBasketResDto> {
         val basket =
             CreateBasketCommand(
                 templatedId = body.templateId,
@@ -42,8 +43,14 @@ class BasketController(
                 count = body.count,
                 userId = currentUser.identificationValue.toLong(),
             )
-        basketUseCase.create(basket)
-        return ResponseEntity.status(201).build()
+        val result = basketUseCase.create(basket)
+        return ResponseEntity
+            .status(201)
+            .body(
+                CreateBasketResDto(
+                    result = result.let(BasketResponseMapper::toResponse),
+                ),
+            )
     }
 
     @OpenApiSpecApiException(
@@ -89,7 +96,7 @@ class BasketController(
 
         return ResponseEntity.status(200).body(
             GetByTemplateIdResDto(
-                result = result.map(BasketResponseMapper::toDomain),
+                result = result.map(BasketResponseMapper::toResponse),
             ),
         )
     }

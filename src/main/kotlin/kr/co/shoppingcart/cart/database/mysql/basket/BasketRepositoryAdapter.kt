@@ -24,7 +24,7 @@ class BasketRepositoryAdapter(
         basket: Basket,
         template: Template,
         category: Category,
-    ) {
+    ): Basket {
         val categoryEntity =
             CategoryEntity(
                 id = category.id.id,
@@ -37,16 +37,17 @@ class BasketRepositoryAdapter(
                 userId = template.userId.userId,
             )
 
-        basketEntityRepository.save(
-            BasketEntity(
-                content = basket.name.name,
-                count = basket.count.count,
-                checked = basket.checked.checked,
-                isPinned = false,
-                template = templateEntity,
-                category = categoryEntity,
-            ),
-        )
+        return basketEntityRepository
+            .save(
+                BasketEntity(
+                    content = basket.name.name,
+                    count = basket.count.count,
+                    checked = basket.checked.checked,
+                    isPinned = false,
+                    template = templateEntity,
+                    category = categoryEntity,
+                ),
+            ).let(BasketEntityMapper::toDomain)
     }
 
     override fun getByTemplateId(templateId: Long): List<Basket> =
