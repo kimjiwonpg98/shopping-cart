@@ -11,8 +11,7 @@ class MockBasketRepository : BasketRepository {
         basket: Basket,
         template: Template,
         category: Category,
-    ) {
-    }
+    ): Basket = MockBasket.getBasket(1)
 
     override fun getByTemplateId(templateId: Long): List<Basket> = MockBasket.getBaskets()
 
