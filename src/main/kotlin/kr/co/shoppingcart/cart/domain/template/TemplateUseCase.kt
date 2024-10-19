@@ -25,10 +25,18 @@ class TemplateUseCase(
     private val basketRepository: BasketRepository,
     private val permissionsRepository: PermissionsRepository,
 ) {
+    @Transactional
     fun createByApi(createTemplateCommand: CreateTemplateCommand): Template =
         this.create(createTemplateCommand.name, createTemplateCommand.userId)
 
-    fun getByIdAndUserId(getTemplateByIdAndUserIdCommand: GetTemplateByIdAndUserIdCommand) =
+    @Transactional(readOnly = true)
+    fun getByIdAndUserIdToRead(getTemplateByIdAndUserIdCommand: GetTemplateByIdAndUserIdCommand) =
+        templateRepository.getByIdAndUserId(
+            getTemplateByIdAndUserIdCommand.id,
+            getTemplateByIdAndUserIdCommand.userId,
+        ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+
+    fun getTemplateByIdAndUserIdOrFail(getTemplateByIdAndUserIdCommand: GetTemplateByIdAndUserIdCommand): Template =
         templateRepository.getByIdAndUserId(
             getTemplateByIdAndUserIdCommand.id,
             getTemplateByIdAndUserIdCommand.userId,
@@ -52,10 +60,12 @@ class TemplateUseCase(
     @Transactional
     fun copyOwnTemplateInComplete(copyTemplateInCompleteCommand: CopyTemplateInCompleteCommand) {
         val template =
-            templateRepository.getByIdAndUserId(
-                copyTemplateInCompleteCommand.id,
-                copyTemplateInCompleteCommand.userId,
-            ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+            this.getTemplateByIdAndUserIdOrFail(
+                GetTemplateByIdAndUserIdCommand(
+                    copyTemplateInCompleteCommand.id,
+                    copyTemplateInCompleteCommand.userId,
+                ),
+            )
 
         val newTemplate = this.create(name = template.name.name, userId = template.userId.userId)
 
@@ -70,10 +80,12 @@ class TemplateUseCase(
     @Transactional
     fun copyOwnTemplate(copyOwnTemplateCommand: CopyOwnTemplateCommand) {
         val template =
-            templateRepository.getByIdAndUserId(
-                copyOwnTemplateCommand.id,
-                copyOwnTemplateCommand.userId,
-            ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+            this.getTemplateByIdAndUserIdOrFail(
+                GetTemplateByIdAndUserIdCommand(
+                    copyOwnTemplateCommand.id,
+                    copyOwnTemplateCommand.userId,
+                ),
+            )
 
         val newTemplate = this.create(name = template.name.name, userId = template.userId.userId)
 
@@ -132,6 +144,7 @@ class TemplateUseCase(
         templateRepository.deleteById(deleteByTemplateIdCommand.templateId)
     }
 
+    @Transactional(propagation = Propagation.MANDATORY)
     fun create(
         name: String,
         userId: Long,

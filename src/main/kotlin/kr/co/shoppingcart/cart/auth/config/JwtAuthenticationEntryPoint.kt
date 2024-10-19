@@ -2,6 +2,7 @@ package kr.co.shoppingcart.cart.auth.config
 
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import kr.co.shoppingcart.cart.common.error.GlobalExceptionHandlerAdvice
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.web.AuthenticationEntryPoint
@@ -18,6 +19,6 @@ class JwtAuthenticationEntryPoint(
         response: HttpServletResponse?,
         authException: AuthenticationException?,
     ) {
-        resolver.resolveException(request!!, response!!, null, authException!!)
+        resolver.resolveException(request!!, response!!, GlobalExceptionHandlerAdvice, authException!!)
     }
 }

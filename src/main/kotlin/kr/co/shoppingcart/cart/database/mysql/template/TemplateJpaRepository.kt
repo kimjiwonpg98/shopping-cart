@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository
 interface TemplateJpaRepository : TemplateEntityRepository<TemplateEntity, Long> {
     override fun save(templateEntity: TemplateEntity): TemplateEntity
 
-    override fun getById(id: Long): TemplateEntity?
+    override fun findById(id: Long): TemplateEntity?
 
     override fun getByIdAndUserId(
         id: Long,

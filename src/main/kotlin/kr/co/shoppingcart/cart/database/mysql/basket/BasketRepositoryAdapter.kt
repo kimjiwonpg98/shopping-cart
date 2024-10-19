@@ -13,7 +13,6 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 
 @Component
 class BasketRepositoryAdapter(
@@ -84,7 +83,6 @@ class BasketRepositoryAdapter(
                 PageRequest.of(0, size),
             ).map(BasketEntityMapper::toDomain)
 
-    @Transactional
     override fun updateCheckedById(
         basketId: Long,
         checked: Boolean,
@@ -93,7 +91,6 @@ class BasketRepositoryAdapter(
         basket!!.checked = checked
     }
 
-    @Transactional
     override fun bulkSave(basket: List<Basket>) {
         basketJdbcRepository.bulkInsert(
             basket.map {

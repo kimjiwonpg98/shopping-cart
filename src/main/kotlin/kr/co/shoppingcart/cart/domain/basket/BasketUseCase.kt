@@ -11,6 +11,7 @@ import kr.co.shoppingcart.cart.domain.permissions.PermissionsRepository
 import kr.co.shoppingcart.cart.domain.template.TemplateRepository
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class BasketUseCase(
@@ -19,6 +20,7 @@ class BasketUseCase(
     private val templateRepository: TemplateRepository,
     private val permissionsRepository: PermissionsRepository,
 ) {
+    @Transactional
     fun create(createBasketCommand: CreateBasketCommand): Basket {
         val category =
             categoryRepository.getById(createBasketCommand.categoryId)
@@ -54,6 +56,7 @@ class BasketUseCase(
         )
     }
 
+    @Transactional
     fun updateIsAddedByFlagAndId(updateBasketFlagCommand: UpdateBasketFlagCommand) {
         val basket =
             basketRepository.getById(updateBasketFlagCommand.basketId)

@@ -14,7 +14,6 @@ import org.springframework.security.config.annotation.web.configurers.CsrfConfig
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer
 import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer
 import org.springframework.security.config.http.SessionCreationPolicy
-import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 
@@ -22,7 +21,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @EnableWebSecurity
 class SecurityConfig(
     private val jwtFilter: JwtFilter,
-    private val entryPoint: AuthenticationEntryPoint,
+    private val entryPoint: JwtAuthenticationEntryPoint,
     private val oauth2Service: Oauth2Service,
 ) {
     @Bean

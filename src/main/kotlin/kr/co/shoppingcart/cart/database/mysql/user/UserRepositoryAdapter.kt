@@ -6,13 +6,11 @@ import kr.co.shoppingcart.cart.domain.user.UserRepository
 import kr.co.shoppingcart.cart.domain.user.enums.LoginType
 import kr.co.shoppingcart.cart.domain.user.vo.User
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 
 @Component
 class UserRepositoryAdapter(
     private val userEntityRepository: UserEntityRepository<UserEntity, Long>,
 ) : UserRepository {
-    @Transactional(readOnly = false)
     override fun create(
         email: String,
         loginType: LoginType,
@@ -29,7 +27,6 @@ class UserRepositoryAdapter(
                 ),
             ).let(UserEntityMapper::toDomain)
 
-    @Transactional(readOnly = true)
     override fun getByEmailAndLoginType(
         email: String,
         loginType: LoginType,

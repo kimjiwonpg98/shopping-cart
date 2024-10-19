@@ -3,6 +3,7 @@ package kr.co.shoppingcart.cart.common.error
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.MalformedJwtException
 import io.jsonwebtoken.security.SignatureException
+import jakarta.persistence.EntityNotFoundException
 import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
 import kr.co.shoppingcart.cart.common.error.model.ExceptionResponseBody
 import kr.co.shoppingcart.cart.common.error.translators.ExceptionCodeTranslator
@@ -48,10 +49,24 @@ class GlobalExceptionHandlerAdvice(
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorBody)
     }
 
-    @ExceptionHandler(ExpiredJwtException::class)
-    fun handleExpiredJwtException(): ResponseEntity<ExceptionResponseBody> {
+    @ExceptionHandler(value = [ExpiredJwtException::class])
+    fun handleExpiredJwtException(error: ExpiredJwtException): ResponseEntity<ExceptionResponseBody> {
         val errorBody = translator.translate(ExceptionCode.E_403_000)
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorBody)
+    }
+
+    @ExceptionHandler(value = [EntityNotFoundException::class])
+    fun handleEntityNotFoundException(error: EntityNotFoundException): ResponseEntity<ExceptionResponseBody> {
+        logger.error { "[Unintended] Error - message: ${error.message} cause: ${error.cause}" }
+        val errorBody = translator.translate(ExceptionCode.E_404_000)
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorBody)
+    }
+
+    @ExceptionHandler(value = [RuntimeException::class])
+    fun handleRuntimeException(error: RuntimeException): ResponseEntity<ExceptionResponseBody> {
+        logger.error { "[Unintended] Error - message: ${error.message} cause: ${error.cause}" }
+        val errorBody = translator.translate(ExceptionCode.E_400_000)
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorBody)
     }
 
     // 의도하지 않은 에러

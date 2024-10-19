@@ -65,7 +65,7 @@ class TemplateController(
                 id,
                 currentUser.identificationValue.toLong(),
             )
-        val template = templateUseCase.getByIdAndUserId(command)
+        val template = templateUseCase.getByIdAndUserIdToRead(command)
 
         return ResponseEntity.status(200).body(
             GetTemplateByIdResponseBodyDto(

@@ -5,8 +5,6 @@ import kr.co.shoppingcart.cart.database.mysql.permissions.mapper.PermissionsEnti
 import kr.co.shoppingcart.cart.domain.permissions.PermissionsRepository
 import kr.co.shoppingcart.cart.domain.permissions.vo.Permissions
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Propagation
-import org.springframework.transaction.annotation.Transactional
 
 @Component
 class PermissionsRepositoryAdapter(
@@ -22,14 +20,12 @@ class PermissionsRepositoryAdapter(
                 templateId,
             )?.let(PermissionsEntityMapper::toDomain)
 
-    @Transactional
     override fun create(permission: Permissions) =
         permissionsEntityRepository
             .save(
                 permission.let(PermissionsEntityMapper::toEntity),
             ).let(PermissionsEntityMapper::toDomain)
 
-    @Transactional(propagation = Propagation.MANDATORY)
     override fun createOwnerPermission(
         userId: Long,
         templateId: Long,
@@ -45,7 +41,6 @@ class PermissionsRepositoryAdapter(
                 ),
             ).let(PermissionsEntityMapper::toDomain)
 
-    @Transactional(propagation = Propagation.MANDATORY)
     override fun createWriterPermission(
         userId: Long,
         templateId: Long,

@@ -8,7 +8,7 @@ import org.springframework.data.repository.Repository
 interface TemplateEntityRepository<T, ID> : Repository<T, ID> {
     fun save(templateEntity: TemplateEntity): TemplateEntity
 
-    fun getById(id: Long): TemplateEntity?
+    fun findById(id: Long): TemplateEntity?
 
     fun getByIdAndUserId(
         id: Long,
