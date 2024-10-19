@@ -86,9 +86,10 @@ class BasketRepositoryAdapter(
     override fun updateCheckedById(
         basketId: Long,
         checked: Boolean,
-    ) {
+    ): Basket {
         val basket = basketEntityRepository.getById(basketId)
         basket!!.checked = checked
+        return basket.let(BasketEntityMapper::toDomain)
     }
 
     override fun bulkSave(basket: List<Basket>) {

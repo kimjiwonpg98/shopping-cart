@@ -16,5 +16,5 @@ object MockPermissions {
     fun getOptionalPermission(
         i: Long,
         flag: Boolean,
-    ): Permissions? = if (!flag) getPermissionWriter(i, true) else null
+    ): Permissions? = if (flag) getPermissionWriter(i, true) else null
 }

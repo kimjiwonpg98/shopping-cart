@@ -57,7 +57,7 @@ class BasketUseCase(
     }
 
     @Transactional
-    fun updateIsAddedByFlagAndId(updateBasketFlagCommand: UpdateBasketFlagCommand) {
+    fun updateIsAddedByFlagAndId(updateBasketFlagCommand: UpdateBasketFlagCommand): Basket {
         val basket =
             basketRepository.getById(updateBasketFlagCommand.basketId)
                 ?: throw CustomException.responseBody(ExceptionCode.E_404_002)
@@ -76,7 +76,7 @@ class BasketUseCase(
             throw CustomException.responseBody(ExceptionCode.E_403_000)
         }
 
-        this.basketRepository.updateCheckedById(
+        return this.basketRepository.updateCheckedById(
             updateBasketFlagCommand.basketId,
             updateBasketFlagCommand.checked,
         )

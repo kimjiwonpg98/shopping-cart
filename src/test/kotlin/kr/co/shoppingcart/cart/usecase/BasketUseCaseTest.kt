@@ -5,11 +5,13 @@ import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
 import kr.co.shoppingcart.cart.domain.basket.BasketUseCase
 import kr.co.shoppingcart.cart.domain.basket.command.CreateBasketCommand
 import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketFlagCommand
+import kr.co.shoppingcart.cart.domain.basket.vo.Basket
 import kr.co.shoppingcart.cart.mock.MockBasketRepository
 import kr.co.shoppingcart.cart.mock.MockCategoryRepository
 import kr.co.shoppingcart.cart.mock.MockPermissionsRepository
 import kr.co.shoppingcart.cart.mock.MockTemplateRepository
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertInstanceOf
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -62,7 +64,7 @@ class BasketUseCaseTest {
         }
 
         @Test
-        fun `정상적으로 저장될 시 반환값은 없다`() {
+        fun `정상적으로 저장될 시 반환값은 Basket 객체를 반환한다`() {
             val result =
                 basketUseCase.create(
                     CreateBasketCommand(
@@ -73,7 +75,7 @@ class BasketUseCaseTest {
                     ),
                 )
 
-            assertEquals(result, Unit)
+            assertInstanceOf(Basket::class.java, result)
         }
     }
 
@@ -113,7 +115,7 @@ class BasketUseCaseTest {
         }
 
         @Test
-        fun `정상적으로 저장될 시 반환값은 없다`() {
+        fun `정상적으로 저장될 시 반환값은 Basket 객체를 반환한다`() {
             val result =
                 basketUseCase.updateIsAddedByFlagAndId(
                     UpdateBasketFlagCommand(
@@ -123,7 +125,7 @@ class BasketUseCaseTest {
                     ),
                 )
 
-            assertEquals(result, Unit)
+            assertInstanceOf(Basket::class.java, result)
         }
     }
 }

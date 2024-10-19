@@ -29,7 +29,7 @@ interface BasketRepository {
     fun updateCheckedById(
         basketId: Long,
         checked: Boolean,
-    ): Unit
+    ): Basket
 
     fun bulkSave(basket: List<Basket>)
 }
