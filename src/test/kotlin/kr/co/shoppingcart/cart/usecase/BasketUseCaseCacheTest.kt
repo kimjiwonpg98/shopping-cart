@@ -24,18 +24,18 @@ class BasketUseCaseCacheTest(
 
     @Test
     fun `캐시가 존재하면 캐시를 조회`() {
-        val first = basketUseCase.getByTemplateIdAndSizeOrderByUpdatedDesc(templateId = testTemplateId, size = size)
+        basketUseCase.getByTemplateIdAndSizeOrderByUpdatedDesc(templateId = testTemplateId, size = size)
         val second = basketUseCase.getByTemplateIdAndSizeOrderByUpdatedDesc(templateId = testTemplateId, size = size)
         val cache = getCacheTemplateId(testTemplateId)
         assertEquals(second, cache)
     }
 
-//    @Test
-//    fun `캐시가 존재하지 않으면 캐시해서 가져오지 않는다`() {
-//        basketUseCase.getByTemplateIdAndSizeOrderByUpdatedDesc(templateId = testTemplateId, size = size)
-//        val cache = getCacheTemplateId(testTemplateId)
-//        assertNull(cache)
-//    }
+    @Test
+    fun `캐시가 존재하지 않으면 캐시해서 가져오지 않는다`() {
+        basketUseCase.getByTemplateIdAndSizeOrderByUpdatedDesc(templateId = testTemplateId, size = size)
+        val cache = getCacheTemplateId(testTemplateId)
+        assertEquals(emptyList<Basket>(), cache)
+    }
 
     private fun getCacheTemplateId(templateId: Long): List<Basket> =
         cacheManager.getCache(CacheType.TEMPLATE_CACHE.cacheName)?.get(templateId).let { cachedValue ->
