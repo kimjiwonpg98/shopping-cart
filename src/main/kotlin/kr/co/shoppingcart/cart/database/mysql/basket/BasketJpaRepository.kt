@@ -20,5 +20,5 @@ interface BasketJpaRepository : BasketEntityRepository<BasketEntity, Long> {
         pageable: Pageable,
     ): List<BasketEntity>
 
-    override fun getById(id: Long): BasketEntity?
+    override fun findById(id: Long): BasketEntity?
 }

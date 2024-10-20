@@ -11,8 +11,8 @@ object MockTemplate {
             "test",
             1L,
             true,
-            ZonedDateTime.now(),
-            ZonedDateTime.now(),
+            null,
+            null,
         )
 
     fun getOptionalTemplate(

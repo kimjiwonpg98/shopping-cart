@@ -71,7 +71,7 @@ class BasketRepositoryAdapter(
     }
 
     override fun getById(basketId: Long): Basket? =
-        basketEntityRepository.getById(basketId)?.let(BasketEntityMapper::toDomain)
+        basketEntityRepository.findById(basketId)?.let(BasketEntityMapper::toDomain)
 
     override fun getByTemplateIdAndSizeOrderByUpdatedDesc(
         templateId: Long,
@@ -87,7 +87,7 @@ class BasketRepositoryAdapter(
         basketId: Long,
         checked: Boolean,
     ): Basket {
-        val basket = basketEntityRepository.getById(basketId)
+        val basket = basketEntityRepository.findById(basketId)
         basket!!.checked = checked
         return basket.let(BasketEntityMapper::toDomain)
     }

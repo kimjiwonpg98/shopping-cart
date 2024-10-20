@@ -26,5 +26,5 @@ interface BasketEntityRepository<T, ID> : Repository<T, ID> {
         categoryId: Long,
     ): List<BasketEntity>
 
-    fun getById(id: Long): BasketEntity?
+    fun findById(id: Long): BasketEntity?
 }

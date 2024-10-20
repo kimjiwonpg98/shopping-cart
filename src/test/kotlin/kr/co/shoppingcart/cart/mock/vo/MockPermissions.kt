@@ -11,10 +11,12 @@ object MockPermissions {
     fun getPermissionWriter(
         i: Long,
         flag: Boolean,
-    ): Permissions = if (!flag) getPermission(i, 0) else getPermission(i, 2)
+    ): Permissions = if (!flag) getPermission(i, 0) else getPermission(i, 1)
 
     fun getOptionalPermission(
         i: Long,
         flag: Boolean,
     ): Permissions? = if (flag) getPermissionWriter(i, true) else null
+
+    fun getPermissionReader(i: Long): Permissions = Permissions.toDomain(i, i, 3)
 }

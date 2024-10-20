@@ -1,5 +1,6 @@
 package kr.co.shoppingcart.cart.mock.vo
 
+import kr.co.shoppingcart.cart.domain.basket.command.CreateBasketCommand
 import kr.co.shoppingcart.cart.domain.basket.vo.Basket
 import kr.co.shoppingcart.cart.domain.basket.vo.BasketCategoryId
 import kr.co.shoppingcart.cart.domain.basket.vo.BasketChecked
@@ -46,4 +47,21 @@ object MockBasket {
         i: Long,
         flag: Boolean,
     ): Basket? = if (!flag) getBasket(i) else null
+
+    fun getBasketByCreate(createBasketCommand: CreateBasketCommand): Basket =
+        Basket(
+            name = BasketName("test"),
+            categoryId = null,
+            category =
+                Category.toDomain(
+                    createBasketCommand.categoryId,
+                    "test",
+                ),
+            count = BasketCount(createBasketCommand.count ?: 1),
+            checked = BasketChecked(false),
+            template = Template.toDomain(createBasketCommand.templatedId, "test", 1L, true, null, null),
+            createTime = null,
+            updateTime = null,
+            templateId = null,
+        )
 }

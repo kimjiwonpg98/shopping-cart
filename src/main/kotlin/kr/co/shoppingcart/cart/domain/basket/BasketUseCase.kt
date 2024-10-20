@@ -62,10 +62,6 @@ class BasketUseCase(
             basketRepository.getById(updateBasketFlagCommand.basketId)
                 ?: throw CustomException.responseBody(ExceptionCode.E_404_002)
 
-        if (!basket.validatedByUserId(updateBasketFlagCommand.userId)) {
-            throw CustomException.responseBody(ExceptionCode.E_403_000)
-        }
-
         val permission =
             permissionsRepository.getByUserIdAndTemplateId(
                 updateBasketFlagCommand.userId,
