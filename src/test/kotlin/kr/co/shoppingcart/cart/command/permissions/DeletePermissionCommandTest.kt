@@ -33,7 +33,7 @@ class DeletePermissionCommandTest {
             assertThrows<CustomException> {
                 DeletePermissionCommand(
                     userId = 1L,
-                    templateId = 1L,
+                    templateId = 0L,
                 )
             }
 
@@ -46,7 +46,7 @@ class DeletePermissionCommandTest {
         val exception =
             assertThrows<CustomException> {
                 DeletePermissionCommand(
-                    userId = 1L,
+                    userId = 0L,
                     templateId = 1L,
                 )
             }

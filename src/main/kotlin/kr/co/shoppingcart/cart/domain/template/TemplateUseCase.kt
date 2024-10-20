@@ -31,10 +31,7 @@ class TemplateUseCase(
 
     @Transactional(readOnly = true)
     fun getByIdAndUserIdToRead(getTemplateByIdAndUserIdCommand: GetTemplateByIdAndUserIdCommand) =
-        templateRepository.getByIdAndUserId(
-            getTemplateByIdAndUserIdCommand.id,
-            getTemplateByIdAndUserIdCommand.userId,
-        ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+        getTemplateByIdAndUserIdOrFail(getTemplateByIdAndUserIdCommand)
 
     fun getTemplateByIdAndUserIdOrFail(getTemplateByIdAndUserIdCommand: GetTemplateByIdAndUserIdCommand): Template =
         templateRepository.getByIdAndUserId(
@@ -58,7 +55,7 @@ class TemplateUseCase(
     }
 
     @Transactional
-    fun copyOwnTemplateInComplete(copyTemplateInCompleteCommand: CopyTemplateInCompleteCommand) {
+    fun copyOwnTemplateInComplete(copyTemplateInCompleteCommand: CopyTemplateInCompleteCommand): Template {
         val template =
             this.getTemplateByIdAndUserIdOrFail(
                 GetTemplateByIdAndUserIdCommand(
@@ -70,11 +67,13 @@ class TemplateUseCase(
         val newTemplate = this.create(name = template.name.name, userId = template.userId.userId)
 
         val baskets = basketRepository.getByTemplateId(copyTemplateInCompleteCommand.id)
-        if (baskets.isEmpty()) return
+        if (baskets.isEmpty()) return newTemplate
 
         val (checkedItems, nonCheckedItems) = baskets.partition { it.checked.checked }
 
         this.createNewBasketsByTemplateId(nonCheckedItems, newTemplate.id.id)
+
+        return newTemplate
     }
 
     @Transactional

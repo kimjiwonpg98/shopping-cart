@@ -33,7 +33,7 @@ class GetPermissionByUserIdAndTemplateIdCommandTest {
             assertThrows<CustomException> {
                 GetPermissionByUserIdAndTemplateIdCommand(
                     userId = 1L,
-                    templateId = 1L,
+                    templateId = 0L,
                 )
             }
 
@@ -46,7 +46,7 @@ class GetPermissionByUserIdAndTemplateIdCommandTest {
         val exception =
             assertThrows<CustomException> {
                 GetPermissionByUserIdAndTemplateIdCommand(
-                    userId = 1L,
+                    userId = 0L,
                     templateId = 1L,
                 )
             }

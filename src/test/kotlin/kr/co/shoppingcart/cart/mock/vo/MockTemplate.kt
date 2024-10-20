@@ -1,5 +1,6 @@
 package kr.co.shoppingcart.cart.mock.vo
 
+import kr.co.shoppingcart.cart.domain.template.command.CreateTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.vo.Template
 import kr.co.shoppingcart.cart.domain.template.vo.TemplateWithCheckedCount
 import java.time.ZonedDateTime
@@ -47,4 +48,14 @@ object MockTemplate {
         }
         return templates
     }
+
+    fun getTemplateByCreate(createTemplateCommand: CreateTemplateCommand): Template =
+        Template.toDomain(
+            1,
+            createTemplateCommand.name,
+            createTemplateCommand.userId,
+            false,
+            null,
+            null,
+        )
 }

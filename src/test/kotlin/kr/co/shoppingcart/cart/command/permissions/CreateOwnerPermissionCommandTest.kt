@@ -33,7 +33,7 @@ class CreateOwnerPermissionCommandTest {
             assertThrows<CustomException> {
                 CreateOwnerPermissionCommand(
                     userId = 1L,
-                    templateId = 1L,
+                    templateId = 0L,
                 )
             }
 
@@ -46,7 +46,7 @@ class CreateOwnerPermissionCommandTest {
         val exception =
             assertThrows<CustomException> {
                 CreateOwnerPermissionCommand(
-                    userId = 1L,
+                    userId = 0L,
                     templateId = 1L,
                 )
             }

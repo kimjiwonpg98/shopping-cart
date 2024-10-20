@@ -33,7 +33,7 @@ class CreateWriterPermissionCommandTest {
             assertThrows<CustomException> {
                 CreateWriterPermissionCommand(
                     userId = 1L,
-                    templateId = 1L,
+                    templateId = 0L,
                 )
             }
 
@@ -46,7 +46,7 @@ class CreateWriterPermissionCommandTest {
         val exception =
             assertThrows<CustomException> {
                 CreateWriterPermissionCommand(
-                    userId = 1L,
+                    userId = 0L,
                     templateId = 1L,
                 )
             }
