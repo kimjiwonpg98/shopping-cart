@@ -11,15 +11,15 @@ class MockBasketRepository : BasketRepository {
         basket: Basket,
         template: Template,
         category: Category,
-    ): Basket = MockBasket.getBasket(1)
+    ): Basket = MockBasket.getBasket(1, true)
 
-    override fun getByTemplateId(templateId: Long): List<Basket> = MockBasket.getBaskets()
+    override fun getByTemplateId(templateId: Long): List<Basket> = MockBasket.getBasketsAllNonChecked()
 
     override fun getByTemplateIdWithPageNation(
         templateId: Long,
         page: Long,
         size: Long,
-    ): List<Basket> = MockBasket.getBaskets()
+    ): List<Basket> = MockBasket.getBasketsAllChecked()
 
     override fun getById(basketId: Long): Basket? =
         MockBasket.getOptionalBasket(
@@ -30,12 +30,12 @@ class MockBasketRepository : BasketRepository {
     override fun getByTemplateIdAndSizeOrderByUpdatedDesc(
         templateId: Long,
         size: Int,
-    ): List<Basket> = MockBasket.getBaskets()
+    ): List<Basket> = MockBasket.getBasketsAllChecked()
 
     override fun updateCheckedById(
         basketId: Long,
         checked: Boolean,
-    ): Basket = MockBasket.getBasket(1)
+    ): Basket = MockBasket.getBasket(1, true)
 
     override fun bulkSave(basket: List<Basket>) {
     }

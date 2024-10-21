@@ -23,7 +23,6 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.ArgumentMatchers.anyLong
 import org.mockito.BDDMockito.given
 import org.mockito.InjectMocks
@@ -179,7 +178,7 @@ class BasketUseCaseTest {
         @Test
         fun `권한이 없을 떄 에러 발생`() {
             `when`(basketRepository.getById(1)).thenReturn(
-                MockBasket.getBasket(1),
+                MockBasket.getBasket(1, true),
             )
 
             `when`(permissionsRepository.getByUserIdAndTemplateId(1L, 1)).thenReturn(
@@ -206,7 +205,7 @@ class BasketUseCaseTest {
         @Test
         fun `권한이 writer 미만일 떄 에러 발생`() {
             `when`(basketRepository.getById(1)).thenReturn(
-                MockBasket.getBasket(1),
+                MockBasket.getBasket(1, true),
             )
 
             `when`(permissionsRepository.getByUserIdAndTemplateId(1L, 1)).thenReturn(
@@ -233,15 +232,15 @@ class BasketUseCaseTest {
         @Test
         fun `정상적으로 저장될 시 반환값은 Basket 객체를 반환한다`() {
             `when`(basketRepository.getById(1)).thenReturn(
-                MockBasket.getBasket(1),
+                MockBasket.getBasket(1, false),
             )
 
             `when`(permissionsRepository.getByUserIdAndTemplateId(1L, 1)).thenReturn(
                 MockPermissions.getPermission(1, 0),
             )
 
-            `when`(basketRepository.updateCheckedById(anyLong(), anyBoolean())).thenReturn(
-                MockBasket.getBasket(anyLong()),
+            `when`(basketRepository.updateCheckedById(1, true)).thenReturn(
+                MockBasket.getBasket(1, true),
             )
 
             basketUseCase =

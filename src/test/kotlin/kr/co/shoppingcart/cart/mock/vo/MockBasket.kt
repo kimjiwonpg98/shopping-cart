@@ -18,7 +18,10 @@ object MockBasket {
      * user는 1로 고정
      * i로 basketId만 수정
      * */
-    fun getBasket(i: Long): Basket =
+    fun getBasket(
+        i: Long,
+        checked: Boolean,
+    ): Basket =
         Basket(
             name = BasketName("test"),
             categoryId = BasketCategoryId(i),
@@ -28,17 +31,25 @@ object MockBasket {
                     "test",
                 ),
             count = BasketCount(i),
-            checked = BasketChecked(true),
+            checked = BasketChecked(checked),
             template = Template.toDomain(i, "template", 1L, true, null, null),
             createTime = BasketCreatedAt(ZonedDateTime.now()),
             updateTime = BasketUpdatedAt(ZonedDateTime.now()),
             templateId = BasketTemplateId(i),
         )
 
-    fun getBaskets(): List<Basket> {
+    fun getBasketsAllChecked(): List<Basket> {
         val baskets = mutableListOf<Basket>()
         for (i in 1..10) {
-            baskets.add(getBasket(i.toLong()))
+            baskets.add(getBasket(i.toLong(), true))
+        }
+        return baskets
+    }
+
+    fun getBasketsAllNonChecked(): List<Basket> {
+        val baskets = mutableListOf<Basket>()
+        for (i in 1..10) {
+            baskets.add(getBasket(i.toLong(), false))
         }
         return baskets
     }
@@ -46,7 +57,7 @@ object MockBasket {
     fun getOptionalBasket(
         i: Long,
         flag: Boolean,
-    ): Basket? = if (!flag) getBasket(i) else null
+    ): Basket? = if (!flag) getBasket(i, true) else null
 
     fun getBasketByCreate(createBasketCommand: CreateBasketCommand): Basket =
         Basket(

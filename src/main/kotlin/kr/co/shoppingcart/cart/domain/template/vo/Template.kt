@@ -10,6 +10,8 @@ data class Template(
     val createdAt: TemplateCreatedAt?,
     val updatedAt: TemplateUpdatedAt?,
 ) {
+    fun isPublicTemplate(): Boolean = this.isPublic.isPublic
+
     companion object {
         fun toDomain(
             id: Long,

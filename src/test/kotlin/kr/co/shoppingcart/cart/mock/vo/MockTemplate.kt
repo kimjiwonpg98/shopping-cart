@@ -16,6 +16,19 @@ object MockTemplate {
             null,
         )
 
+    fun getTemplateByPublic(
+        i: Long,
+        isPublic: Boolean,
+    ): Template =
+        Template.toDomain(
+            i,
+            "test",
+            1L,
+            isPublic,
+            null,
+            null,
+        )
+
     fun getOptionalTemplate(
         i: Long,
         flag: Boolean,

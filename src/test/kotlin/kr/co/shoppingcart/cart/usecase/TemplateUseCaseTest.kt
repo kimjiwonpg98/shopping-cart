@@ -6,11 +6,14 @@ import kr.co.shoppingcart.cart.domain.basket.BasketRepository
 import kr.co.shoppingcart.cart.domain.permissions.PermissionsRepository
 import kr.co.shoppingcart.cart.domain.template.TemplateRepository
 import kr.co.shoppingcart.cart.domain.template.TemplateUseCase
+import kr.co.shoppingcart.cart.domain.template.command.CopyOwnTemplateCommand
+import kr.co.shoppingcart.cart.domain.template.command.CopyTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.CopyTemplateInCompleteCommand
 import kr.co.shoppingcart.cart.domain.template.command.CreateTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.GetTemplateByIdAndUserIdCommand
 import kr.co.shoppingcart.cart.domain.template.command.UpdateTemplateSharedByIdCommand
 import kr.co.shoppingcart.cart.domain.template.vo.Template
+import kr.co.shoppingcart.cart.mock.vo.MockBasket
 import kr.co.shoppingcart.cart.mock.vo.MockTemplate
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertInstanceOf
@@ -53,7 +56,7 @@ class TemplateUseCaseTest {
     @Nested
     @DisplayName("createByApi test")
     inner class CreateByApiTest {
-        var createTemplateCommand =
+        private var createTemplateCommand =
             CreateTemplateCommand(
                 name = "test",
                 userId = 1,
@@ -183,7 +186,7 @@ class TemplateUseCaseTest {
     @Nested
     @DisplayName("copyOwnTemplateInComplete test")
     inner class CopyOwnTemplateInCompleteTest {
-        var defaultCommand =
+        private var defaultCommand =
             CopyTemplateInCompleteCommand(
                 id = 1,
                 userId = 1,
@@ -211,7 +214,7 @@ class TemplateUseCaseTest {
         }
 
         @Test
-        fun `basket이 없으면 처리 x`() {
+        fun `basket이 없으면 bulksave 호출 X`() {
             `when`(
                 templateRepository.getByIdAndUserId(
                     id = defaultCommand.id,
@@ -243,6 +246,209 @@ class TemplateUseCaseTest {
             templateUseCase.copyOwnTemplateInComplete(defaultCommand)
 
             verify(basketRepository, times(0)).bulkSave(anyList())
+        }
+
+        @Test
+        fun `check 안된 basket이 없으면 bulksave 호출 X`() {
+            `when`(
+                templateRepository.getByIdAndUserId(
+                    id = defaultCommand.id,
+                    userId = defaultCommand.userId,
+                ),
+            ).thenReturn(
+                MockTemplate.getTemplate(defaultCommand.id),
+            )
+
+            `when`(
+                templateRepository.create(
+                    name = "test",
+                    userId = defaultCommand.userId,
+                ),
+            ).thenReturn(
+                MockTemplate.getTemplate(2),
+            )
+
+            `when`(
+                basketRepository.getByTemplateId(
+                    defaultCommand.id,
+                ),
+            ).thenReturn(
+                MockBasket.getBasketsAllChecked(),
+            )
+
+            templateUseCase = TemplateUseCase(templateRepository, basketRepository, permissionsRepository)
+
+            val result = templateUseCase.copyOwnTemplateInComplete(defaultCommand)
+
+            assertEquals(MockTemplate.getTemplate(2), result)
+            verify(basketRepository, times(0)).bulkSave(anyList())
+        }
+
+        @Test
+        fun `체크 안된 basket 있으면 저장`() {
+            `when`(
+                templateRepository.getByIdAndUserId(
+                    id = defaultCommand.id,
+                    userId = defaultCommand.userId,
+                ),
+            ).thenReturn(
+                MockTemplate.getTemplate(defaultCommand.id),
+            )
+
+            `when`(
+                templateRepository.create(
+                    name = "test",
+                    userId = defaultCommand.userId,
+                ),
+            ).thenReturn(
+                MockTemplate.getTemplate(2),
+            )
+
+            `when`(
+                basketRepository.getByTemplateId(
+                    defaultCommand.id,
+                ),
+            ).thenReturn(
+                MockBasket.getBasketsAllNonChecked(),
+            )
+
+            templateUseCase = TemplateUseCase(templateRepository, basketRepository, permissionsRepository)
+
+            val result = templateUseCase.copyOwnTemplateInComplete(defaultCommand)
+
+            assertEquals(MockTemplate.getTemplate(2), result)
+            verify(basketRepository, times(1)).bulkSave(anyList())
+        }
+    }
+
+    @Nested
+    @DisplayName("copyOwnTemplate test")
+    inner class CopyOwnTemplateTest {
+        private var defaultCommand =
+            CopyOwnTemplateCommand(
+                id = 1,
+                userId = 1,
+            )
+
+        @Test
+        fun `템플릿이 본인 것이 아닐 때 에러`() {
+            `when`(
+                templateRepository.getByIdAndUserId(
+                    id = defaultCommand.id,
+                    userId = defaultCommand.userId,
+                ),
+            ).thenReturn(
+                null,
+            )
+            templateUseCase = TemplateUseCase(templateRepository, basketRepository, permissionsRepository)
+
+            val exception =
+                org.junit.jupiter.api.assertThrows<CustomException> {
+                    templateUseCase.copyOwnTemplate(defaultCommand)
+                }
+
+            assertEquals(ExceptionCode.E_403_000.name, exception.code.name)
+        }
+
+        @Test
+        fun `템플릿에 basket이 없을 경우 bulksave 호출 x`() {
+            `when`(
+                templateRepository.getByIdAndUserId(
+                    id = defaultCommand.id,
+                    userId = defaultCommand.userId,
+                ),
+            ).thenReturn(
+                MockTemplate.getTemplate(defaultCommand.id),
+            )
+
+            `when`(
+                templateRepository.create(
+                    name = MockTemplate.getTemplate(defaultCommand.id).name.name,
+                    userId = defaultCommand.userId,
+                ),
+            ).thenReturn(
+                MockTemplate.getTemplate(2),
+            )
+
+            templateUseCase = TemplateUseCase(templateRepository, basketRepository, permissionsRepository)
+
+            val result = templateUseCase.copyOwnTemplate(defaultCommand)
+
+            assertEquals(MockTemplate.getTemplate(2), result)
+            verify(basketRepository, times(0)).bulkSave(anyList())
+        }
+    }
+
+    @Nested
+    @DisplayName("copyTemplate test")
+    inner class CopyTemplateTest {
+        private var defaultCommand =
+            CopyTemplateCommand(
+                id = 1,
+                userId = 1,
+            )
+
+        @Test
+        fun `템플릿이 본인 것이 아닐 때 에러`() {
+            `when`(
+                templateRepository.getById(
+                    id = defaultCommand.id,
+                ),
+            ).thenReturn(
+                null,
+            )
+            templateUseCase = TemplateUseCase(templateRepository, basketRepository, permissionsRepository)
+
+            val exception =
+                org.junit.jupiter.api.assertThrows<CustomException> {
+                    templateUseCase.copyTemplate(defaultCommand)
+                }
+
+            assertEquals(ExceptionCode.E_404_001.name, exception.code.name)
+        }
+
+        @Test
+        fun `템플릿이 퍼블릭이 아닐 경우 에러`() {
+            `when`(
+                templateRepository.getById(
+                    id = defaultCommand.id,
+                ),
+            ).thenReturn(
+                MockTemplate.getTemplateByPublic(defaultCommand.id, false),
+            )
+            templateUseCase = TemplateUseCase(templateRepository, basketRepository, permissionsRepository)
+
+            val exception =
+                org.junit.jupiter.api.assertThrows<CustomException> {
+                    templateUseCase.copyTemplate(defaultCommand)
+                }
+
+            assertEquals(ExceptionCode.E_403_001.name, exception.code.name)
+        }
+
+        @Test
+        fun `반환값 template`() {
+            `when`(
+                templateRepository.getById(
+                    id = defaultCommand.id,
+                ),
+            ).thenReturn(
+                MockTemplate.getTemplateByPublic(defaultCommand.id, true),
+            )
+            `when`(
+                templateRepository.create(
+                    name = MockTemplate.getTemplate(defaultCommand.id).name.name,
+                    userId = defaultCommand.userId,
+                ),
+            ).thenReturn(
+                MockTemplate.getTemplate(2),
+            )
+
+            templateUseCase = TemplateUseCase(templateRepository, basketRepository, permissionsRepository)
+
+            val copyTemplate = templateUseCase.copyTemplate(defaultCommand)
+
+            assertEquals(MockTemplate.getTemplate(2), copyTemplate)
         }
     }
 }

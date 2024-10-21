@@ -71,13 +71,15 @@ class TemplateUseCase(
 
         val (checkedItems, nonCheckedItems) = baskets.partition { it.checked.checked }
 
+        if (nonCheckedItems.isEmpty()) return newTemplate
+
         this.createNewBasketsByTemplateId(nonCheckedItems, newTemplate.id.id)
 
         return newTemplate
     }
 
     @Transactional
-    fun copyOwnTemplate(copyOwnTemplateCommand: CopyOwnTemplateCommand) {
+    fun copyOwnTemplate(copyOwnTemplateCommand: CopyOwnTemplateCommand): Template {
         val template =
             this.getTemplateByIdAndUserIdOrFail(
                 GetTemplateByIdAndUserIdCommand(
@@ -89,26 +91,28 @@ class TemplateUseCase(
         val newTemplate = this.create(name = template.name.name, userId = template.userId.userId)
 
         val baskets = basketRepository.getByTemplateId(copyOwnTemplateCommand.id)
-        if (baskets.isEmpty()) return
+        if (baskets.isEmpty()) return newTemplate
 
         this.createNewBasketsByTemplateId(baskets, newTemplate.id.id)
+        return newTemplate
     }
 
     @Transactional
-    fun copyTemplate(copyTemplateCommand: CopyTemplateCommand) {
+    fun copyTemplate(copyTemplateCommand: CopyTemplateCommand): Template {
         val template =
             templateRepository.getById(
                 copyTemplateCommand.id,
             ) ?: throw CustomException.responseBody(ExceptionCode.E_404_001)
 
-        if (!isPublicTemplate(template)) throw CustomException.responseBody(ExceptionCode.E_403_001)
+        if (!template.isPublicTemplate()) throw CustomException.responseBody(ExceptionCode.E_403_001)
 
         val newTemplate = this.create(name = template.name.name, userId = template.userId.userId)
 
         val baskets = basketRepository.getByTemplateId(copyTemplateCommand.id)
-        if (baskets.isEmpty()) return
+        if (baskets.isEmpty()) return newTemplate
 
         this.createNewBasketsByTemplateId(baskets, newTemplate.id.id)
+        return newTemplate
     }
 
     @Transactional(propagation = Propagation.MANDATORY)
@@ -171,6 +175,4 @@ class TemplateUseCase(
             )
         return template != null
     }
-
-    private fun isPublicTemplate(template: Template): Boolean = template.isPublic.isPublic
 }
