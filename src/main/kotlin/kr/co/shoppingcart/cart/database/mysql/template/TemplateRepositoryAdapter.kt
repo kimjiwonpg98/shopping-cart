@@ -38,8 +38,8 @@ class TemplateRepositoryAdapter(
         id: Long,
         isShared: Boolean,
     ) {
-        val template = templateEntityRepository.findById(id)
-        template!!.isPublic = isShared
+        val template = templateEntityRepository.getById(id)
+        template.isPublic = isShared
     }
 
     override fun getWithCompletePercent(

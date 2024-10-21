@@ -15,8 +15,7 @@ class CategoryRepositoryAdapter(
         }
 
     override fun getById(id: Long): Category? =
-        categoryEntityRepository.getById(id).let {
-            if (it === null) return null
+        categoryEntityRepository.getById(id)?.let {
             return Category.toDomain(it.id!!, it.name)
         }
 }

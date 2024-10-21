@@ -10,6 +10,8 @@ interface TemplateEntityRepository<T, ID> : Repository<T, ID> {
 
     fun findById(id: Long): TemplateEntity?
 
+    fun getById(id: Long): TemplateEntity
+
     fun getByIdAndUserId(
         id: Long,
         userId: Long,
