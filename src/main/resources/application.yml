@@ -61,7 +61,7 @@ spring:
             authorization-uri: https://kauth.kakao.com/oauth/authorize
             token-uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
-            user-name-attribute: id
+            user-name-attribute: kakao_account
         registration:
           kakao:
             client-id: ${KAKAO_CLIENT_ID:xxxx}
@@ -78,7 +78,7 @@ client:
     client-id: ${KAKAO_CLIENT_ID:xxxx}
     auth-base-url: ${KAKAO_AUTH_BASE_URL:https://kauth.kakao.com}
     base-url: ${KAKAO_BASE_URL:https://kapi.kakao.com}
-    kakao-redirect-url: ${KAKAO_REDIRECT_URL:http://localhost:8080/v1/kakao/code}
+    kakao-redirect-url: ${KAKAO_REDIRECT_URL:http://localhost:8080/login/oauth2/code/kakao}
 jwt:
   secret: ${JWT_SECRET:xxxxxzsqwsasd123afdcdfwqdsddasdqwdsacasdqwdcfv12312dsacvxcasdwhrtjh465yu1234xsddsvssdvdsdvdsvvsvdvsdsdv}
   issuer: ${JWT_ISSUER:cart}
@@ -121,6 +121,7 @@ spring:
         use_sql_comments: true
 logging:
   level:
+#    root: info
     org:
       springframework:
         jdbc: debug

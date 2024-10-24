@@ -13,7 +13,7 @@ data class User(
         fun toDomain(
             email: String,
             loginType: String,
-            userId: Long,
+            userId: Long = 0,
             gender: String?,
             birth: String?,
         ): User =
