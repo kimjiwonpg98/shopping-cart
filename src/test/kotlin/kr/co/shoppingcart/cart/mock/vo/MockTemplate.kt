@@ -12,6 +12,7 @@ object MockTemplate {
             "test",
             1L,
             true,
+            1,
             null,
             null,
         )
@@ -25,6 +26,7 @@ object MockTemplate {
             "test",
             1L,
             isPublic,
+            1,
             null,
             null,
         )
@@ -48,6 +50,7 @@ object MockTemplate {
             "test",
             1L,
             true,
+            1,
             10,
             10,
             ZonedDateTime.now(),
@@ -68,6 +71,7 @@ object MockTemplate {
             createTemplateCommand.name,
             createTemplateCommand.userId,
             false,
+            1,
             null,
             null,
         )

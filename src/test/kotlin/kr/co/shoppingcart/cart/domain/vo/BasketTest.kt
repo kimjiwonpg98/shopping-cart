@@ -87,7 +87,7 @@ class BasketTest {
         private val count: Long = 1L
         private val checked: Boolean = true
         private val category = Category.toDomain(1L, "category")
-        private val template = Template.toDomain(1L, "template", 1L, true, null, null)
+        private val template = Template.toDomain(1L, "template", 1L, true, 1, null, null)
         private val createdAt: ZonedDateTime = ZonedDateTime.now()
         private val updatedAt: ZonedDateTime = ZonedDateTime.now()
     }

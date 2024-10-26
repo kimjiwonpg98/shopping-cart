@@ -17,6 +17,7 @@ class TemplateTest {
                 NAME,
                 USER_ID,
                 IS_PUBLIC,
+                THUMBNAIL_IDX,
                 createdAt,
                 updatedAt,
             )
@@ -26,6 +27,7 @@ class TemplateTest {
         assertEquals(template.name.name, NAME)
         assertEquals(template.userId.userId, USER_ID)
         assertEquals(template.isPublic.isPublic, IS_PUBLIC)
+        assertEquals(template.thumbnailIndex.thumbnail, THUMBNAIL_IDX)
         assertNotNull(template.createdAt)
         assertNotNull(template.updatedAt)
         assertEquals(template.createdAt!!.createdAt, createdAt)
@@ -41,6 +43,7 @@ class TemplateTest {
                 NAME,
                 USER_ID,
                 IS_PUBLIC,
+                THUMBNAIL_IDX,
                 null,
                 null,
             )
@@ -62,6 +65,7 @@ class TemplateTest {
                 NAME,
                 USER_ID,
                 IS_PUBLIC,
+                THUMBNAIL_IDX,
                 null,
                 null,
             )
@@ -75,6 +79,7 @@ class TemplateTest {
         private const val ID: Long = 1L
         private const val NAME: String = "test"
         private const val USER_ID: Long = 1L
+        private const val THUMBNAIL_IDX: Int = 1
         private const val IS_PUBLIC: Boolean = true
         private val createdAt: ZonedDateTime = ZonedDateTime.now()
         private val updatedAt: ZonedDateTime = ZonedDateTime.now()
