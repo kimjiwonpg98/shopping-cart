@@ -23,6 +23,7 @@ object BasketEntityMapper {
                     name = basketEntity.template.name,
                     userId = basketEntity.template.userId,
                     isPublic = basketEntity.template.isPublic,
+                    thumbnailIndex = basketEntity.template.thumbnailIdx,
                     createdAt =
                         basketEntity.template.createdAt?.let { convertZonedDateTimeToSeoulTime(it) },
                     updatedAt =

@@ -9,6 +9,7 @@ data class TemplateWithCheckedCount(
     val name: TemplateName,
     val userId: TemplateOwnerId,
     val isPublic: TemplateIsPublic,
+    val thumbnailIndex: TemplateThumbnailIndex,
     val createdAt: TemplateCreatedAt,
     val updatedAt: TemplateUpdatedAt,
 ) {
@@ -18,6 +19,7 @@ data class TemplateWithCheckedCount(
             name: String,
             userId: Long,
             isPublic: Boolean,
+            thumbnailIndex: Int,
             checkedCount: Long,
             unCheckedCount: Long,
             createdAt: ZonedDateTime,
@@ -28,6 +30,7 @@ data class TemplateWithCheckedCount(
                 name = TemplateName(name),
                 userId = TemplateOwnerId(userId),
                 isPublic = TemplateIsPublic(isPublic),
+                thumbnailIndex = TemplateThumbnailIndex(thumbnailIndex),
                 checkedCount = TemplateCheckedCount(checkedCount),
                 unCheckedCount = TemplateUnCheckedCount(unCheckedCount),
                 createdAt = TemplateCreatedAt(createdAt),

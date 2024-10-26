@@ -13,6 +13,7 @@ object TemplateResponseMapper {
             name = template.name.name,
             userId = template.userId.userId,
             isPublic = template.isPublic.isPublic,
+            thumbnailIndex = template.thumbnailIndex.thumbnail,
             createTime = template.createdAt!!.createdAt,
             updateTime = template.updatedAt!!.updatedAt,
         )
@@ -26,6 +27,7 @@ object TemplateResponseMapper {
             name = templateWithCheckedCount.name.name,
             userId = templateWithCheckedCount.userId.userId,
             isPublic = templateWithCheckedCount.isPublic.isPublic,
+            thumbnailIndex = templateWithCheckedCount.thumbnailIndex.thumbnail,
             createTime = templateWithCheckedCount.createdAt.createdAt,
             updateTime = templateWithCheckedCount.updatedAt.updatedAt,
             percent =

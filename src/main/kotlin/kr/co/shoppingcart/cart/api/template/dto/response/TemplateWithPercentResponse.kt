@@ -8,6 +8,7 @@ data class TemplateWithPercentResponse(
     val userId: Long,
     val percent: Int,
     val isPublic: Boolean,
+    val thumbnailIndex: Int,
     val createTime: ZonedDateTime,
     val updateTime: ZonedDateTime,
     val preview: List<String>,

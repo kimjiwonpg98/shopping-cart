@@ -22,6 +22,8 @@ class TemplateEntity(
     val userId: Long,
     @Column(columnDefinition = "BOOLEAN", nullable = false, name = "is_public")
     var isPublic: Boolean = false,
+    @Column(nullable = false, columnDefinition = "INT", name = "thumbnail_idx")
+    var thumbnailIdx: Int = 1,
 ) : CommonEntity() {
     companion object {
         const val TEMPLATE_ENTITY_NAME = "template"

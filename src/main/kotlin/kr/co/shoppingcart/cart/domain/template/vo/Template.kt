@@ -7,6 +7,7 @@ data class Template(
     val name: TemplateName,
     val userId: TemplateOwnerId,
     val isPublic: TemplateIsPublic,
+    val thumbnailIndex: TemplateThumbnailIndex,
     val createdAt: TemplateCreatedAt?,
     val updatedAt: TemplateUpdatedAt?,
 ) {
@@ -18,6 +19,7 @@ data class Template(
             name: String,
             userId: Long,
             isPublic: Boolean,
+            thumbnailIndex: Int,
             createdAt: ZonedDateTime?,
             updatedAt: ZonedDateTime?,
         ): Template =
@@ -26,6 +28,7 @@ data class Template(
                 name = TemplateName(name),
                 userId = TemplateOwnerId(userId),
                 isPublic = TemplateIsPublic(isPublic),
+                thumbnailIndex = TemplateThumbnailIndex(thumbnailIndex),
                 createdAt = createdAt?.let { TemplateCreatedAt(it) },
                 updatedAt = updatedAt?.let { TemplateUpdatedAt(it) },
             )
