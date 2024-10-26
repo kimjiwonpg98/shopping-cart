@@ -147,7 +147,7 @@ class TemplateController(
         val command =
             GetWithCompletePercentAndPreviewCommand(
                 currentUser.identificationValue.toLong(),
-                params?.page?.toLong() ?: 0,
+                params?.page?.toLong() ?: 1,
                 params?.size?.toLong() ?: 10,
             )
         val templates = templateUseCase.getWithCompletePercentAndPreview(command)
