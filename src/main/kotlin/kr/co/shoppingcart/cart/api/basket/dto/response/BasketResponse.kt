@@ -4,6 +4,7 @@ import kr.co.shoppingcart.cart.api.category.response.CategoryResponse
 import java.time.ZonedDateTime
 
 data class BasketResponse(
+    val id: Long,
     val name: String,
     val checked: Boolean,
     val count: Long,

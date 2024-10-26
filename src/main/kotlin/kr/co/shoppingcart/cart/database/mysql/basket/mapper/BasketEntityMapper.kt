@@ -9,13 +9,14 @@ import kr.co.shoppingcart.cart.utils.DateUtil.convertZonedDateTimeToSeoulTime
 object BasketEntityMapper {
     fun toDomain(basketEntity: BasketEntity): Basket =
         Basket.toDomain(
+            id = basketEntity.id,
             name = basketEntity.content,
             count = basketEntity.count,
             checked = basketEntity.checked,
             createdTime = basketEntity.createdAt?.let { convertZonedDateTimeToSeoulTime(it) },
             updatedTime = basketEntity.updatedAt?.let { convertZonedDateTimeToSeoulTime(it) },
-            categoryId = basketEntity.template.id,
-            templateId = basketEntity.category.id,
+            categoryId = basketEntity.category.id,
+            templateId = basketEntity.template.id,
             category = Category.toDomain(id = basketEntity.category.id!!, name = basketEntity.category.name),
             template =
                 Template.toDomain(

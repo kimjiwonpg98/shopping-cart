@@ -5,6 +5,7 @@ import kr.co.shoppingcart.cart.domain.template.vo.Template
 import java.time.ZonedDateTime
 
 data class Basket(
+    val id: BasketId,
     val name: BasketName,
     var checked: BasketChecked,
     val count: BasketCount,
@@ -19,6 +20,7 @@ data class Basket(
 
     companion object {
         fun toDomain(
+            id: Long,
             name: String,
             checked: Boolean,
             count: Long,
@@ -30,6 +32,7 @@ data class Basket(
             updatedTime: ZonedDateTime?,
         ): Basket =
             Basket(
+                id = BasketId(id),
                 name = BasketName(name),
                 checked = BasketChecked(checked),
                 count = BasketCount(count),

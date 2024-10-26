@@ -25,9 +25,9 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
-import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
@@ -69,13 +69,13 @@ class TemplateController(
 
         return ResponseEntity.status(200).body(
             GetTemplateByIdResponseBodyDto(
-                result = template.let(TemplateResponseMapper::toResponse),
+                result = template.let(TemplateResponseMapper::toResponseWithPercent),
             ),
         )
     }
 
     @OpenApiSpecApiException([ExceptionCode.E_401_000, ExceptionCode.E_403_000])
-    @PatchMapping("/v1/template/{id}/share")
+    @PutMapping("/v1/template/{id}/share")
     fun updateSharedById(
         @PathVariable id: String,
         @ModelAttribute params: UpdateTemplateSharedRequestParamsDto,
@@ -164,11 +164,11 @@ class TemplateController(
                                         size =
                                             params?.previewCount?.toIntOrNull() ?: 3,
                                     ).map { it.name.name }
-                            TemplateResponseMapper.toResponseWithPercent(template, basketNames)
+                            TemplateResponseMapper.toResponseWithPercentAndPreview(template, basketNames)
                         }
                         val basketNames = emptyList<String>()
 
-                        TemplateResponseMapper.toResponseWithPercent(template, basketNames)
+                        TemplateResponseMapper.toResponseWithPercentAndPreview(template, basketNames)
                     },
             ),
         )

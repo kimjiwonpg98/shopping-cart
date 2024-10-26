@@ -15,6 +15,7 @@ class BasketTest {
         // when
         val basket: Basket =
             Basket.toDomain(
+                id = 0,
                 name = name,
                 checked = checked,
                 count = count,
@@ -41,6 +42,7 @@ class BasketTest {
         // when
         val basket: Basket =
             Basket.toDomain(
+                id = 0,
                 name = name,
                 checked = checked,
                 count = count,
@@ -67,6 +69,7 @@ class BasketTest {
         // when
         val basket: Basket =
             Basket.toDomain(
+                id = 0,
                 name = name,
                 checked = checked,
                 count = count,

@@ -30,8 +30,23 @@ class TemplateUseCase(
         this.create(createTemplateCommand.name, createTemplateCommand.userId)
 
     @Transactional(readOnly = true)
-    fun getByIdAndUserIdToRead(getTemplateByIdAndUserIdCommand: GetTemplateByIdAndUserIdCommand) =
-        getTemplateByIdAndUserIdOrFail(getTemplateByIdAndUserIdCommand)
+    fun getByIdAndUserIdToRead(
+        getTemplateByIdAndUserIdCommand: GetTemplateByIdAndUserIdCommand,
+    ): TemplateWithCheckedCount = getTemplateByIdWithPercentOrFail(getTemplateByIdAndUserIdCommand)
+
+    fun getTemplateByIdWithPercentOrFail(
+        getTemplateByIdAndUserIdCommand: GetTemplateByIdAndUserIdCommand,
+    ): TemplateWithCheckedCount {
+        val template =
+            templateRepository.getByIdWithPercent(
+                getTemplateByIdAndUserIdCommand.id,
+            ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+
+        if (template.userId.userId == getTemplateByIdAndUserIdCommand.userId) {
+            return template
+        }
+        throw CustomException.responseBody(ExceptionCode.E_403_000)
+    }
 
     fun getTemplateByIdAndUserIdOrFail(getTemplateByIdAndUserIdCommand: GetTemplateByIdAndUserIdCommand): Template =
         templateRepository.getByIdAndUserId(

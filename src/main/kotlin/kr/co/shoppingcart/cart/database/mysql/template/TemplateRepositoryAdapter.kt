@@ -26,8 +26,12 @@ class TemplateRepositoryAdapter(
                 ),
             ).let(TemplateEntityMapper::toDomain)
 
-    override fun getById(id: Long): Template? =
-        templateEntityRepository.findById(id)?.let(TemplateEntityMapper::toDomain)
+    override fun getById(id: Long): Template? = templateEntityRepository.getById(id).let(TemplateEntityMapper::toDomain)
+
+    override fun getByIdWithPercent(id: Long): TemplateWithCheckedCount? =
+        templateJdbcRepository.getOneWithCheckedCount(id)?.let {
+            TemplateWithCheckedCountEntityMapper.toDomain(it)
+        }
 
     override fun getByIdAndUserId(
         id: Long,

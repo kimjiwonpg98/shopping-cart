@@ -1,6 +1,7 @@
 package kr.co.shoppingcart.cart.api.template
 
 import kr.co.shoppingcart.cart.api.template.dto.response.TemplateResponse
+import kr.co.shoppingcart.cart.api.template.dto.response.TemplateWithPercentAndPreviewResponse
 import kr.co.shoppingcart.cart.api.template.dto.response.TemplateWithPercentResponse
 import kr.co.shoppingcart.cart.domain.template.vo.Template
 import kr.co.shoppingcart.cart.domain.template.vo.TemplateWithCheckedCount
@@ -18,11 +19,11 @@ object TemplateResponseMapper {
             updateTime = template.updatedAt!!.updatedAt,
         )
 
-    fun toResponseWithPercent(
+    fun toResponseWithPercentAndPreview(
         templateWithCheckedCount: TemplateWithCheckedCount,
         preview: List<String>,
-    ): TemplateWithPercentResponse =
-        TemplateWithPercentResponse(
+    ): TemplateWithPercentAndPreviewResponse =
+        TemplateWithPercentAndPreviewResponse(
             id = templateWithCheckedCount.id.id,
             name = templateWithCheckedCount.name.name,
             userId = templateWithCheckedCount.userId.userId,
@@ -36,5 +37,21 @@ object TemplateResponseMapper {
                     templateWithCheckedCount.checkedCount.count,
                 ),
             preview = preview,
+        )
+
+    fun toResponseWithPercent(templateWithCheckedCount: TemplateWithCheckedCount): TemplateWithPercentResponse =
+        TemplateWithPercentResponse(
+            id = templateWithCheckedCount.id.id,
+            name = templateWithCheckedCount.name.name,
+            userId = templateWithCheckedCount.userId.userId,
+            isPublic = templateWithCheckedCount.isPublic.isPublic,
+            thumbnailIndex = templateWithCheckedCount.thumbnailIndex.thumbnail,
+            createTime = templateWithCheckedCount.createdAt.createdAt,
+            updateTime = templateWithCheckedCount.updatedAt.updatedAt,
+            percent =
+                CalculateUtil.percentInFiveIncrement(
+                    templateWithCheckedCount.checkedCount.count + templateWithCheckedCount.unCheckedCount.count,
+                    templateWithCheckedCount.checkedCount.count,
+                ),
         )
 }

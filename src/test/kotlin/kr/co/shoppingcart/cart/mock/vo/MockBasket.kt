@@ -6,6 +6,7 @@ import kr.co.shoppingcart.cart.domain.basket.vo.BasketCategoryId
 import kr.co.shoppingcart.cart.domain.basket.vo.BasketChecked
 import kr.co.shoppingcart.cart.domain.basket.vo.BasketCount
 import kr.co.shoppingcart.cart.domain.basket.vo.BasketCreatedAt
+import kr.co.shoppingcart.cart.domain.basket.vo.BasketId
 import kr.co.shoppingcart.cart.domain.basket.vo.BasketName
 import kr.co.shoppingcart.cart.domain.basket.vo.BasketTemplateId
 import kr.co.shoppingcart.cart.domain.basket.vo.BasketUpdatedAt
@@ -23,6 +24,7 @@ object MockBasket {
         checked: Boolean,
     ): Basket =
         Basket(
+            id = BasketId(i),
             name = BasketName("test"),
             categoryId = BasketCategoryId(i),
             category =
@@ -61,6 +63,7 @@ object MockBasket {
 
     fun getBasketByCreate(createBasketCommand: CreateBasketCommand): Basket =
         Basket(
+            id = BasketId(0),
             name = BasketName("test"),
             categoryId = null,
             category =

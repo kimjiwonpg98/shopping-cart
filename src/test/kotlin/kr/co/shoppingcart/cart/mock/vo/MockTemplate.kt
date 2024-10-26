@@ -17,6 +17,19 @@ object MockTemplate {
             null,
         )
 
+    fun getTemplateWithPercent(i: Long): TemplateWithCheckedCount =
+        TemplateWithCheckedCount.toDomain(
+            i,
+            "test",
+            1L,
+            true,
+            1,
+            0,
+            0,
+            ZonedDateTime.now(),
+            ZonedDateTime.now(),
+        )
+
     fun getTemplateByPublic(
         i: Long,
         isPublic: Boolean,
@@ -43,19 +56,6 @@ object MockTemplate {
         }
         return templates
     }
-
-    fun getTemplateWithPercent(i: Long): TemplateWithCheckedCount =
-        TemplateWithCheckedCount.toDomain(
-            i,
-            "test",
-            1L,
-            true,
-            1,
-            10,
-            10,
-            ZonedDateTime.now(),
-            ZonedDateTime.now(),
-        )
 
     fun getTemplatesWithPercent(): List<TemplateWithCheckedCount> {
         val templates = mutableListOf<TemplateWithCheckedCount>()

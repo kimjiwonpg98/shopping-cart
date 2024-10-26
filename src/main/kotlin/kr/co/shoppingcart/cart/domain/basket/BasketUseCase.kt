@@ -41,6 +41,7 @@ class BasketUseCase(
 
         return basketRepository.save(
             Basket.toDomain(
+                id = 0,
                 name = createBasketCommand.name,
                 checked = createBasketCommand.checked ?: false,
                 category = category,

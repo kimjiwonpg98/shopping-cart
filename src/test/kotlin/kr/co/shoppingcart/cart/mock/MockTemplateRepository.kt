@@ -13,6 +13,10 @@ class MockTemplateRepository : TemplateRepository {
 
     override fun getById(id: Long): Template? = MockTemplate.getOptionalTemplate(id, id == TEMPLATE_ID_RETURN_NULL)
 
+    override fun getByIdWithPercent(id: Long): TemplateWithCheckedCount? {
+        TODO("Not yet implemented")
+    }
+
     override fun getByIdAndUserId(
         id: Long,
         userId: Long,

@@ -115,12 +115,11 @@ class TemplateUseCaseTest {
         @Test
         fun `있으면 조회한다`() {
             `when`(
-                templateRepository.getByIdAndUserId(
+                templateRepository.getByIdWithPercent(
                     id = defaultCommand.id,
-                    userId = defaultCommand.userId,
                 ),
             ).thenReturn(
-                MockTemplate.getTemplate(defaultCommand.id),
+                MockTemplate.getTemplateWithPercent(defaultCommand.id),
             )
 
             templateUseCase = TemplateUseCase(templateRepository, basketRepository, permissionsRepository)

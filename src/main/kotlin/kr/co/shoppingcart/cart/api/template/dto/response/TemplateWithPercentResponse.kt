@@ -11,5 +11,4 @@ data class TemplateWithPercentResponse(
     val thumbnailIndex: Int,
     val createTime: ZonedDateTime,
     val updateTime: ZonedDateTime,
-    val preview: List<String>,
 )

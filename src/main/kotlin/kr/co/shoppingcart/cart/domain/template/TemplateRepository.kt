@@ -11,6 +11,8 @@ interface TemplateRepository {
 
     fun getById(id: Long): Template?
 
+    fun getByIdWithPercent(id: Long): TemplateWithCheckedCount?
+
     fun getByIdAndUserId(
         id: Long,
         userId: Long,
