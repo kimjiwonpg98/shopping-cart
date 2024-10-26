@@ -1,18 +1,19 @@
 package kr.co.shoppingcart.cart.domain.user
 
-import kr.co.shoppingcart.cart.domain.user.enums.LoginType
+import kr.co.shoppingcart.cart.domain.user.enums.LoginProvider
 import kr.co.shoppingcart.cart.domain.user.vo.User
 
 interface UserRepository {
     fun create(
-        email: String,
-        loginType: LoginType = LoginType.KAKAO,
+        email: String?,
+        provider: LoginProvider = LoginProvider.KAKAO,
+        authIdentifier: String,
         gender: String?,
-        birth: String?,
+        ageRange: String?,
     ): User
 
-    fun getByEmailAndLoginType(
-        email: String,
-        loginType: LoginType,
+    fun getByUniqueKeyAndLoginType(
+        authIdentifier: String,
+        provider: LoginProvider,
     ): User?
 }

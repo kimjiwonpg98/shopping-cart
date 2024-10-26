@@ -7,7 +7,9 @@ data class LoginRequestBodyDto(
     @field:Email(message = "Doesn't fit the email format.")
     val email: String,
     @field:NotNull
-    val loginType: String,
+    val provider: String,
+    @field:NotNull
+    val authIdentifier: String,
     val gender: String?,
-    val birth: String?,
+    val ageRange: String?,
 )

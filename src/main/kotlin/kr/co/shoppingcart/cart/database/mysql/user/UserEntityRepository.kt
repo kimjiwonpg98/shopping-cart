@@ -8,8 +8,8 @@ import org.springframework.data.repository.Repository
 interface UserEntityRepository<T, ID> : Repository<T, ID> {
     fun save(userEntity: UserEntity): UserEntity
 
-    fun getByEmailAndLoginType(
-        email: String,
-        loginType: String,
+    fun getByAuthIdentifierAndProvider(
+        authIdentifier: String,
+        provider: String,
     ): UserEntity?
 }

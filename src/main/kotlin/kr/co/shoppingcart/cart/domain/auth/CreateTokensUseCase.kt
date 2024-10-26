@@ -2,7 +2,6 @@ package kr.co.shoppingcart.cart.domain.auth
 
 import kr.co.shoppingcart.cart.domain.auth.service.TokenService
 import kr.co.shoppingcart.cart.domain.auth.vo.tokens.Tokens
-import kr.co.shoppingcart.cart.domain.user.command.LoginCommand
 import kr.co.shoppingcart.cart.domain.user.vo.User
 import org.springframework.stereotype.Service
 
@@ -10,12 +9,9 @@ import org.springframework.stereotype.Service
 class CreateTokensUseCase(
     private val tokenService: TokenService,
 ) {
-    fun createTokensByUser(
-        loginCommand: LoginCommand,
-        user: User,
-    ): Tokens {
-        val accessToken = tokenService.createAccessToken(user.userId.id, loginCommand.loginType)
-        val refreshToken = tokenService.createRefreshToken(user.userId.id, loginCommand.loginType)
+    fun createTokensByUser(user: User): Tokens {
+        val accessToken = tokenService.createAccessToken(user.userId.id, user.provider.provider.name)
+        val refreshToken = tokenService.createRefreshToken(user.userId.id, user.provider.provider.name)
 
         return Tokens.toDomain(accessToken, refreshToken)
     }

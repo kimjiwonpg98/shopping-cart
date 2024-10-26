@@ -14,14 +14,16 @@ class UserEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "BIGINT", name = "id")
     val id: Long? = null,
+    @Column(nullable = false)
+    val authIdentifier: String,
+    @Column(nullable = false, length = 30)
+    val provider: String,
     @Column(nullable = true, length = 200)
     val email: String?,
-    @Column(nullable = false, length = 30, name = "login_type")
-    val loginType: String,
     @Column(nullable = true, length = 2)
     val gender: String?,
     @Column(nullable = true)
-    val birth: String?,
+    val ageRange: String?,
 ) : CommonEntity() {
     companion object {
         const val USER_ENTITY_NAME = "user"

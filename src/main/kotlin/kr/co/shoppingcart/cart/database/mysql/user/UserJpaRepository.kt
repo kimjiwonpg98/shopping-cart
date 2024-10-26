@@ -7,8 +7,8 @@ import org.springframework.stereotype.Repository
 interface UserJpaRepository : UserEntityRepository<UserEntity, Long> {
     override fun save(userEntity: UserEntity): UserEntity
 
-    override fun getByEmailAndLoginType(
-        email: String,
-        loginType: String,
+    override fun getByAuthIdentifierAndProvider(
+        authIdentifier: String,
+        provider: String,
     ): UserEntity?
 }

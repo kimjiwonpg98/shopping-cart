@@ -15,9 +15,9 @@ class TokenServiceImpl(
 ) : TokenService {
     override fun createAccessToken(
         userId: Long,
-        loginType: String,
+        provider: String,
     ): String {
-        val tokenInfo = getTokenExpByType(loginType) ?: throw BadRequestException()
+        val tokenInfo = getTokenExpByType(provider) ?: throw BadRequestException()
 
         val claims = mapOf("scope" to "MASTER")
 
@@ -34,9 +34,9 @@ class TokenServiceImpl(
 
     override fun createRefreshToken(
         userId: Long,
-        loginType: String,
+        provider: String,
     ): String {
-        val tokenInfo = getTokenExpByType(loginType) ?: throw BadRequestException()
+        val tokenInfo = getTokenExpByType(provider) ?: throw BadRequestException()
 
         val claims = mapOf("scope" to "REFRESH")
 
@@ -55,8 +55,8 @@ class TokenServiceImpl(
         TODO("Not yet implemented")
     }
 
-    private fun getTokenExpByType(loginType: String): TokenExpiration? =
+    private fun getTokenExpByType(provider: String): TokenExpiration? =
         tokenExpirationRepositoryAdapter.getByName(
-            loginType,
+            provider,
         )
 }

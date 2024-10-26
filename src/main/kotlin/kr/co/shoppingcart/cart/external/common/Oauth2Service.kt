@@ -1,8 +1,7 @@
 package kr.co.shoppingcart.cart.external.common
 
-import kr.co.shoppingcart.cart.domain.user.CreateUserUseCase
+import kr.co.shoppingcart.cart.domain.user.UserUserCase
 import kr.co.shoppingcart.cart.domain.user.command.LoginCommand
-import kr.co.shoppingcart.cart.domain.user.enums.LoginType
 import kr.co.shoppingcart.cart.domain.user.enums.UserProperties
 import mu.KotlinLogging
 import org.springframework.security.core.authority.AuthorityUtils
@@ -15,7 +14,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class Oauth2Service(
-    private val createUserUseCase: CreateUserUseCase,
+    private val userUseCase: UserUserCase,
 ) : DefaultOAuth2UserService() {
     @Throws(OAuth2AuthenticationException::class)
     override fun loadUser(userRequest: OAuth2UserRequest): OAuth2User {
@@ -36,16 +35,17 @@ class Oauth2Service(
         // User 생성 요청
         val loginCommand =
             LoginCommand(
-                email = "test10@test.com",
-                loginType = LoginType.KAKAO.name,
-                gender = "M",
-                birth = "1998",
+                email = userProfile.userEmail.email,
+                loginProvider = userProfile.provider.provider.name,
+                gender = userProfile.gender?.gender,
+                ageRange = userProfile.ageRange?.ageRange,
+                authIdentifier = userProfile.authIdentifier.authIdentifier,
             )
 
-        val user = createUserUseCase.createUser(loginCommand)
+        val user = userUseCase.createIfAbsent(loginCommand)
         val attributes = HashMap(oAuth2User.attributes)
         attributes.putIfAbsent("userId", user.userId.id)
-        attributes.putIfAbsent("loginType", user.loginType.loginType.name)
+        attributes.putIfAbsent("provider", user.provider.provider.name)
 
         // 권한 부여
         val authorities = AuthorityUtils.createAuthorityList("ROLE_USER")

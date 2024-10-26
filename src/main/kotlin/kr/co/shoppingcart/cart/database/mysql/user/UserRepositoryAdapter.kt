@@ -3,7 +3,7 @@ package kr.co.shoppingcart.cart.database.mysql.user
 import kr.co.shoppingcart.cart.database.mysql.user.entity.UserEntity
 import kr.co.shoppingcart.cart.database.mysql.user.mapper.UserEntityMapper
 import kr.co.shoppingcart.cart.domain.user.UserRepository
-import kr.co.shoppingcart.cart.domain.user.enums.LoginType
+import kr.co.shoppingcart.cart.domain.user.enums.LoginProvider
 import kr.co.shoppingcart.cart.domain.user.vo.User
 import org.springframework.stereotype.Component
 
@@ -12,28 +12,30 @@ class UserRepositoryAdapter(
     private val userEntityRepository: UserEntityRepository<UserEntity, Long>,
 ) : UserRepository {
     override fun create(
-        email: String,
-        loginType: LoginType,
+        email: String?,
+        provider: LoginProvider,
+        authIdentifier: String,
         gender: String?,
-        birth: String?,
+        ageRange: String?,
     ): User =
         userEntityRepository
             .save(
                 UserEntity(
                     email = email,
-                    loginType = loginType.name,
+                    provider = provider.name,
+                    authIdentifier = authIdentifier,
                     gender = gender,
-                    birth = birth,
+                    ageRange = ageRange,
                 ),
             ).let(UserEntityMapper::toDomain)
 
-    override fun getByEmailAndLoginType(
-        email: String,
-        loginType: LoginType,
+    override fun getByUniqueKeyAndLoginType(
+        authIdentifier: String,
+        provider: LoginProvider,
     ): User? =
         userEntityRepository
-            .getByEmailAndLoginType(
-                email,
-                loginType.name,
+            .getByAuthIdentifierAndProvider(
+                authIdentifier,
+                provider.name,
             )?.let(UserEntityMapper::toDomain)
 }

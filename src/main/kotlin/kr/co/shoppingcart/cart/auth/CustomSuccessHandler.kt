@@ -25,13 +25,13 @@ class CustomSuccessHandler(
         val accessToken =
             tokenService.createAccessToken(
                 userId = attributes["userId"] as Long,
-                loginType = attributes["loginType"] as String,
+                provider = attributes["provider"] as String,
             )
 
         val refreshToken =
             tokenService.createRefreshToken(
                 userId = attributes["userId"] as Long,
-                loginType = attributes["loginType"] as String,
+                provider = attributes["provider"] as String,
             )
 
         response.addHeader(

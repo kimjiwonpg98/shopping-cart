@@ -5,8 +5,8 @@ import kr.co.shoppingcart.cart.api.user.dto.response.LoginResponseBodyDto
 import kr.co.shoppingcart.cart.common.error.annotations.OpenApiSpecApiException
 import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
 import kr.co.shoppingcart.cart.domain.auth.CreateTokensUseCase
-import kr.co.shoppingcart.cart.domain.user.CreateUserUseCase
-import kr.co.shoppingcart.cart.domain.user.GetUserUseCase
+import kr.co.shoppingcart.cart.domain.user.UserUserCase
+import kr.co.shoppingcart.cart.domain.user.command.GetByAuthIdentifierAndProviderCommand
 import kr.co.shoppingcart.cart.domain.user.command.LoginCommand
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -16,8 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class UserController(
-    private val createUserUseCase: CreateUserUseCase,
-    private val getUserUseCase: GetUserUseCase,
+    private val userUseCase: UserUserCase,
     private val createTokensUseCase: CreateTokensUseCase,
 ) {
     @OpenApiSpecApiException([ExceptionCode.E_401_000])
@@ -26,15 +25,13 @@ class UserController(
         @RequestBody user: LoginRequestBodyDto,
     ): ResponseEntity<LoginResponseBodyDto> {
         val loginCommand =
-            LoginCommand(
-                user.email,
-                user.loginType,
-                user.gender,
-                user.birth,
+            GetByAuthIdentifierAndProviderCommand(
+                user.authIdentifier,
+                user.provider,
             )
 
-        val userInfo = getUserUseCase.getByEmailAndLoginType(loginCommand)
-        val tokens = createTokensUseCase.createTokensByUser(loginCommand, userInfo)
+        val userInfo = userUseCase.getByAuthIdentifierAndProviderOrFail(loginCommand)
+        val tokens = createTokensUseCase.createTokensByUser(userInfo)
 
         val responseBody =
             LoginResponseBodyDto(
@@ -52,11 +49,12 @@ class UserController(
         val loginCommand =
             LoginCommand(
                 user.email,
-                user.loginType,
+                user.provider,
+                user.authIdentifier,
                 user.gender,
-                user.birth,
+                user.ageRange,
             )
-        createUserUseCase.createUser(loginCommand)
+        userUseCase.createIfAbsent(loginCommand)
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 }
