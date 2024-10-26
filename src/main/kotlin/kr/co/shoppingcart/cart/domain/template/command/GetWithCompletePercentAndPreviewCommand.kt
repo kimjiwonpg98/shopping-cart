@@ -9,7 +9,7 @@ data class GetWithCompletePercentAndPreviewCommand(
     @field:Min(1)
     val userId: Long,
     @field:NotNull
-    @field:Min(0)
+    @field:Min(1)
     val page: Long,
     @field:Min(1)
     @field:NotNull

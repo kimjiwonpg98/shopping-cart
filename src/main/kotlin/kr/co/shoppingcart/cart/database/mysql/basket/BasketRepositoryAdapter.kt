@@ -92,6 +92,17 @@ class BasketRepositoryAdapter(
         return basket.let(BasketEntityMapper::toDomain)
     }
 
+    override fun updateContent(
+        basketId: Long,
+        content: String?,
+        count: Long?,
+    ): Basket {
+        val basket = basketEntityRepository.findById(basketId)
+        basket!!.content = content ?: basket.content
+        basket.count = count ?: basket.count
+        return basket.let(BasketEntityMapper::toDomain)
+    }
+
     override fun bulkSave(basket: List<Basket>) {
         basketJdbcRepository.bulkInsert(
             basket.map {

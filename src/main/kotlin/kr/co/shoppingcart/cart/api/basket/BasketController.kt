@@ -3,8 +3,10 @@ package kr.co.shoppingcart.cart.api.basket
 import kr.co.shoppingcart.cart.api.basket.dto.request.CheckedBasketReqBodyDto
 import kr.co.shoppingcart.cart.api.basket.dto.request.CreateBasketReqBodyDto
 import kr.co.shoppingcart.cart.api.basket.dto.request.GetByTemplateIdReqDto
+import kr.co.shoppingcart.cart.api.basket.dto.request.UpdateBasketContentReqBodyDto
 import kr.co.shoppingcart.cart.api.basket.dto.response.CreateBasketResDto
 import kr.co.shoppingcart.cart.api.basket.dto.response.GetByTemplateIdResDto
+import kr.co.shoppingcart.cart.api.basket.dto.response.UpdateBasketContentResDto
 import kr.co.shoppingcart.cart.auth.JwtPayload
 import kr.co.shoppingcart.cart.auth.annotation.CurrentUser
 import kr.co.shoppingcart.cart.common.error.annotations.OpenApiSpecApiException
@@ -12,6 +14,7 @@ import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
 import kr.co.shoppingcart.cart.domain.basket.BasketUseCase
 import kr.co.shoppingcart.cart.domain.basket.command.CreateBasketCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketsByTemplateIdCommand
+import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketContentCommand
 import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketFlagCommand
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -27,7 +30,7 @@ class BasketController(
 ) {
     @OpenApiSpecApiException(
         [
-            ExceptionCode.E_403_000, ExceptionCode.E_400_000,
+            ExceptionCode.E_403_000, ExceptionCode.E_400_000, ExceptionCode.E_404_003,
         ],
     )
     @PostMapping("/v1/basket")
@@ -72,6 +75,32 @@ class BasketController(
 
         basketUseCase.updateIsAddedByFlagAndId(basket)
         return ResponseEntity.status(200).build()
+    }
+
+    @OpenApiSpecApiException(
+        [
+            ExceptionCode.E_403_000, ExceptionCode.E_404_002,
+        ],
+    )
+    @PutMapping("/v1/basket")
+    fun updateBasketContent(
+        @RequestBody body: UpdateBasketContentReqBodyDto,
+        @CurrentUser currentUser: JwtPayload,
+    ): ResponseEntity<UpdateBasketContentResDto> {
+        val command =
+            UpdateBasketContentCommand(
+                userId = currentUser.identificationValue.toLong(),
+                content = body.content,
+                count = body.count,
+                basketId = body.basketId,
+            )
+
+        val basket = basketUseCase.updateBasketContent(command)
+        return ResponseEntity.status(200).body(
+            UpdateBasketContentResDto(
+                result = basket.let(BasketResponseMapper::toResponse),
+            ),
+        )
     }
 
     @OpenApiSpecApiException(

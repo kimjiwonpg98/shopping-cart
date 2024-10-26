@@ -31,5 +31,11 @@ interface BasketRepository {
         checked: Boolean,
     ): Basket
 
+    fun updateContent(
+        basketId: Long,
+        content: String?,
+        count: Long?,
+    ): Basket
+
     fun bulkSave(basket: List<Basket>)
 }
