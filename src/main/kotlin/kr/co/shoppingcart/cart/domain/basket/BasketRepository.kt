@@ -37,5 +37,7 @@ interface BasketRepository {
         count: Long?,
     ): Basket
 
+    fun deleteById(basketId: Long)
+
     fun bulkSave(basket: List<Basket>)
 }

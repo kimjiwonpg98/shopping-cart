@@ -37,6 +37,15 @@ class MockBasketRepository : BasketRepository {
         checked: Boolean,
     ): Basket = MockBasket.getBasket(1, true)
 
+    override fun updateContent(
+        basketId: Long,
+        content: String?,
+        count: Long?,
+    ): Basket = MockBasket.getBasket(1, true)
+
+    override fun deleteById(basketId: Long) {
+    }
+
     override fun bulkSave(basket: List<Basket>) {
     }
 

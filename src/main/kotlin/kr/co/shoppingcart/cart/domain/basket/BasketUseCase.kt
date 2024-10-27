@@ -3,6 +3,7 @@ package kr.co.shoppingcart.cart.domain.basket
 import kr.co.shoppingcart.cart.common.error.CustomException
 import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
 import kr.co.shoppingcart.cart.domain.basket.command.CreateBasketCommand
+import kr.co.shoppingcart.cart.domain.basket.command.DeleteBasketByIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketsByTemplateIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketContentCommand
 import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketFlagCommand
@@ -108,6 +109,22 @@ class BasketUseCase(
             command.basketId,
             command.content,
             command.count,
+        )
+    }
+
+    @Transactional
+    fun deleteById(command: DeleteBasketByIdCommand) {
+        val basket =
+            this.basketRepository.getById(command.basketId)
+                ?: throw CustomException.responseBody(ExceptionCode.E_404_002)
+
+        permissionsRepository.getByUserIdAndTemplateId(
+            command.userId,
+            basket.templateId!!.templateId,
+        ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+
+        this.basketRepository.deleteById(
+            command.basketId,
         )
     }
 

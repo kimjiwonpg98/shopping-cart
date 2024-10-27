@@ -13,12 +13,15 @@ import kr.co.shoppingcart.cart.common.error.annotations.OpenApiSpecApiException
 import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
 import kr.co.shoppingcart.cart.domain.basket.BasketUseCase
 import kr.co.shoppingcart.cart.domain.basket.command.CreateBasketCommand
+import kr.co.shoppingcart.cart.domain.basket.command.DeleteBasketByIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketsByTemplateIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketContentCommand
 import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketFlagCommand
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -128,5 +131,26 @@ class BasketController(
                 result = result.map(BasketResponseMapper::toResponse),
             ),
         )
+    }
+
+    @OpenApiSpecApiException(
+        [
+            ExceptionCode.E_403_000, ExceptionCode.E_401_000,
+        ],
+    )
+    @DeleteMapping("/v1/basket/{id}")
+    fun deleteById(
+        @PathVariable id: Long,
+        @CurrentUser currentUser: JwtPayload,
+    ): ResponseEntity<Unit> {
+        val command =
+            DeleteBasketByIdCommand(
+                basketId = id,
+                userId = currentUser.identificationValue.toLong(),
+            )
+
+        basketUseCase.deleteById(command)
+
+        return ResponseEntity.status(200).build()
     }
 }

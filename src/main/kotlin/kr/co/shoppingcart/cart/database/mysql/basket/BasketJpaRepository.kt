@@ -21,4 +21,6 @@ interface BasketJpaRepository : BasketEntityRepository<BasketEntity, Long> {
     ): List<BasketEntity>
 
     override fun findById(id: Long): BasketEntity?
+
+    override fun deleteById(id: Long)
 }

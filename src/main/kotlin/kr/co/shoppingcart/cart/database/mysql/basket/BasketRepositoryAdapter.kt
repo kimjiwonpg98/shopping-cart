@@ -103,6 +103,8 @@ class BasketRepositoryAdapter(
         return basket.let(BasketEntityMapper::toDomain)
     }
 
+    override fun deleteById(basketId: Long) = basketEntityRepository.deleteById(basketId)
+
     override fun bulkSave(basket: List<Basket>) {
         basketJdbcRepository.bulkInsert(
             basket.map {
