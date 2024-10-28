@@ -6,4 +6,6 @@ interface CategoryRepository {
     fun getAll(): List<Category>
 
     fun getById(id: Long): Category?
+
+    fun getByTemplateId(templateId: Long): List<Category>
 }

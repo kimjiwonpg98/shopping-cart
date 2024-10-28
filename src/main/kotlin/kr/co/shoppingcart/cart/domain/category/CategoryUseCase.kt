@@ -13,4 +13,7 @@ class CategoryUseCase(
 
     @Transactional(readOnly = true)
     fun getById(id: Long): Category? = categoryRepository.getById(id)
+
+    @Transactional(readOnly = true)
+    fun getByTemplateId(templateId: Long): List<Category> = categoryRepository.getByTemplateId(templateId)
 }
