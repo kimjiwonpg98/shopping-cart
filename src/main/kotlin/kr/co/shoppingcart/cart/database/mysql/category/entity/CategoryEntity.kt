@@ -15,7 +15,7 @@ data class CategoryEntity(
     @Id()
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "BIGINT", name = "id")
-    val id: Long? = null,
+    val id: Long = 0,
     @Column(nullable = false, length = 200)
     val name: String,
 ) : CommonEntity() {

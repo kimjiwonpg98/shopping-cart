@@ -11,4 +11,6 @@ interface CategoryEntityRepository<T, ID> : Repository<T, ID> {
     fun getById(id: Long): CategoryEntity?
 
     fun findAll(): List<CategoryEntity>
+
+    fun getByTemplateId(templateId: Long): List<CategoryEntity>
 }
