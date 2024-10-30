@@ -48,7 +48,7 @@ class SecurityConfig(
             }.authorizeHttpRequests { requests ->
                 requests.requestMatchers(HttpMethod.GET, "/v1/search").permitAll()
                 requests.requestMatchers(HttpMethod.GET, "/login/oauth2/code").permitAll()
-                requests.requestMatchers(HttpMethod.GET, "/v1").permitAll()
+                requests.requestMatchers(HttpMethod.GET, "/v1").hasAnyRole(TokenInformationEnum.USER.name)
                 requests.requestMatchers(HttpMethod.POST, "/v1").hasAnyRole(TokenInformationEnum.USER.name)
                 requests.requestMatchers(HttpMethod.DELETE, "/v1").hasAnyRole(TokenInformationEnum.USER.name)
                 requests.requestMatchers(HttpMethod.PATCH, "/v1").hasAnyRole(TokenInformationEnum.USER.name)
