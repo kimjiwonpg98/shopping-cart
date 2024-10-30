@@ -5,6 +5,7 @@ import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
 import kr.co.shoppingcart.cart.domain.basket.BasketRepository
 import kr.co.shoppingcart.cart.domain.basket.BasketUseCase
 import kr.co.shoppingcart.cart.domain.basket.command.CreateBasketCommand
+import kr.co.shoppingcart.cart.domain.basket.command.GetBasketByTemplateIdAndCategoryIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketFlagCommand
 import kr.co.shoppingcart.cart.domain.basket.vo.Basket
 import kr.co.shoppingcart.cart.domain.category.CategoryRepository
@@ -61,7 +62,7 @@ class BasketUseCaseTest {
     inner class SaveTest {
         var command =
             CreateBasketCommand(
-                templatedId = 1L,
+                templateId = 1L,
                 name = "test",
                 categoryId = 1L,
                 userId = 1,
@@ -93,7 +94,7 @@ class BasketUseCaseTest {
                 MockCategory.getCategory(anyLong()),
             )
 
-            `when`(templateRepository.getById(command.templatedId)).thenReturn(
+            `when`(templateRepository.getById(command.templateId)).thenReturn(
                 null,
             )
 
@@ -112,7 +113,7 @@ class BasketUseCaseTest {
 
         @Test
         fun `정상적으로 저장될 시 반환값은 Basket 객체를 반환한다`() {
-            val mockTemplate = MockTemplate.getTemplate(command.templatedId)
+            val mockTemplate = MockTemplate.getTemplate(command.templateId)
             val mockCategory = MockCategory.getCategory(command.categoryId)
             val mockBasket = MockBasket.getBasketByCreate(command)
 
@@ -120,10 +121,10 @@ class BasketUseCaseTest {
                 categoryRepository.getById(command.categoryId),
             ).willReturn(MockCategory.getCategory(command.categoryId))
             given(
-                templateRepository.getById(command.templatedId),
-            ).willReturn(MockTemplate.getTemplate(command.templatedId))
+                templateRepository.getById(command.templateId),
+            ).willReturn(MockTemplate.getTemplate(command.templateId))
 
-            `when`(permissionsRepository.getByUserIdAndTemplateId(command.userId, command.templatedId)).thenReturn(
+            `when`(permissionsRepository.getByUserIdAndTemplateId(command.userId, command.templateId)).thenReturn(
                 MockPermissions.getPermission(1, 0),
             )
 
@@ -256,6 +257,54 @@ class BasketUseCaseTest {
                 )
 
             assertInstanceOf(Basket::class.java, result)
+        }
+    }
+
+    @Nested
+    @DisplayName("getByTemplateIdAndCategoryId() test")
+    inner class GetByTemplateIdAndCategoryIdTest {
+        var command =
+            GetBasketByTemplateIdAndCategoryIdCommand(
+                templateId = 1L,
+                categoryId = 1L,
+            )
+
+        @Test
+        fun `조회 시 없으면 빈 list`() {
+            `when`(
+                basketRepository.getByTemplateIdAndCategoryIdByUpdatedDesc(command.templateId, command.categoryId),
+            ).thenReturn(
+                emptyList(),
+            )
+
+            basketUseCase =
+                BasketUseCase(basketRepository, categoryRepository, templateRepository, permissionsRepository)
+
+            val result =
+                basketUseCase.getByTemplateIdAndCategoryId(
+                    command,
+                )
+
+            assertThat(result).isEmpty()
+        }
+
+        @Test
+        fun `정상적으로 조회했을 떄 확인`() {
+            `when`(
+                basketRepository.getByTemplateIdAndCategoryIdByUpdatedDesc(command.templateId, command.categoryId),
+            ).thenReturn(
+                emptyList(),
+            )
+
+            basketUseCase =
+                BasketUseCase(basketRepository, categoryRepository, templateRepository, permissionsRepository)
+
+            val result =
+                basketUseCase.getByTemplateIdAndCategoryId(
+                    command,
+                )
+
+            assertThat(result).isEmpty()
         }
     }
 }

@@ -32,6 +32,11 @@ class MockBasketRepository : BasketRepository {
         size: Int,
     ): List<Basket> = MockBasket.getBasketsAllChecked()
 
+    override fun getByTemplateIdAndCategoryIdByUpdatedDesc(
+        templateId: Long,
+        categoryId: Long,
+    ): List<Basket> = MockBasket.getBasketsAllChecked()
+
     override fun updateCheckedById(
         basketId: Long,
         checked: Boolean,

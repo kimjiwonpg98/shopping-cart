@@ -73,7 +73,7 @@ object MockBasket {
                 ),
             count = BasketCount(createBasketCommand.count ?: 1),
             checked = BasketChecked(false),
-            template = Template.toDomain(createBasketCommand.templatedId, "test", 1L, true, 1, null, null),
+            template = Template.toDomain(createBasketCommand.templateId, "test", 1L, true, 1, null, null),
             createTime = null,
             updateTime = null,
             templateId = null,

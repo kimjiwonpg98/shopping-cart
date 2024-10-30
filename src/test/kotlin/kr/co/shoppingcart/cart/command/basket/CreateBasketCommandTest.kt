@@ -18,7 +18,7 @@ class CreateBasketCommandTest {
     fun `성공 케이스`() {
         val command =
             CreateBasketCommand(
-                templatedId = 1L,
+                templateId = 1L,
                 name = "Test",
                 categoryId = 2L,
                 userId = 3L,
@@ -36,7 +36,7 @@ class CreateBasketCommandTest {
         val exception =
             assertThrows<CustomException> {
                 CreateBasketCommand(
-                    templatedId = 0L,
+                    templateId = 0L,
                     name = "Test",
                     categoryId = 2L,
                     userId = 3L,
@@ -54,7 +54,7 @@ class CreateBasketCommandTest {
         val exception =
             assertThrows<CustomException> {
                 CreateBasketCommand(
-                    templatedId = 1L,
+                    templateId = 1L,
                     name = " ",
                     categoryId = 2L,
                     userId = 3L,
@@ -72,7 +72,7 @@ class CreateBasketCommandTest {
         val exception =
             assertThrows<CustomException> {
                 CreateBasketCommand(
-                    templatedId = 1L,
+                    templateId = 1L,
                     name = "test",
                     categoryId = 0L,
                     userId = 3L,
@@ -89,7 +89,7 @@ class CreateBasketCommandTest {
     fun `기본값이 있는 것들은 기본값이 적용된다`() {
         val command =
             CreateBasketCommand(
-                templatedId = 1L,
+                templateId = 1L,
                 name = "Basket Name",
                 categoryId = 2L,
                 userId = 1L,

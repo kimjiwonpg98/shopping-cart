@@ -4,6 +4,7 @@ import kr.co.shoppingcart.cart.common.error.CustomException
 import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
 import kr.co.shoppingcart.cart.domain.basket.command.CreateBasketCommand
 import kr.co.shoppingcart.cart.domain.basket.command.DeleteBasketByIdCommand
+import kr.co.shoppingcart.cart.domain.basket.command.GetBasketByTemplateIdAndCategoryIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketsByTemplateIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketContentCommand
 import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketFlagCommand
@@ -28,13 +29,13 @@ class BasketUseCase(
             categoryRepository.getById(createBasketCommand.categoryId)
                 ?: throw CustomException.responseBody(ExceptionCode.E_404_003)
         val template =
-            templateRepository.getById(createBasketCommand.templatedId)
+            templateRepository.getById(createBasketCommand.templateId)
                 ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
 
         val permission =
             permissionsRepository.getByUserIdAndTemplateId(
                 createBasketCommand.userId,
-                createBasketCommand.templatedId,
+                createBasketCommand.templateId,
             ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
 
         if (!permission.checkWritePermissionByLevel()) {
@@ -118,14 +119,26 @@ class BasketUseCase(
             this.basketRepository.getById(command.basketId)
                 ?: throw CustomException.responseBody(ExceptionCode.E_404_002)
 
-        permissionsRepository.getByUserIdAndTemplateId(
-            command.userId,
-            basket.templateId!!.templateId,
-        ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+        val permission =
+            permissionsRepository.getByUserIdAndTemplateId(
+                command.userId,
+                basket.templateId!!.templateId,
+            ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+
+        if (!permission.checkWritePermissionByLevel()) throw CustomException.responseBody(ExceptionCode.E_403_000)
 
         this.basketRepository.deleteById(
             command.basketId,
         )
+    }
+
+    fun getByTemplateIdAndCategoryId(command: GetBasketByTemplateIdAndCategoryIdCommand): List<Basket> {
+        permissionsRepository.getByUserIdAndTemplateId(
+            command.userId,
+            command.templateId,
+        ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+
+        return basketRepository.getByTemplateIdAndCategoryIdByUpdatedDesc(command.templateId, command.categoryId)
     }
 
     @Cacheable(
