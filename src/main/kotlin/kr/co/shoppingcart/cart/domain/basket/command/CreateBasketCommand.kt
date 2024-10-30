@@ -8,7 +8,7 @@ import kr.co.shoppingcart.cart.common.SelfValidating
 data class CreateBasketCommand(
     @field:Min(1)
     @field:NotNull
-    val templatedId: Long,
+    val templateId: Long,
     @field:NotBlank
     @field:NotNull
     val name: String,

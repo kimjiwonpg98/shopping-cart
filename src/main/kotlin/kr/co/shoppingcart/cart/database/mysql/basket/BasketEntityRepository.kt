@@ -21,7 +21,7 @@ interface BasketEntityRepository<T, ID> : Repository<T, ID> {
         pageable: Pageable,
     ): List<BasketEntity>
 
-    fun getByTemplateIdAndCategoryId(
+    fun getByTemplateIdAndCategoryIdOrderByUpdatedAtDescCheckedAsc(
         templateId: Long,
         categoryId: Long,
     ): List<BasketEntity>

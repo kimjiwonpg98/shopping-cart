@@ -10,7 +10,7 @@ interface BasketJpaRepository : BasketEntityRepository<BasketEntity, Long> {
 
     override fun getByTemplateIdOrderByUpdatedAtDesc(templateId: Long): List<BasketEntity>
 
-    override fun getByTemplateIdAndCategoryId(
+    override fun getByTemplateIdAndCategoryIdOrderByUpdatedAtDescCheckedAsc(
         templateId: Long,
         categoryId: Long,
     ): List<BasketEntity>

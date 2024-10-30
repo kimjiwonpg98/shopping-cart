@@ -2,9 +2,11 @@ package kr.co.shoppingcart.cart.api.basket
 
 import kr.co.shoppingcart.cart.api.basket.dto.request.CheckedBasketReqBodyDto
 import kr.co.shoppingcart.cart.api.basket.dto.request.CreateBasketReqBodyDto
+import kr.co.shoppingcart.cart.api.basket.dto.request.GetByTemplateIdAndCategoryIdReqQueryDto
 import kr.co.shoppingcart.cart.api.basket.dto.request.GetByTemplateIdReqDto
 import kr.co.shoppingcart.cart.api.basket.dto.request.UpdateBasketContentReqBodyDto
 import kr.co.shoppingcart.cart.api.basket.dto.response.CreateBasketResDto
+import kr.co.shoppingcart.cart.api.basket.dto.response.GetByTemplateIdAndCategoryIdResDto
 import kr.co.shoppingcart.cart.api.basket.dto.response.GetByTemplateIdResDto
 import kr.co.shoppingcart.cart.api.basket.dto.response.UpdateBasketContentResDto
 import kr.co.shoppingcart.cart.auth.JwtPayload
@@ -14,6 +16,7 @@ import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
 import kr.co.shoppingcart.cart.domain.basket.BasketUseCase
 import kr.co.shoppingcart.cart.domain.basket.command.CreateBasketCommand
 import kr.co.shoppingcart.cart.domain.basket.command.DeleteBasketByIdCommand
+import kr.co.shoppingcart.cart.domain.basket.command.GetBasketByTemplateIdAndCategoryIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketsByTemplateIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketContentCommand
 import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketFlagCommand
@@ -43,7 +46,7 @@ class BasketController(
     ): ResponseEntity<CreateBasketResDto> {
         val basket =
             CreateBasketCommand(
-                templatedId = body.templateId,
+                templateId = body.templateId,
                 name = body.name,
                 categoryId = body.categoryId,
                 count = body.count,
@@ -128,6 +131,33 @@ class BasketController(
 
         return ResponseEntity.status(200).body(
             GetByTemplateIdResDto(
+                result = result.map(BasketResponseMapper::toResponse),
+            ),
+        )
+    }
+
+    @OpenApiSpecApiException(
+        [
+            ExceptionCode.E_403_000, ExceptionCode.E_401_000,
+        ],
+    )
+    @GetMapping("/v1/categories/{categoryId}/baskets")
+    fun getByTemplateIdAndCategoryId(
+        @ModelAttribute params: GetByTemplateIdAndCategoryIdReqQueryDto,
+        @PathVariable categoryId: Long,
+        @CurrentUser currentUser: JwtPayload,
+    ): ResponseEntity<GetByTemplateIdAndCategoryIdResDto> {
+        val result =
+            basketUseCase.getByTemplateIdAndCategoryId(
+                GetBasketByTemplateIdAndCategoryIdCommand(
+                    params.templateId.toLong(),
+                    categoryId,
+                    currentUser.identificationValue.toLong(),
+                ),
+            )
+
+        return ResponseEntity.status(200).body(
+            GetByTemplateIdAndCategoryIdResDto(
                 result = result.map(BasketResponseMapper::toResponse),
             ),
         )

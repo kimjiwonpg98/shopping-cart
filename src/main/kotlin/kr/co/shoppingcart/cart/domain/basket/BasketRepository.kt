@@ -26,6 +26,11 @@ interface BasketRepository {
         size: Int,
     ): List<Basket>
 
+    fun getByTemplateIdAndCategoryIdByUpdatedDesc(
+        templateId: Long,
+        categoryId: Long,
+    ): List<Basket>
+
     fun updateCheckedById(
         basketId: Long,
         checked: Boolean,
