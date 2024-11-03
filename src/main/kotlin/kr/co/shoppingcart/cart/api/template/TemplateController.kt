@@ -1,12 +1,16 @@
 package kr.co.shoppingcart.cart.api.template
 
+import jakarta.annotation.Nullable
 import jakarta.validation.Valid
 import kr.co.shoppingcart.cart.api.template.dto.request.CreateTemplateRequestBodyDto
 import kr.co.shoppingcart.cart.api.template.dto.request.GetWIthPercentRequestParamsDto
+import kr.co.shoppingcart.cart.api.template.dto.request.UpdateTemplateRequestDto
 import kr.co.shoppingcart.cart.api.template.dto.request.UpdateTemplateSharedRequestParamsDto
 import kr.co.shoppingcart.cart.api.template.dto.response.CreateTemplateResponseBodyDto
 import kr.co.shoppingcart.cart.api.template.dto.response.GetTemplateByIdResponseBodyDto
 import kr.co.shoppingcart.cart.api.template.dto.response.GetTemplateResponseBodyDto
+import kr.co.shoppingcart.cart.api.template.dto.response.UpdateTemplateResponseBodyDto
+import kr.co.shoppingcart.cart.api.template.dto.response.UpdateTemplateToSharedResponseBodyDto
 import kr.co.shoppingcart.cart.auth.JwtPayload
 import kr.co.shoppingcart.cart.auth.annotation.CurrentUser
 import kr.co.shoppingcart.cart.common.error.annotations.OpenApiSpecApiException
@@ -20,6 +24,7 @@ import kr.co.shoppingcart.cart.domain.template.command.CreateTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.DeleteByTemplateIdCommand
 import kr.co.shoppingcart.cart.domain.template.command.GetTemplateByIdAndUserIdCommand
 import kr.co.shoppingcart.cart.domain.template.command.GetWithCompletePercentAndPreviewCommand
+import kr.co.shoppingcart.cart.domain.template.command.UpdateTemplateByIdCommand
 import kr.co.shoppingcart.cart.domain.template.command.UpdateTemplateSharedByIdCommand
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -38,12 +43,12 @@ class TemplateController(
 ) {
     @PostMapping("/v1/template")
     fun save(
-        @Valid @RequestBody body: CreateTemplateRequestBodyDto,
+        @Valid @RequestBody(required = false) @Nullable body: CreateTemplateRequestBodyDto?,
         @CurrentUser currentUser: JwtPayload,
     ): ResponseEntity<CreateTemplateResponseBodyDto> {
         val template =
             CreateTemplateCommand(
-                name = body.name,
+                name = body?.name ?: "장바구니",
                 userId = currentUser.identificationValue.toLong(),
             )
         val result = templateUseCase.createByApi(template)
@@ -75,20 +80,48 @@ class TemplateController(
     }
 
     @OpenApiSpecApiException([ExceptionCode.E_401_000, ExceptionCode.E_403_000])
+    @PutMapping("/v1/template/{id}")
+    fun updateTemplate(
+        @PathVariable id: String,
+        @Valid @RequestBody @Nullable body: UpdateTemplateRequestDto?,
+        @CurrentUser currentUser: JwtPayload,
+    ): ResponseEntity<UpdateTemplateResponseBodyDto> {
+        val result =
+            templateUseCase.updateById(
+                UpdateTemplateByIdCommand(
+                    templateId = id.toLong(),
+                    userId = currentUser.identificationValue.toLong(),
+                    name = body?.name,
+                    thumbnailIndex = body?.thumbnailIndex,
+                ),
+            )
+        return ResponseEntity.status(200).body(
+            UpdateTemplateResponseBodyDto(
+                result = result.let(TemplateResponseMapper::toResponse),
+            ),
+        )
+    }
+
+    @OpenApiSpecApiException([ExceptionCode.E_401_000, ExceptionCode.E_403_000])
     @PutMapping("/v1/template/{id}/share")
     fun updateSharedById(
         @PathVariable id: String,
         @ModelAttribute params: UpdateTemplateSharedRequestParamsDto,
         @CurrentUser currentUser: JwtPayload,
-    ): ResponseEntity<Unit> {
-        templateUseCase.updateSharedById(
-            UpdateTemplateSharedByIdCommand(
-                id = id.toLong(),
-                userId = currentUser.identificationValue.toLong(),
-                isShared = params.isShared,
+    ): ResponseEntity<UpdateTemplateToSharedResponseBodyDto> {
+        val result =
+            templateUseCase.updateSharedById(
+                UpdateTemplateSharedByIdCommand(
+                    id = id.toLong(),
+                    userId = currentUser.identificationValue.toLong(),
+                    isShared = params.isShared,
+                ),
+            )
+        return ResponseEntity.status(200).body(
+            UpdateTemplateToSharedResponseBodyDto(
+                result = result.let(TemplateResponseMapper::toResponse),
             ),
         )
-        return ResponseEntity.status(200).build()
     }
 
     @OpenApiSpecApiException([ExceptionCode.E_401_000, ExceptionCode.E_403_000])
