@@ -4,6 +4,7 @@ import kr.co.shoppingcart.cart.common.error.CustomException
 import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
 import kr.co.shoppingcart.cart.domain.basket.command.CreateBasketCommand
 import kr.co.shoppingcart.cart.domain.basket.command.DeleteBasketByIdCommand
+import kr.co.shoppingcart.cart.domain.basket.command.GetBasketByIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketByTemplateIdAndCategoryIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketsByTemplateIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketContentCommand
@@ -139,6 +140,20 @@ class BasketUseCase(
         ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
 
         return basketRepository.getByTemplateIdAndCategoryIdByUpdatedDesc(command.templateId, command.categoryId)
+    }
+
+    @Transactional(readOnly = true)
+    fun getById(command: GetBasketByIdCommand): Basket {
+        val basket =
+            this.basketRepository.getById(command.basketId)
+                ?: throw CustomException.responseBody(ExceptionCode.E_404_002)
+
+        permissionsRepository.getByUserIdAndTemplateId(
+            command.userId,
+            basket.templateId!!.templateId,
+        ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+
+        return basket
     }
 
     @Cacheable(

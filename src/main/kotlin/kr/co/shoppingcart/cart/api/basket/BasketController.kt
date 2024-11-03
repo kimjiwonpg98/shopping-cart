@@ -1,11 +1,13 @@
 package kr.co.shoppingcart.cart.api.basket
 
+import jakarta.validation.Valid
 import kr.co.shoppingcart.cart.api.basket.dto.request.CheckedBasketReqBodyDto
 import kr.co.shoppingcart.cart.api.basket.dto.request.CreateBasketReqBodyDto
 import kr.co.shoppingcart.cart.api.basket.dto.request.GetByTemplateIdAndCategoryIdReqQueryDto
 import kr.co.shoppingcart.cart.api.basket.dto.request.GetByTemplateIdReqDto
 import kr.co.shoppingcart.cart.api.basket.dto.request.UpdateBasketContentReqBodyDto
 import kr.co.shoppingcart.cart.api.basket.dto.response.CreateBasketResDto
+import kr.co.shoppingcart.cart.api.basket.dto.response.GetByIdResponseDto
 import kr.co.shoppingcart.cart.api.basket.dto.response.GetByTemplateIdAndCategoryIdResDto
 import kr.co.shoppingcart.cart.api.basket.dto.response.GetByTemplateIdResDto
 import kr.co.shoppingcart.cart.api.basket.dto.response.UpdateBasketContentResDto
@@ -16,6 +18,7 @@ import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
 import kr.co.shoppingcart.cart.domain.basket.BasketUseCase
 import kr.co.shoppingcart.cart.domain.basket.command.CreateBasketCommand
 import kr.co.shoppingcart.cart.domain.basket.command.DeleteBasketByIdCommand
+import kr.co.shoppingcart.cart.domain.basket.command.GetBasketByIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketByTemplateIdAndCategoryIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketsByTemplateIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketContentCommand
@@ -132,6 +135,31 @@ class BasketController(
         return ResponseEntity.status(200).body(
             GetByTemplateIdResDto(
                 result = result.map(BasketResponseMapper::toResponse),
+            ),
+        )
+    }
+
+    @OpenApiSpecApiException(
+        [
+            ExceptionCode.E_403_000, ExceptionCode.E_401_000,
+        ],
+    )
+    @GetMapping("/v1/basket/{id}")
+    fun getByTemplateId(
+        @Valid @PathVariable id: Long,
+        @CurrentUser currentUser: JwtPayload,
+    ): ResponseEntity<GetByIdResponseDto> {
+        val result =
+            basketUseCase.getById(
+                GetBasketByIdCommand(
+                    currentUser.identificationValue.toLong(),
+                    id,
+                ),
+            )
+
+        return ResponseEntity.status(200).body(
+            GetByIdResponseDto(
+                result = result.let(BasketResponseMapper::toResponse),
             ),
         )
     }
