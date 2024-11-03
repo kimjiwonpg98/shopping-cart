@@ -41,9 +41,21 @@ class TemplateRepositoryAdapter(
     override fun updateSharedById(
         id: Long,
         isShared: Boolean,
-    ) {
+    ): Template {
         val template = templateEntityRepository.getById(id)
         template.isPublic = isShared
+        return template.let(TemplateEntityMapper::toDomain)
+    }
+
+    override fun update(
+        id: Long,
+        name: String?,
+        thumbnailIndex: Int?,
+    ): Template {
+        val template = templateEntityRepository.getById(id)
+        name?.let { template.name = it }
+        thumbnailIndex?.let { template.thumbnailIdx = it }
+        return template.let(TemplateEntityMapper::toDomain)
     }
 
     override fun getWithCompletePercent(

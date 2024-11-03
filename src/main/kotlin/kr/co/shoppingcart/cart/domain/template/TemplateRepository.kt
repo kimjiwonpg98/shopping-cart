@@ -21,7 +21,13 @@ interface TemplateRepository {
     fun updateSharedById(
         id: Long,
         isShared: Boolean,
-    )
+    ): Template
+
+    fun update(
+        id: Long,
+        name: String?,
+        thumbnailIndex: Int?,
+    ): Template
 
     fun getWithCompletePercent(
         userId: Long,

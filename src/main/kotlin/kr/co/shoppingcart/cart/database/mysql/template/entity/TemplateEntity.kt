@@ -17,7 +17,7 @@ class TemplateEntity(
     @Column(columnDefinition = "BIGINT", name = "id")
     val id: Long? = null,
     @Column(nullable = false, length = 200)
-    val name: String,
+    var name: String,
     @Column(columnDefinition = "BIGINT", nullable = false, name = "user_id")
     val userId: Long,
     @Column(columnDefinition = "BOOLEAN", nullable = false, name = "is_public")

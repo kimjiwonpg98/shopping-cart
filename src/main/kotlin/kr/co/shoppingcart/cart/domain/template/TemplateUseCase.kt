@@ -12,6 +12,7 @@ import kr.co.shoppingcart.cart.domain.template.command.CreateTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.DeleteByTemplateIdCommand
 import kr.co.shoppingcart.cart.domain.template.command.GetTemplateByIdAndUserIdCommand
 import kr.co.shoppingcart.cart.domain.template.command.GetWithCompletePercentAndPreviewCommand
+import kr.co.shoppingcart.cart.domain.template.command.UpdateTemplateByIdCommand
 import kr.co.shoppingcart.cart.domain.template.command.UpdateTemplateSharedByIdCommand
 import kr.co.shoppingcart.cart.domain.template.vo.Template
 import kr.co.shoppingcart.cart.domain.template.vo.TemplateWithCheckedCount
@@ -54,7 +55,7 @@ class TemplateUseCase(
             getTemplateByIdAndUserIdCommand.userId,
         ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
 
-    fun updateSharedById(updateTemplateSharedByIdCommand: UpdateTemplateSharedByIdCommand) {
+    fun updateSharedById(updateTemplateSharedByIdCommand: UpdateTemplateSharedByIdCommand): Template {
         if (!this.checkedOwnerByUserIdAndId(
                 updateTemplateSharedByIdCommand.userId,
                 updateTemplateSharedByIdCommand.id,
@@ -63,9 +64,26 @@ class TemplateUseCase(
             throw CustomException.responseBody(ExceptionCode.E_403_000)
         }
 
-        templateRepository.updateSharedById(
+        return templateRepository.updateSharedById(
             updateTemplateSharedByIdCommand.id,
             updateTemplateSharedByIdCommand.isShared,
+        )
+    }
+
+    @Transactional()
+    fun updateById(command: UpdateTemplateByIdCommand): Template {
+        if (!this.checkedOwnerByUserIdAndId(
+                command.userId,
+                command.templateId,
+            )
+        ) {
+            throw CustomException.responseBody(ExceptionCode.E_403_000)
+        }
+
+        return templateRepository.update(
+            command.templateId,
+            command.name,
+            command.thumbnailIndex,
         )
     }
 
