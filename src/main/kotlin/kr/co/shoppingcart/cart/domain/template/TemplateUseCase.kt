@@ -55,6 +55,7 @@ class TemplateUseCase(
             getTemplateByIdAndUserIdCommand.userId,
         ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
 
+    @Transactional
     fun updateSharedById(updateTemplateSharedByIdCommand: UpdateTemplateSharedByIdCommand): Template {
         if (!this.checkedOwnerByUserIdAndId(
                 updateTemplateSharedByIdCommand.userId,

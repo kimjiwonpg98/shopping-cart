@@ -5,7 +5,7 @@ import jakarta.validation.Valid
 import kr.co.shoppingcart.cart.api.template.dto.request.CreateTemplateRequestBodyDto
 import kr.co.shoppingcart.cart.api.template.dto.request.GetWIthPercentRequestParamsDto
 import kr.co.shoppingcart.cart.api.template.dto.request.UpdateTemplateRequestDto
-import kr.co.shoppingcart.cart.api.template.dto.request.UpdateTemplateSharedRequestParamsDto
+import kr.co.shoppingcart.cart.api.template.dto.request.UpdateTemplateSharedRequestBodyDto
 import kr.co.shoppingcart.cart.api.template.dto.response.CreateTemplateResponseBodyDto
 import kr.co.shoppingcart.cart.api.template.dto.response.GetTemplateByIdResponseBodyDto
 import kr.co.shoppingcart.cart.api.template.dto.response.GetTemplateResponseBodyDto
@@ -106,7 +106,7 @@ class TemplateController(
     @PutMapping("/v1/template/{id}/share")
     fun updateSharedById(
         @PathVariable id: String,
-        @ModelAttribute params: UpdateTemplateSharedRequestParamsDto,
+        @RequestBody params: UpdateTemplateSharedRequestBodyDto,
         @CurrentUser currentUser: JwtPayload,
     ): ResponseEntity<UpdateTemplateToSharedResponseBodyDto> {
         val result =
