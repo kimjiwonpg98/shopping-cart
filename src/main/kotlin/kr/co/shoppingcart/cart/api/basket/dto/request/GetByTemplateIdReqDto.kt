@@ -5,8 +5,4 @@ import org.springframework.format.annotation.NumberFormat
 data class GetByTemplateIdReqDto(
     @field:NumberFormat
     var templateId: String,
-    @field:NumberFormat
-    val page: String?,
-    @field:NumberFormat
-    val size: String?,
 )

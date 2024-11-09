@@ -8,12 +8,6 @@ data class GetWithCompletePercentAndPreviewCommand(
     @field:NotNull
     @field:Min(1)
     val userId: Long,
-    @field:NotNull
-    @field:Min(1)
-    val page: Long,
-    @field:Min(1)
-    @field:NotNull
-    val size: Long,
 ) : SelfValidating<GetWithCompletePercentAndPreviewCommand>() {
     init {
         this.validateSelf()

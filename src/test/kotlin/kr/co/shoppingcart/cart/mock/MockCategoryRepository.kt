@@ -9,6 +9,11 @@ class MockCategoryRepository : CategoryRepository {
 
     override fun getById(id: Long): Category? = MockCategory.getOptionalCategory(id, id == CATEGORY_ID_RETURN_NULL)
 
+    override fun getByNameOrBasic(name: String): Category =
+        MockCategory.getCategory(
+            1,
+        )
+
     override fun getByTemplateId(templateId: Long): List<Category> = MockCategory.getCategories()
 
     companion object {

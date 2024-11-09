@@ -19,8 +19,6 @@ class GetWithCompletePercentAndPreviewCommandTest {
         val command =
             GetWithCompletePercentAndPreviewCommand(
                 userId = 1L,
-                page = 1,
-                size = 1,
             )
 
         val violations = validator.validate(command)
@@ -34,42 +32,10 @@ class GetWithCompletePercentAndPreviewCommandTest {
             assertThrows<CustomException> {
                 GetWithCompletePercentAndPreviewCommand(
                     userId = 0L,
-                    page = 1,
-                    size = 1,
                 )
             }
 
         assertEquals(ExceptionCode.E_400_000.name, exception.code.name)
         assertTrue(exception.detailInformation!!.contains("user"))
-    }
-
-    @Test
-    fun `page는 0이상이어야한다`() {
-        val exception =
-            assertThrows<CustomException> {
-                GetWithCompletePercentAndPreviewCommand(
-                    userId = 1L,
-                    page = -1,
-                    size = 1,
-                )
-            }
-
-        assertEquals(ExceptionCode.E_400_000.name, exception.code.name)
-        assertTrue(exception.detailInformation!!.contains("page"))
-    }
-
-    @Test
-    fun `size는 1이상이어야한다`() {
-        val exception =
-            assertThrows<CustomException> {
-                GetWithCompletePercentAndPreviewCommand(
-                    userId = 1L,
-                    page = 0,
-                    size = 0,
-                )
-            }
-
-        assertEquals(ExceptionCode.E_400_000.name, exception.code.name)
-        assertTrue(exception.detailInformation!!.contains("size"))
     }
 }

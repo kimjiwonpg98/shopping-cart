@@ -163,8 +163,6 @@ class TemplateUseCase(
     ): List<TemplateWithCheckedCount> =
         templateRepository.getWithCompletePercent(
             getWithCompletePercentAndPreviewCommand.userId,
-            getWithCompletePercentAndPreviewCommand.page,
-            getWithCompletePercentAndPreviewCommand.size,
         )
 
     fun deleteByIdAndUserId(deleteByTemplateIdCommand: DeleteByTemplateIdCommand) {

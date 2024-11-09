@@ -11,12 +11,6 @@ data class GetBasketsByTemplateIdCommand(
     @field:Min(1)
     @field:NotNull
     val userId: Long,
-    @field:Min(0)
-    @field:NotNull
-    val page: Long,
-    @field:Min(1)
-    @field:NotNull
-    val size: Long,
 ) : SelfValidating<GetBasketsByTemplateIdCommand>() {
     init {
         this.validateSelf()

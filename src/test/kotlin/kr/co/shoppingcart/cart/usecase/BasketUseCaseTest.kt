@@ -64,29 +64,10 @@ class BasketUseCaseTest {
             CreateBasketCommand(
                 templateId = 1L,
                 name = "test",
-                categoryId = 1L,
+                categoryName = "기타",
                 userId = 1,
                 count = 1,
             )
-
-        @Test
-        fun `생성 시 카테고리가 없으면 에러를 뱉는다`() {
-            `when`(categoryRepository.getById(command.categoryId)).thenReturn(
-                null,
-            )
-
-            basketUseCase =
-                BasketUseCase(basketRepository, categoryRepository, templateRepository, permissionsRepository)
-
-            val exception =
-                assertThrows<CustomException> {
-                    basketUseCase.create(
-                        command,
-                    )
-                }
-
-            assertEquals(ExceptionCode.E_400_000.name, exception.code.name)
-        }
 
         @Test
         fun `생성 시 템플릿이 없으면 에러를 뱉는다`() {
@@ -114,12 +95,12 @@ class BasketUseCaseTest {
         @Test
         fun `정상적으로 저장될 시 반환값은 Basket 객체를 반환한다`() {
             val mockTemplate = MockTemplate.getTemplate(command.templateId)
-            val mockCategory = MockCategory.getCategory(command.categoryId)
+            val mockCategory = MockCategory.getCategory(1)
             val mockBasket = MockBasket.getBasketByCreate(command)
 
             given(
-                categoryRepository.getById(command.categoryId),
-            ).willReturn(MockCategory.getCategory(command.categoryId))
+                categoryRepository.getByNameOrBasic(command.categoryName),
+            ).willReturn(MockCategory.getCategory(1))
             given(
                 templateRepository.getById(command.templateId),
             ).willReturn(MockTemplate.getTemplate(command.templateId))
@@ -267,6 +248,7 @@ class BasketUseCaseTest {
             GetBasketByTemplateIdAndCategoryIdCommand(
                 templateId = 1L,
                 categoryId = 1L,
+                userId = 1,
             )
 
         @Test

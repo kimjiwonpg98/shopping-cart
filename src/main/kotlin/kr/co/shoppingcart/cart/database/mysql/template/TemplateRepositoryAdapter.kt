@@ -58,12 +58,8 @@ class TemplateRepositoryAdapter(
         return template.let(TemplateEntityMapper::toDomain)
     }
 
-    override fun getWithCompletePercent(
-        userId: Long,
-        page: Long,
-        size: Long,
-    ): List<TemplateWithCheckedCount> =
-        templateJdbcRepository.getWithCheckedCount(userId, page, size).map {
+    override fun getWithCompletePercent(userId: Long): List<TemplateWithCheckedCount> =
+        templateJdbcRepository.getWithCheckedCount(userId).map {
             TemplateWithCheckedCountEntityMapper.toDomain(it)
         }
 

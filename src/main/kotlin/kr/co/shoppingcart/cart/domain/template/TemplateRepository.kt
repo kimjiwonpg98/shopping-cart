@@ -29,11 +29,7 @@ interface TemplateRepository {
         thumbnailIndex: Int?,
     ): Template
 
-    fun getWithCompletePercent(
-        userId: Long,
-        page: Long,
-        size: Long,
-    ): List<TemplateWithCheckedCount>
+    fun getWithCompletePercent(userId: Long): List<TemplateWithCheckedCount>
 
     fun deleteById(id: Long)
 }

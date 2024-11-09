@@ -93,7 +93,7 @@ class BasketUseCase(
             template.id.id,
         ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
 
-        return this.getByTemplateId(command.templateId, command.page, command.size)
+        return this.getByTemplateId(command.templateId)
     }
 
     @Transactional
@@ -165,9 +165,5 @@ class BasketUseCase(
         size: Int,
     ): List<Basket> = basketRepository.getByTemplateIdAndSizeOrderByUpdatedDesc(templateId, size)
 
-    private fun getByTemplateId(
-        templateId: Long,
-        page: Long,
-        size: Long,
-    ): List<Basket> = basketRepository.getByTemplateIdWithPageNation(templateId, page, size)
+    private fun getByTemplateId(templateId: Long): List<Basket> = basketRepository.getByTemplateId(templateId)
 }

@@ -12,7 +12,7 @@ data class CreateBasketCommand(
     @field:NotBlank
     @field:NotNull
     val name: String,
-    @field:NotNull
+    @field:NotBlank
     val categoryName: String,
     @field:NotNull
     val userId: Long,

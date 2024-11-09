@@ -15,7 +15,7 @@ class CategoryRepositoryAdapter(
     override fun getById(id: Long): Category? =
         categoryEntityRepository.getById(id)?.let(CategoryEntityMapper::toDomain)
 
-    override fun getByNameOrBasic(name: String): Category? =
+    override fun getByNameOrBasic(name: String): Category =
         categoryEntityRepository.findByName(name)?.let(CategoryEntityMapper::toDomain)
             ?: categoryEntityRepository.getById(1L)!!.let(CategoryEntityMapper::toDomain)
 

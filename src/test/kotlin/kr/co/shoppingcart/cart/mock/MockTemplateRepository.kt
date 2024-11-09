@@ -25,14 +25,16 @@ class MockTemplateRepository : TemplateRepository {
     override fun updateSharedById(
         id: Long,
         isShared: Boolean,
-    ) {
-    }
+    ): Template = MockTemplate.getTemplate(1)
 
-    override fun getWithCompletePercent(
-        userId: Long,
-        page: Long,
-        size: Long,
-    ): List<TemplateWithCheckedCount> = MockTemplate.getTemplatesWithPercent()
+    override fun update(
+        id: Long,
+        name: String?,
+        thumbnailIndex: Int?,
+    ): Template = MockTemplate.getTemplate(1)
+
+    override fun getWithCompletePercent(userId: Long): List<TemplateWithCheckedCount> =
+        MockTemplate.getTemplatesWithPercent()
 
     override fun deleteById(id: Long) {
     }

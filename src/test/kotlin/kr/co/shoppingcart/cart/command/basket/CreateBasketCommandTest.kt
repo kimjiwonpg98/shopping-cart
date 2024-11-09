@@ -20,7 +20,7 @@ class CreateBasketCommandTest {
             CreateBasketCommand(
                 templateId = 1L,
                 name = "Test",
-                categoryId = 2L,
+                categoryName = "기타",
                 userId = 3L,
                 checked = true,
                 count = 5L,
@@ -38,7 +38,7 @@ class CreateBasketCommandTest {
                 CreateBasketCommand(
                     templateId = 0L,
                     name = "Test",
-                    categoryId = 2L,
+                    categoryName = "기타",
                     userId = 3L,
                     checked = true,
                     count = 5L,
@@ -56,7 +56,7 @@ class CreateBasketCommandTest {
                 CreateBasketCommand(
                     templateId = 1L,
                     name = " ",
-                    categoryId = 2L,
+                    categoryName = "기타",
                     userId = 3L,
                     checked = true,
                     count = 5L,
@@ -68,13 +68,13 @@ class CreateBasketCommandTest {
     }
 
     @Test
-    fun `카테고리는 1이상의 값이어야한다`() {
+    fun `카테고리는 값이 있어야한다`() {
         val exception =
             assertThrows<CustomException> {
                 CreateBasketCommand(
                     templateId = 1L,
                     name = "test",
-                    categoryId = 0L,
+                    categoryName = "",
                     userId = 3L,
                     checked = true,
                     count = 5L,
@@ -91,7 +91,7 @@ class CreateBasketCommandTest {
             CreateBasketCommand(
                 templateId = 1L,
                 name = "Basket Name",
-                categoryId = 2L,
+                categoryName = "기타",
                 userId = 1L,
             )
 

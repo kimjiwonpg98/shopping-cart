@@ -20,8 +20,6 @@ class GetBasketsByTemplateIdCommandTest {
             GetBasketsByTemplateIdCommand(
                 userId = 1L,
                 templateId = 1L,
-                page = 1,
-                size = 1,
             )
 
         val violations = validator.validate(command)
@@ -36,8 +34,6 @@ class GetBasketsByTemplateIdCommandTest {
                 GetBasketsByTemplateIdCommand(
                     userId = 1L,
                     templateId = 0L,
-                    page = 1,
-                    size = 1,
                 )
             }
 
@@ -52,44 +48,10 @@ class GetBasketsByTemplateIdCommandTest {
                 GetBasketsByTemplateIdCommand(
                     userId = 0L,
                     templateId = 1L,
-                    page = 1,
-                    size = 1,
                 )
             }
 
         assertEquals(ExceptionCode.E_400_000.name, exception.code.name)
         assertTrue(exception.detailInformation!!.contains("user"))
-    }
-
-    @Test
-    fun `page는 0이상이어야한다`() {
-        val exception =
-            assertThrows<CustomException> {
-                GetBasketsByTemplateIdCommand(
-                    userId = 1L,
-                    templateId = 1L,
-                    page = -1,
-                    size = 1,
-                )
-            }
-
-        assertEquals(ExceptionCode.E_400_000.name, exception.code.name)
-        assertTrue(exception.detailInformation!!.contains("page"))
-    }
-
-    @Test
-    fun `size는 1이상이어야한다`() {
-        val exception =
-            assertThrows<CustomException> {
-                GetBasketsByTemplateIdCommand(
-                    userId = 1L,
-                    templateId = 1L,
-                    page = 0,
-                    size = 0,
-                )
-            }
-
-        assertEquals(ExceptionCode.E_400_000.name, exception.code.name)
-        assertTrue(exception.detailInformation!!.contains("size"))
     }
 }

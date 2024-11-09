@@ -68,8 +68,8 @@ object MockBasket {
             categoryId = null,
             category =
                 Category.toDomain(
-                    createBasketCommand.categoryId,
-                    "test",
+                    1,
+                    createBasketCommand.categoryName,
                 ),
             count = BasketCount(createBasketCommand.count ?: 1),
             checked = BasketChecked(false),

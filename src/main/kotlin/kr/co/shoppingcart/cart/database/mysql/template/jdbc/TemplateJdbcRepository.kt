@@ -10,12 +10,7 @@ import org.springframework.stereotype.Repository
 class TemplateJdbcRepository(
     private val jdbcTemplate: JdbcTemplate,
 ) {
-    fun getWithCheckedCount(
-        userId: Long,
-        page: Long,
-        size: Long,
-    ): List<TemplateWithCheckedCountDto> {
-        val firstLimit = (page - 1) * size
+    fun getWithCheckedCount(userId: Long): List<TemplateWithCheckedCountDto> {
         val sql =
             """
             SELECT
@@ -33,7 +28,6 @@ class TemplateJdbcRepository(
             WHERE t.user_id = ?
             GROUP BY t.id
             ORDER BY t.id DESC
-            LIMIT $firstLimit, $size
             """.trimIndent()
 
         return jdbcTemplate.query(sql, GetWithCheckedCountMapper.rowMapper, userId)

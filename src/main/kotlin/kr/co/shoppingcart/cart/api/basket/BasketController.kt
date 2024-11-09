@@ -127,8 +127,6 @@ class BasketController(
                 GetBasketsByTemplateIdCommand(
                     params.templateId.toLong(),
                     currentUser.identificationValue.toLong(),
-                    params.page?.toLong()?.minus(1) ?: 0,
-                    params.size?.toLong() ?: 10,
                 ),
             )
 
