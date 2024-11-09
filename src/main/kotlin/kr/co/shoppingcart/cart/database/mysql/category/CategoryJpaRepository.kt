@@ -11,6 +11,8 @@ interface CategoryJpaRepository : CategoryEntityRepository<CategoryEntity, Long>
 
     override fun getById(id: Long): CategoryEntity?
 
+    override fun findByName(name: String): CategoryEntity?
+
     override fun findAll(): List<CategoryEntity>
 
     @Query(

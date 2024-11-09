@@ -11,9 +11,8 @@ data class CreateBasketReqBodyDto(
     @field:NotBlank
     @field:NotNull
     val name: String,
-    @field:Min(1)
     @field:NotNull
-    val categoryId: Long,
+    val categoryName: String,
     @field:Min(1)
     val count: Long? = 1,
 )

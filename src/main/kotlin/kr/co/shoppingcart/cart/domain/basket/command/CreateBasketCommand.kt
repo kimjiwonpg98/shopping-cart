@@ -12,9 +12,8 @@ data class CreateBasketCommand(
     @field:NotBlank
     @field:NotNull
     val name: String,
-    @field:Min(1)
     @field:NotNull
-    val categoryId: Long,
+    val categoryName: String,
     @field:NotNull
     val userId: Long,
     val checked: Boolean? = false,

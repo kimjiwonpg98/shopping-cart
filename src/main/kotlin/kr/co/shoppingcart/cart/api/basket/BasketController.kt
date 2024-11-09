@@ -51,7 +51,7 @@ class BasketController(
             CreateBasketCommand(
                 templateId = body.templateId,
                 name = body.name,
-                categoryId = body.categoryId,
+                categoryName = body.categoryName,
                 count = body.count,
                 userId = currentUser.identificationValue.toLong(),
             )

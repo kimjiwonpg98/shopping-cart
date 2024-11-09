@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController
 class CategoryController(
     private val categoryUseCase: CategoryUseCase,
 ) {
-    @GetMapping("/categories")
+    @GetMapping("/v1/categories")
     fun getCategories(): ResponseEntity<GetCategoriesResDto> =
         ResponseEntity
             .status(200)
@@ -22,7 +22,7 @@ class CategoryController(
                 ),
             )
 
-    @GetMapping("/template/{templateId}/categories")
+    @GetMapping("/v1/template/{templateId}/categories")
     fun getCategoriesByTemplateId(
         @PathVariable templateId: Long,
     ): ResponseEntity<GetCategoriesResDto> =
