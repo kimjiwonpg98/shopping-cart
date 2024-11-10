@@ -71,8 +71,8 @@ class BasketUseCaseTest {
 
         @Test
         fun `생성 시 템플릿이 없으면 에러를 뱉는다`() {
-            `when`(categoryRepository.getById(anyLong())).thenReturn(
-                MockCategory.getCategory(anyLong()),
+            given(categoryRepository.getByNameOrBasic("기타")).willReturn(
+                MockCategory.getCategory(1),
             )
 
             `when`(templateRepository.getById(command.templateId)).thenReturn(
@@ -100,13 +100,13 @@ class BasketUseCaseTest {
 
             given(
                 categoryRepository.getByNameOrBasic(command.categoryName),
-            ).willReturn(MockCategory.getCategory(1))
+            ).willReturn(mockCategory)
             given(
                 templateRepository.getById(command.templateId),
             ).willReturn(MockTemplate.getTemplate(command.templateId))
 
             `when`(permissionsRepository.getByUserIdAndTemplateId(command.userId, command.templateId)).thenReturn(
-                MockPermissions.getPermission(1, 0),
+                MockPermissions.getOptionalPermission(1, true),
             )
 
             given(
@@ -257,6 +257,11 @@ class BasketUseCaseTest {
                 basketRepository.getByTemplateIdAndCategoryIdByUpdatedDesc(command.templateId, command.categoryId),
             ).thenReturn(
                 emptyList(),
+            )
+            `when`(
+                permissionsRepository.getByUserIdAndTemplateId(command.userId, command.templateId),
+            ).thenReturn(
+                MockPermissions.getPermissionWriter(1, true),
             )
 
             basketUseCase =

@@ -3,7 +3,6 @@ package kr.co.shoppingcart.cart.database.mysql.template.jdbc
 import kr.co.shoppingcart.cart.database.mysql.template.jdbc.dto.TemplateWithCheckedCountDto
 import kr.co.shoppingcart.cart.database.mysql.template.jdbc.mapper.GetWithCheckedCountMapper
 import org.springframework.jdbc.core.JdbcTemplate
-import org.springframework.jdbc.core.queryForObject
 import org.springframework.stereotype.Repository
 
 @Repository

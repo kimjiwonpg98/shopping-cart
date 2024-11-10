@@ -115,11 +115,12 @@ class TemplateUseCaseTest {
         @Test
         fun `있으면 조회한다`() {
             `when`(
-                templateRepository.getByIdWithPercent(
+                templateRepository.getByIdAndUserId(
                     id = defaultCommand.id,
+                    userId = defaultCommand.userId,
                 ),
             ).thenReturn(
-                MockTemplate.getTemplateWithPercent(defaultCommand.id),
+                MockTemplate.getTemplate(defaultCommand.id),
             )
 
             templateUseCase = TemplateUseCase(templateRepository, basketRepository, permissionsRepository)
@@ -163,11 +164,20 @@ class TemplateUseCaseTest {
         }
 
         @Test
-        fun `반환값은 Unit`() {
+        fun `반환값은 Template`() {
             `when`(
                 templateRepository.getByIdAndUserId(
                     id = defaultCommand.id,
                     userId = defaultCommand.userId,
+                ),
+            ).thenReturn(
+                MockTemplate.getTemplate(defaultCommand.id),
+            )
+
+            `when`(
+                templateRepository.updateSharedById(
+                    id = defaultCommand.id,
+                    isShared = true,
                 ),
             ).thenReturn(
                 MockTemplate.getTemplate(defaultCommand.id),
@@ -178,7 +188,7 @@ class TemplateUseCaseTest {
             val result =
                 templateUseCase.updateSharedById(defaultCommand)
 
-            assertEquals(Unit, result)
+            assertInstanceOf(Template::class.java, result)
         }
     }
 

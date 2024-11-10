@@ -28,7 +28,7 @@ class BasketUseCase(
     fun create(createBasketCommand: CreateBasketCommand): Basket {
         val category =
             categoryRepository.getByNameOrBasic(createBasketCommand.categoryName)
-                ?: throw CustomException.responseBody(ExceptionCode.E_404_003)
+
         val template =
             templateRepository.getById(createBasketCommand.templateId)
                 ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
