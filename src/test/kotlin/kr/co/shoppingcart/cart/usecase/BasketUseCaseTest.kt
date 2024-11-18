@@ -229,7 +229,7 @@ class BasketUseCaseTest {
             )
 
             `when`(writerPermissionService.getOverLevelByUserIdAndTemplateId(1L, 1)).thenReturn(
-                MockPermissions.getPermissionReader(1),
+                null,
             )
 
             basketUseCase =
