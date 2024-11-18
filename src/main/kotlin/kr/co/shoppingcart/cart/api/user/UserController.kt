@@ -2,6 +2,8 @@ package kr.co.shoppingcart.cart.api.user
 
 import kr.co.shoppingcart.cart.api.user.dto.request.LoginRequestBodyDto
 import kr.co.shoppingcart.cart.api.user.dto.response.LoginResponseBodyDto
+import kr.co.shoppingcart.cart.auth.JwtPayload
+import kr.co.shoppingcart.cart.auth.annotation.CurrentUser
 import kr.co.shoppingcart.cart.common.error.annotations.OpenApiSpecApiException
 import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
 import kr.co.shoppingcart.cart.domain.auth.CreateTokensUseCase
@@ -10,6 +12,7 @@ import kr.co.shoppingcart.cart.domain.user.command.GetByAuthIdentifierAndProvide
 import kr.co.shoppingcart.cart.domain.user.command.LoginCommand
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
@@ -57,4 +60,9 @@ class UserController(
         userUseCase.createIfAbsent(loginCommand)
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
+
+    @DeleteMapping("/v1/user")
+    fun delete(
+        @CurrentUser currentUser: JwtPayload,
+    ): ResponseEntity<Unit> = ResponseEntity.status(HttpStatus.CREATED).build()
 }

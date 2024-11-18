@@ -3,7 +3,7 @@ package kr.co.shoppingcart.cart.usecase
 import kr.co.shoppingcart.cart.common.error.CustomException
 import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
 import kr.co.shoppingcart.cart.domain.basket.BasketRepository
-import kr.co.shoppingcart.cart.domain.permissions.PermissionsRepository
+import kr.co.shoppingcart.cart.domain.permissions.services.OwnerPermissionService
 import kr.co.shoppingcart.cart.domain.template.TemplateRepository
 import kr.co.shoppingcart.cart.domain.template.TemplateUseCase
 import kr.co.shoppingcart.cart.domain.template.command.CopyOwnTemplateCommand
@@ -42,7 +42,7 @@ class TemplateUseCaseTest {
     private lateinit var basketRepository: BasketRepository
 
     @Mock
-    private lateinit var permissionsRepository: PermissionsRepository
+    private lateinit var ownerPermissionService: OwnerPermissionService
 
     @InjectMocks
     private lateinit var templateUseCase: TemplateUseCase
@@ -73,7 +73,7 @@ class TemplateUseCaseTest {
                 MockTemplate.getTemplateByCreate(createTemplateCommand),
             )
 
-            templateUseCase = TemplateUseCase(templateRepository, basketRepository, permissionsRepository)
+            templateUseCase = TemplateUseCase(templateRepository, basketRepository, ownerPermissionService)
 
             val result =
                 templateUseCase.createByApi(createTemplateCommand)
@@ -102,7 +102,7 @@ class TemplateUseCaseTest {
                 null,
             )
 
-            templateUseCase = TemplateUseCase(templateRepository, basketRepository, permissionsRepository)
+            templateUseCase = TemplateUseCase(templateRepository, basketRepository, ownerPermissionService)
 
             val exception =
                 org.junit.jupiter.api.assertThrows<CustomException> {
@@ -123,7 +123,7 @@ class TemplateUseCaseTest {
                 MockTemplate.getTemplate(defaultCommand.id),
             )
 
-            templateUseCase = TemplateUseCase(templateRepository, basketRepository, permissionsRepository)
+            templateUseCase = TemplateUseCase(templateRepository, basketRepository, ownerPermissionService)
 
             val result =
                 templateUseCase.getTemplateByIdAndUserIdOrFail(defaultCommand)
@@ -153,7 +153,7 @@ class TemplateUseCaseTest {
                 null,
             )
 
-            templateUseCase = TemplateUseCase(templateRepository, basketRepository, permissionsRepository)
+            templateUseCase = TemplateUseCase(templateRepository, basketRepository, ownerPermissionService)
 
             val exception =
                 org.junit.jupiter.api.assertThrows<CustomException> {
@@ -183,7 +183,7 @@ class TemplateUseCaseTest {
                 MockTemplate.getTemplate(defaultCommand.id),
             )
 
-            templateUseCase = TemplateUseCase(templateRepository, basketRepository, permissionsRepository)
+            templateUseCase = TemplateUseCase(templateRepository, basketRepository, ownerPermissionService)
 
             val result =
                 templateUseCase.updateSharedById(defaultCommand)
@@ -212,7 +212,7 @@ class TemplateUseCaseTest {
                 null,
             )
 
-            templateUseCase = TemplateUseCase(templateRepository, basketRepository, permissionsRepository)
+            templateUseCase = TemplateUseCase(templateRepository, basketRepository, ownerPermissionService)
 
             val exception =
                 org.junit.jupiter.api.assertThrows<CustomException> {
@@ -250,7 +250,7 @@ class TemplateUseCaseTest {
                 emptyList(),
             )
 
-            templateUseCase = TemplateUseCase(templateRepository, basketRepository, permissionsRepository)
+            templateUseCase = TemplateUseCase(templateRepository, basketRepository, ownerPermissionService)
 
             templateUseCase.copyOwnTemplateInComplete(defaultCommand)
 
@@ -285,7 +285,7 @@ class TemplateUseCaseTest {
                 MockBasket.getBasketsAllChecked(),
             )
 
-            templateUseCase = TemplateUseCase(templateRepository, basketRepository, permissionsRepository)
+            templateUseCase = TemplateUseCase(templateRepository, basketRepository, ownerPermissionService)
 
             val result = templateUseCase.copyOwnTemplateInComplete(defaultCommand)
 
@@ -321,7 +321,7 @@ class TemplateUseCaseTest {
                 MockBasket.getBasketsAllNonChecked(),
             )
 
-            templateUseCase = TemplateUseCase(templateRepository, basketRepository, permissionsRepository)
+            templateUseCase = TemplateUseCase(templateRepository, basketRepository, ownerPermissionService)
 
             val result = templateUseCase.copyOwnTemplateInComplete(defaultCommand)
 
@@ -349,7 +349,7 @@ class TemplateUseCaseTest {
             ).thenReturn(
                 null,
             )
-            templateUseCase = TemplateUseCase(templateRepository, basketRepository, permissionsRepository)
+            templateUseCase = TemplateUseCase(templateRepository, basketRepository, ownerPermissionService)
 
             val exception =
                 org.junit.jupiter.api.assertThrows<CustomException> {
@@ -379,7 +379,7 @@ class TemplateUseCaseTest {
                 MockTemplate.getTemplate(2),
             )
 
-            templateUseCase = TemplateUseCase(templateRepository, basketRepository, permissionsRepository)
+            templateUseCase = TemplateUseCase(templateRepository, basketRepository, ownerPermissionService)
 
             val result = templateUseCase.copyOwnTemplate(defaultCommand)
 
@@ -406,7 +406,7 @@ class TemplateUseCaseTest {
             ).thenReturn(
                 null,
             )
-            templateUseCase = TemplateUseCase(templateRepository, basketRepository, permissionsRepository)
+            templateUseCase = TemplateUseCase(templateRepository, basketRepository, ownerPermissionService)
 
             val exception =
                 org.junit.jupiter.api.assertThrows<CustomException> {
@@ -425,7 +425,7 @@ class TemplateUseCaseTest {
             ).thenReturn(
                 MockTemplate.getTemplateByPublic(defaultCommand.id, false),
             )
-            templateUseCase = TemplateUseCase(templateRepository, basketRepository, permissionsRepository)
+            templateUseCase = TemplateUseCase(templateRepository, basketRepository, ownerPermissionService)
 
             val exception =
                 org.junit.jupiter.api.assertThrows<CustomException> {
@@ -453,7 +453,7 @@ class TemplateUseCaseTest {
                 MockTemplate.getTemplate(2),
             )
 
-            templateUseCase = TemplateUseCase(templateRepository, basketRepository, permissionsRepository)
+            templateUseCase = TemplateUseCase(templateRepository, basketRepository, ownerPermissionService)
 
             val copyTemplate = templateUseCase.copyTemplate(defaultCommand)
 

@@ -11,7 +11,9 @@ import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketContentCommand
 import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketFlagCommand
 import kr.co.shoppingcart.cart.domain.basket.vo.Basket
 import kr.co.shoppingcart.cart.domain.category.CategoryRepository
-import kr.co.shoppingcart.cart.domain.permissions.PermissionsRepository
+import kr.co.shoppingcart.cart.domain.permissions.services.OwnerPermissionService
+import kr.co.shoppingcart.cart.domain.permissions.services.ReaderPermissionService
+import kr.co.shoppingcart.cart.domain.permissions.services.WriterPermissionService
 import kr.co.shoppingcart.cart.domain.template.TemplateRepository
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
@@ -22,7 +24,9 @@ class BasketUseCase(
     private val basketRepository: BasketRepository,
     private val categoryRepository: CategoryRepository,
     private val templateRepository: TemplateRepository,
-    private val permissionsRepository: PermissionsRepository,
+    private val ownerPermissionService: OwnerPermissionService,
+    private val writerPermissionService: WriterPermissionService,
+    private val readerPermissionService: ReaderPermissionService,
 ) {
     @Transactional
     fun create(createBasketCommand: CreateBasketCommand): Basket {
@@ -34,7 +38,7 @@ class BasketUseCase(
                 ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
 
         val permission =
-            permissionsRepository.getByUserIdAndTemplateId(
+            writerPermissionService.getOverLevelByUserIdAndTemplateId(
                 createBasketCommand.userId,
                 createBasketCommand.templateId,
             ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
@@ -67,15 +71,10 @@ class BasketUseCase(
             basketRepository.getById(updateBasketFlagCommand.basketId)
                 ?: throw CustomException.responseBody(ExceptionCode.E_404_002)
 
-        val permission =
-            permissionsRepository.getByUserIdAndTemplateId(
-                updateBasketFlagCommand.userId,
-                basket.templateId!!.templateId,
-            ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
-
-        if (!permission.checkWritePermissionByLevel()) {
-            throw CustomException.responseBody(ExceptionCode.E_403_000)
-        }
+        writerPermissionService.getOverLevelByUserIdAndTemplateId(
+            updateBasketFlagCommand.userId,
+            basket.templateId!!.templateId,
+        ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
 
         return this.basketRepository.updateCheckedById(
             updateBasketFlagCommand.basketId,
@@ -88,7 +87,7 @@ class BasketUseCase(
             templateRepository.getById(command.templateId)
                 ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
 
-        permissionsRepository.getByUserIdAndTemplateId(
+        ownerPermissionService.getByUserIdAndTemplateId(
             command.userId,
             template.id.id,
         ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
@@ -102,7 +101,7 @@ class BasketUseCase(
             this.basketRepository.getById(command.basketId)
                 ?: throw CustomException.responseBody(ExceptionCode.E_404_002)
 
-        permissionsRepository.getByUserIdAndTemplateId(
+        writerPermissionService.getOverLevelByUserIdAndTemplateId(
             command.userId,
             basket.templateId!!.templateId,
         ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
@@ -121,7 +120,7 @@ class BasketUseCase(
                 ?: throw CustomException.responseBody(ExceptionCode.E_404_002)
 
         val permission =
-            permissionsRepository.getByUserIdAndTemplateId(
+            writerPermissionService.getOverLevelByUserIdAndTemplateId(
                 command.userId,
                 basket.templateId!!.templateId,
             ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
@@ -134,7 +133,7 @@ class BasketUseCase(
     }
 
     fun getByTemplateIdAndCategoryId(command: GetBasketByTemplateIdAndCategoryIdCommand): List<Basket> {
-        permissionsRepository.getByUserIdAndTemplateId(
+        readerPermissionService.getOverLevelByUserIdAndTemplateId(
             command.userId,
             command.templateId,
         ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
@@ -148,7 +147,7 @@ class BasketUseCase(
             this.basketRepository.getById(command.basketId)
                 ?: throw CustomException.responseBody(ExceptionCode.E_404_002)
 
-        permissionsRepository.getByUserIdAndTemplateId(
+        readerPermissionService.getOverLevelByUserIdAndTemplateId(
             command.userId,
             basket.templateId!!.templateId,
         ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)

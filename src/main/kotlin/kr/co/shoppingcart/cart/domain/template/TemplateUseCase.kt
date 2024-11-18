@@ -4,7 +4,7 @@ import kr.co.shoppingcart.cart.common.error.CustomException
 import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
 import kr.co.shoppingcart.cart.domain.basket.BasketRepository
 import kr.co.shoppingcart.cart.domain.basket.vo.Basket
-import kr.co.shoppingcart.cart.domain.permissions.PermissionsRepository
+import kr.co.shoppingcart.cart.domain.permissions.services.OwnerPermissionService
 import kr.co.shoppingcart.cart.domain.template.command.CopyOwnTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.CopyTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.CopyTemplateInCompleteCommand
@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional
 class TemplateUseCase(
     private val templateRepository: TemplateRepository,
     private val basketRepository: BasketRepository,
-    private val permissionsRepository: PermissionsRepository,
+    private val ownerPermissionService: OwnerPermissionService,
 ) {
     @Transactional
     fun createByApi(createTemplateCommand: CreateTemplateCommand): Template =
@@ -189,7 +189,7 @@ class TemplateUseCase(
                 name = name,
                 userId = userId,
             )
-        permissionsRepository.createOwnerPermission(
+        ownerPermissionService.createPermission(
             userId,
             template.id.id,
         )

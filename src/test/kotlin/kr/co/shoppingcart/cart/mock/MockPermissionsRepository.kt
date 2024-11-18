@@ -15,24 +15,15 @@ class MockPermissionsRepository : PermissionsRepository {
 
     override fun create(permission: Permissions): Permissions = permission
 
-    override fun createOwnerPermission(
+    override fun createPermissionByLevel(
         userId: Long,
         templateId: Long,
+        level: Int,
     ): Permissions =
         Permissions(
             userId = PermissionUserId(userId),
             templateId = PermissionTemplateId(templateId),
-            level = PermissionLevel(0),
-        )
-
-    override fun createWriterPermission(
-        userId: Long,
-        templateId: Long,
-    ): Permissions =
-        Permissions(
-            userId = PermissionUserId(userId),
-            templateId = PermissionTemplateId(templateId),
-            level = PermissionLevel(1),
+            level = PermissionLevel(level),
         )
 
     override fun deleteByUserIdAndTemplateId(

@@ -1,4 +1,4 @@
-package kr.co.shoppingcart.cart.domain.auth.mapper
+package kr.co.shoppingcart.cart.database.mysql.tokenExpiration.mapper
 
 import kr.co.shoppingcart.cart.database.mysql.tokenExpiration.entity.TokenExpirationEntity
 import kr.co.shoppingcart.cart.domain.auth.vo.expiration.RefreshTokenTTL

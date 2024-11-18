@@ -26,9 +26,10 @@ class PermissionsRepositoryAdapter(
                 permission.let(PermissionsEntityMapper::toEntity),
             ).let(PermissionsEntityMapper::toDomain)
 
-    override fun createOwnerPermission(
+    override fun createPermissionByLevel(
         userId: Long,
         templateId: Long,
+        level: Int,
     ): Permissions =
         permissionsEntityRepository
             .save(
@@ -36,22 +37,7 @@ class PermissionsRepositoryAdapter(
                     Permissions.toDomain(
                         userId = userId,
                         templateId = templateId,
-                        level = OWNER_LEVEL,
-                    ),
-                ),
-            ).let(PermissionsEntityMapper::toDomain)
-
-    override fun createWriterPermission(
-        userId: Long,
-        templateId: Long,
-    ): Permissions =
-        permissionsEntityRepository
-            .save(
-                PermissionsEntityMapper.toEntity(
-                    Permissions.toDomain(
-                        userId = userId,
-                        templateId = templateId,
-                        level = WRITER_LEVEL,
+                        level = level,
                     ),
                 ),
             ).let(PermissionsEntityMapper::toDomain)

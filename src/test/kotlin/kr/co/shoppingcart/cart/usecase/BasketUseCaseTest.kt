@@ -9,7 +9,9 @@ import kr.co.shoppingcart.cart.domain.basket.command.GetBasketByTemplateIdAndCat
 import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketFlagCommand
 import kr.co.shoppingcart.cart.domain.basket.vo.Basket
 import kr.co.shoppingcart.cart.domain.category.CategoryRepository
-import kr.co.shoppingcart.cart.domain.permissions.PermissionsRepository
+import kr.co.shoppingcart.cart.domain.permissions.services.OwnerPermissionService
+import kr.co.shoppingcart.cart.domain.permissions.services.ReaderPermissionService
+import kr.co.shoppingcart.cart.domain.permissions.services.WriterPermissionService
 import kr.co.shoppingcart.cart.domain.template.TemplateRepository
 import kr.co.shoppingcart.cart.mock.vo.MockBasket
 import kr.co.shoppingcart.cart.mock.vo.MockCategory
@@ -46,7 +48,13 @@ class BasketUseCaseTest {
     private lateinit var templateRepository: TemplateRepository
 
     @Mock
-    private lateinit var permissionsRepository: PermissionsRepository
+    private lateinit var ownerPermissionService: OwnerPermissionService
+
+    @Mock
+    private lateinit var writerPermissionService: WriterPermissionService
+
+    @Mock
+    private lateinit var readerPermissionService: ReaderPermissionService
 
     @InjectMocks
     private lateinit var basketUseCase: BasketUseCase
@@ -80,7 +88,14 @@ class BasketUseCaseTest {
             )
 
             basketUseCase =
-                BasketUseCase(basketRepository, categoryRepository, templateRepository, permissionsRepository)
+                BasketUseCase(
+                    basketRepository,
+                    categoryRepository,
+                    templateRepository,
+                    ownerPermissionService,
+                    writerPermissionService,
+                    readerPermissionService,
+                )
 
             val exception =
                 assertThrows<CustomException> {
@@ -105,7 +120,9 @@ class BasketUseCaseTest {
                 templateRepository.getById(command.templateId),
             ).willReturn(MockTemplate.getTemplate(command.templateId))
 
-            `when`(permissionsRepository.getByUserIdAndTemplateId(command.userId, command.templateId)).thenReturn(
+            `when`(
+                writerPermissionService.getOverLevelByUserIdAndTemplateId(command.userId, command.templateId),
+            ).thenReturn(
                 MockPermissions.getOptionalPermission(1, true),
             )
 
@@ -118,7 +135,14 @@ class BasketUseCaseTest {
             ).willReturn(MockBasket.getBasketByCreate(command))
 
             basketUseCase =
-                BasketUseCase(basketRepository, categoryRepository, templateRepository, permissionsRepository)
+                BasketUseCase(
+                    basketRepository,
+                    categoryRepository,
+                    templateRepository,
+                    ownerPermissionService,
+                    writerPermissionService,
+                    readerPermissionService,
+                )
 
             val result =
                 basketUseCase.create(
@@ -141,7 +165,14 @@ class BasketUseCaseTest {
             )
 
             basketUseCase =
-                BasketUseCase(basketRepository, categoryRepository, templateRepository, permissionsRepository)
+                BasketUseCase(
+                    basketRepository,
+                    categoryRepository,
+                    templateRepository,
+                    ownerPermissionService,
+                    writerPermissionService,
+                    readerPermissionService,
+                )
 
             val exception =
                 assertThrows<CustomException> {
@@ -163,12 +194,19 @@ class BasketUseCaseTest {
                 MockBasket.getBasket(1, true),
             )
 
-            `when`(permissionsRepository.getByUserIdAndTemplateId(1L, 1)).thenReturn(
+            `when`(writerPermissionService.getOverLevelByUserIdAndTemplateId(1L, 1)).thenReturn(
                 null,
             )
 
             basketUseCase =
-                BasketUseCase(basketRepository, categoryRepository, templateRepository, permissionsRepository)
+                BasketUseCase(
+                    basketRepository,
+                    categoryRepository,
+                    templateRepository,
+                    ownerPermissionService,
+                    writerPermissionService,
+                    readerPermissionService,
+                )
 
             val exception =
                 assertThrows<CustomException> {
@@ -190,12 +228,19 @@ class BasketUseCaseTest {
                 MockBasket.getBasket(1, true),
             )
 
-            `when`(permissionsRepository.getByUserIdAndTemplateId(1L, 1)).thenReturn(
+            `when`(writerPermissionService.getOverLevelByUserIdAndTemplateId(1L, 1)).thenReturn(
                 MockPermissions.getPermissionReader(1),
             )
 
             basketUseCase =
-                BasketUseCase(basketRepository, categoryRepository, templateRepository, permissionsRepository)
+                BasketUseCase(
+                    basketRepository,
+                    categoryRepository,
+                    templateRepository,
+                    ownerPermissionService,
+                    writerPermissionService,
+                    readerPermissionService,
+                )
 
             val exception =
                 assertThrows<CustomException> {
@@ -217,7 +262,7 @@ class BasketUseCaseTest {
                 MockBasket.getBasket(1, false),
             )
 
-            `when`(permissionsRepository.getByUserIdAndTemplateId(1L, 1)).thenReturn(
+            `when`(writerPermissionService.getOverLevelByUserIdAndTemplateId(1L, 1)).thenReturn(
                 MockPermissions.getPermission(1, 0),
             )
 
@@ -226,7 +271,14 @@ class BasketUseCaseTest {
             )
 
             basketUseCase =
-                BasketUseCase(basketRepository, categoryRepository, templateRepository, permissionsRepository)
+                BasketUseCase(
+                    basketRepository,
+                    categoryRepository,
+                    templateRepository,
+                    ownerPermissionService,
+                    writerPermissionService,
+                    readerPermissionService,
+                )
 
             val result =
                 basketUseCase.updateIsAddedByFlagAndId(
@@ -259,13 +311,20 @@ class BasketUseCaseTest {
                 emptyList(),
             )
             `when`(
-                permissionsRepository.getByUserIdAndTemplateId(command.userId, command.templateId),
+                readerPermissionService.getOverLevelByUserIdAndTemplateId(command.userId, command.templateId),
             ).thenReturn(
                 MockPermissions.getPermissionWriter(1, true),
             )
 
             basketUseCase =
-                BasketUseCase(basketRepository, categoryRepository, templateRepository, permissionsRepository)
+                BasketUseCase(
+                    basketRepository,
+                    categoryRepository,
+                    templateRepository,
+                    ownerPermissionService,
+                    writerPermissionService,
+                    readerPermissionService,
+                )
 
             val result =
                 basketUseCase.getByTemplateIdAndCategoryId(
@@ -283,8 +342,21 @@ class BasketUseCaseTest {
                 emptyList(),
             )
 
+            `when`(
+                readerPermissionService.getOverLevelByUserIdAndTemplateId(command.userId, command.templateId),
+            ).thenReturn(
+                MockPermissions.getPermissionReader(1),
+            )
+
             basketUseCase =
-                BasketUseCase(basketRepository, categoryRepository, templateRepository, permissionsRepository)
+                BasketUseCase(
+                    basketRepository,
+                    categoryRepository,
+                    templateRepository,
+                    ownerPermissionService,
+                    writerPermissionService,
+                    readerPermissionService,
+                )
 
             val result =
                 basketUseCase.getByTemplateIdAndCategoryId(

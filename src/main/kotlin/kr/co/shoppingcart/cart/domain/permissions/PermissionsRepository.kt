@@ -10,14 +10,10 @@ interface PermissionsRepository {
 
     fun create(permission: Permissions): Permissions
 
-    fun createOwnerPermission(
+    fun createPermissionByLevel(
         userId: Long,
         templateId: Long,
-    ): Permissions
-
-    fun createWriterPermission(
-        userId: Long,
-        templateId: Long,
+        level: Int,
     ): Permissions
 
     fun deleteByUserIdAndTemplateId(
