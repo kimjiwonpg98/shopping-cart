@@ -48,9 +48,4 @@ class PermissionsRepositoryAdapter(
     ) {
         permissionsEntityRepository.deleteByUserIdAndTemplateId(userId, templateId)
     }
-
-    companion object {
-        private const val OWNER_LEVEL = 0
-        private const val WRITER_LEVEL = 1
-    }
 }
