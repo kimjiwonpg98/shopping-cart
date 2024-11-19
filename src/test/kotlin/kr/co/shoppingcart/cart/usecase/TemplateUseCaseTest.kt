@@ -2,16 +2,19 @@ package kr.co.shoppingcart.cart.usecase
 
 import kr.co.shoppingcart.cart.common.error.CustomException
 import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
-import kr.co.shoppingcart.cart.domain.basket.BasketRepository
+import kr.co.shoppingcart.cart.domain.basket.service.GetBasketService
 import kr.co.shoppingcart.cart.domain.permissions.services.OwnerPermissionService
-import kr.co.shoppingcart.cart.domain.template.TemplateRepository
+import kr.co.shoppingcart.cart.domain.permissions.services.ReaderPermissionService
 import kr.co.shoppingcart.cart.domain.template.TemplateUseCase
 import kr.co.shoppingcart.cart.domain.template.command.CopyOwnTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.CopyTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.CopyTemplateInCompleteCommand
 import kr.co.shoppingcart.cart.domain.template.command.CreateTemplateCommand
-import kr.co.shoppingcart.cart.domain.template.command.GetTemplateByIdAndUserIdCommand
 import kr.co.shoppingcart.cart.domain.template.command.UpdateTemplateSharedByIdCommand
+import kr.co.shoppingcart.cart.domain.template.services.CreateTemplateService
+import kr.co.shoppingcart.cart.domain.template.services.DeleteTemplateService
+import kr.co.shoppingcart.cart.domain.template.services.GetTemplateService
+import kr.co.shoppingcart.cart.domain.template.services.UpdateTemplateService
 import kr.co.shoppingcart.cart.domain.template.vo.Template
 import kr.co.shoppingcart.cart.mock.vo.MockBasket
 import kr.co.shoppingcart.cart.mock.vo.MockTemplate
@@ -23,6 +26,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.anyList
+import org.mockito.ArgumentMatchers.anyLong
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.times
@@ -36,13 +40,25 @@ import org.mockito.junit.jupiter.MockitoExtension
 )
 class TemplateUseCaseTest {
     @Mock
-    private lateinit var templateRepository: TemplateRepository
+    private lateinit var getBasketService: GetBasketService
 
     @Mock
-    private lateinit var basketRepository: BasketRepository
+    private lateinit var createTemplateService: CreateTemplateService
+
+    @Mock
+    private lateinit var getTemplateService: GetTemplateService
+
+    @Mock
+    private lateinit var deleteTemplateService: DeleteTemplateService
+
+    @Mock
+    private lateinit var updateTemplateService: UpdateTemplateService
 
     @Mock
     private lateinit var ownerPermissionService: OwnerPermissionService
+
+    @Mock
+    private lateinit var readerPermissionService: ReaderPermissionService
 
     @InjectMocks
     private lateinit var templateUseCase: TemplateUseCase
@@ -65,7 +81,7 @@ class TemplateUseCaseTest {
         @Test
         fun `정상적으로 생성된다`() {
             `when`(
-                templateRepository.create(
+                createTemplateService.create(
                     name = createTemplateCommand.name,
                     userId = createTemplateCommand.userId,
                 ),
@@ -73,60 +89,19 @@ class TemplateUseCaseTest {
                 MockTemplate.getTemplateByCreate(createTemplateCommand),
             )
 
-            templateUseCase = TemplateUseCase(templateRepository, basketRepository, ownerPermissionService)
+            templateUseCase =
+                TemplateUseCase(
+                    getBasketService,
+                    createTemplateService,
+                    getTemplateService,
+                    deleteTemplateService,
+                    updateTemplateService,
+                    ownerPermissionService,
+                    readerPermissionService,
+                )
 
             val result =
                 templateUseCase.createByApi(createTemplateCommand)
-
-            assertInstanceOf(Template::class.java, result)
-        }
-    }
-
-    @Nested
-    @DisplayName("getTemplateByIdAndUserIdOrFail test")
-    inner class GetTemplateByIdAndUserIdOrFailTest {
-        var defaultCommand =
-            GetTemplateByIdAndUserIdCommand(
-                id = 1,
-                userId = 1,
-            )
-
-        @Test
-        fun `없으면 에러를 뱉는다`() {
-            `when`(
-                templateRepository.getByIdAndUserId(
-                    id = defaultCommand.id,
-                    userId = defaultCommand.userId,
-                ),
-            ).thenReturn(
-                null,
-            )
-
-            templateUseCase = TemplateUseCase(templateRepository, basketRepository, ownerPermissionService)
-
-            val exception =
-                org.junit.jupiter.api.assertThrows<CustomException> {
-                    templateUseCase.getTemplateByIdAndUserIdOrFail(defaultCommand)
-                }
-
-            assertEquals(ExceptionCode.E_403_000.name, exception.code.name)
-        }
-
-        @Test
-        fun `있으면 조회한다`() {
-            `when`(
-                templateRepository.getByIdAndUserId(
-                    id = defaultCommand.id,
-                    userId = defaultCommand.userId,
-                ),
-            ).thenReturn(
-                MockTemplate.getTemplate(defaultCommand.id),
-            )
-
-            templateUseCase = TemplateUseCase(templateRepository, basketRepository, ownerPermissionService)
-
-            val result =
-                templateUseCase.getTemplateByIdAndUserIdOrFail(defaultCommand)
 
             assertInstanceOf(Template::class.java, result)
         }
@@ -145,15 +120,25 @@ class TemplateUseCaseTest {
         @Test
         fun `본인의 tempalte이 아니라면 에러`() {
             `when`(
-                templateRepository.getByIdAndUserId(
+                getTemplateService.getByIdOrFail(
                     id = defaultCommand.id,
-                    userId = defaultCommand.userId,
                 ),
             ).thenReturn(
                 null,
             )
 
-            templateUseCase = TemplateUseCase(templateRepository, basketRepository, ownerPermissionService)
+            // owner 추가
+
+            templateUseCase =
+                TemplateUseCase(
+                    getBasketService,
+                    createTemplateService,
+                    getTemplateService,
+                    deleteTemplateService,
+                    updateTemplateService,
+                    ownerPermissionService,
+                    readerPermissionService,
+                )
 
             val exception =
                 org.junit.jupiter.api.assertThrows<CustomException> {
@@ -166,16 +151,15 @@ class TemplateUseCaseTest {
         @Test
         fun `반환값은 Template`() {
             `when`(
-                templateRepository.getByIdAndUserId(
+                getTemplateService.getByIdOrFail(
                     id = defaultCommand.id,
-                    userId = defaultCommand.userId,
                 ),
             ).thenReturn(
                 MockTemplate.getTemplate(defaultCommand.id),
             )
 
             `when`(
-                templateRepository.updateSharedById(
+                updateTemplateService.updateSharedById(
                     id = defaultCommand.id,
                     isShared = true,
                 ),
@@ -183,7 +167,16 @@ class TemplateUseCaseTest {
                 MockTemplate.getTemplate(defaultCommand.id),
             )
 
-            templateUseCase = TemplateUseCase(templateRepository, basketRepository, ownerPermissionService)
+            templateUseCase =
+                TemplateUseCase(
+                    getBasketService,
+                    createTemplateService,
+                    getTemplateService,
+                    deleteTemplateService,
+                    updateTemplateService,
+                    ownerPermissionService,
+                    readerPermissionService,
+                )
 
             val result =
                 templateUseCase.updateSharedById(defaultCommand)
@@ -204,15 +197,23 @@ class TemplateUseCaseTest {
         @Test
         fun `본인의 tempalte이 아니라면 에러`() {
             `when`(
-                templateRepository.getByIdAndUserId(
+                getTemplateService.getByIdOrFail(
                     id = defaultCommand.id,
-                    userId = defaultCommand.userId,
                 ),
             ).thenReturn(
                 null,
             )
 
-            templateUseCase = TemplateUseCase(templateRepository, basketRepository, ownerPermissionService)
+            templateUseCase =
+                TemplateUseCase(
+                    getBasketService,
+                    createTemplateService,
+                    getTemplateService,
+                    deleteTemplateService,
+                    updateTemplateService,
+                    ownerPermissionService,
+                    readerPermissionService,
+                )
 
             val exception =
                 org.junit.jupiter.api.assertThrows<CustomException> {
@@ -225,16 +226,15 @@ class TemplateUseCaseTest {
         @Test
         fun `basket이 없으면 bulksave 호출 X`() {
             `when`(
-                templateRepository.getByIdAndUserId(
+                getTemplateService.getByIdOrFail(
                     id = defaultCommand.id,
-                    userId = defaultCommand.userId,
                 ),
             ).thenReturn(
                 MockTemplate.getTemplate(defaultCommand.id),
             )
 
             `when`(
-                templateRepository.create(
+                createTemplateService.create(
                     name = "test",
                     userId = defaultCommand.userId,
                 ),
@@ -243,33 +243,41 @@ class TemplateUseCaseTest {
             )
 
             `when`(
-                basketRepository.getByTemplateId(
+                getBasketService.getByTemplateId(
                     defaultCommand.id,
                 ),
             ).thenReturn(
                 emptyList(),
             )
 
-            templateUseCase = TemplateUseCase(templateRepository, basketRepository, ownerPermissionService)
+            templateUseCase =
+                TemplateUseCase(
+                    getBasketService,
+                    createTemplateService,
+                    getTemplateService,
+                    deleteTemplateService,
+                    updateTemplateService,
+                    ownerPermissionService,
+                    readerPermissionService,
+                )
 
             templateUseCase.copyOwnTemplateInComplete(defaultCommand)
 
-            verify(basketRepository, times(0)).bulkSave(anyList())
+            verify(createTemplateService, times(0)).createNewBasketsByTemplateId(anyList(), anyLong())
         }
 
         @Test
         fun `check 안된 basket이 없으면 bulksave 호출 X`() {
             `when`(
-                templateRepository.getByIdAndUserId(
+                getTemplateService.getByIdOrFail(
                     id = defaultCommand.id,
-                    userId = defaultCommand.userId,
                 ),
             ).thenReturn(
                 MockTemplate.getTemplate(defaultCommand.id),
             )
 
             `when`(
-                templateRepository.create(
+                createTemplateService.create(
                     name = "test",
                     userId = defaultCommand.userId,
                 ),
@@ -278,34 +286,42 @@ class TemplateUseCaseTest {
             )
 
             `when`(
-                basketRepository.getByTemplateId(
+                getBasketService.getByTemplateId(
                     defaultCommand.id,
                 ),
             ).thenReturn(
                 MockBasket.getBasketsAllChecked(),
             )
 
-            templateUseCase = TemplateUseCase(templateRepository, basketRepository, ownerPermissionService)
+            templateUseCase =
+                TemplateUseCase(
+                    getBasketService,
+                    createTemplateService,
+                    getTemplateService,
+                    deleteTemplateService,
+                    updateTemplateService,
+                    ownerPermissionService,
+                    readerPermissionService,
+                )
 
             val result = templateUseCase.copyOwnTemplateInComplete(defaultCommand)
 
             assertEquals(MockTemplate.getTemplate(2), result)
-            verify(basketRepository, times(0)).bulkSave(anyList())
+            verify(createTemplateService, times(0)).createNewBasketsByTemplateId(anyList(), anyLong())
         }
 
         @Test
         fun `체크 안된 basket 있으면 저장`() {
             `when`(
-                templateRepository.getByIdAndUserId(
+                getTemplateService.getByIdOrFail(
                     id = defaultCommand.id,
-                    userId = defaultCommand.userId,
                 ),
             ).thenReturn(
                 MockTemplate.getTemplate(defaultCommand.id),
             )
 
             `when`(
-                templateRepository.create(
+                createTemplateService.create(
                     name = "test",
                     userId = defaultCommand.userId,
                 ),
@@ -314,19 +330,28 @@ class TemplateUseCaseTest {
             )
 
             `when`(
-                basketRepository.getByTemplateId(
+                getBasketService.getByTemplateId(
                     defaultCommand.id,
                 ),
             ).thenReturn(
                 MockBasket.getBasketsAllNonChecked(),
             )
 
-            templateUseCase = TemplateUseCase(templateRepository, basketRepository, ownerPermissionService)
+            templateUseCase =
+                TemplateUseCase(
+                    getBasketService,
+                    createTemplateService,
+                    getTemplateService,
+                    deleteTemplateService,
+                    updateTemplateService,
+                    ownerPermissionService,
+                    readerPermissionService,
+                )
 
             val result = templateUseCase.copyOwnTemplateInComplete(defaultCommand)
 
             assertEquals(MockTemplate.getTemplate(2), result)
-            verify(basketRepository, times(1)).bulkSave(anyList())
+            verify(createTemplateService, times(1)).createNewBasketsByTemplateId(anyList(), anyLong())
         }
     }
 
@@ -342,14 +367,22 @@ class TemplateUseCaseTest {
         @Test
         fun `템플릿이 본인 것이 아닐 때 에러`() {
             `when`(
-                templateRepository.getByIdAndUserId(
+                getTemplateService.getByIdOrFail(
                     id = defaultCommand.id,
-                    userId = defaultCommand.userId,
                 ),
             ).thenReturn(
                 null,
             )
-            templateUseCase = TemplateUseCase(templateRepository, basketRepository, ownerPermissionService)
+            templateUseCase =
+                TemplateUseCase(
+                    getBasketService,
+                    createTemplateService,
+                    getTemplateService,
+                    deleteTemplateService,
+                    updateTemplateService,
+                    ownerPermissionService,
+                    readerPermissionService,
+                )
 
             val exception =
                 org.junit.jupiter.api.assertThrows<CustomException> {
@@ -362,16 +395,15 @@ class TemplateUseCaseTest {
         @Test
         fun `템플릿에 basket이 없을 경우 bulksave 호출 x`() {
             `when`(
-                templateRepository.getByIdAndUserId(
+                getTemplateService.getByIdOrFail(
                     id = defaultCommand.id,
-                    userId = defaultCommand.userId,
                 ),
             ).thenReturn(
                 MockTemplate.getTemplate(defaultCommand.id),
             )
 
             `when`(
-                templateRepository.create(
+                createTemplateService.create(
                     name = MockTemplate.getTemplate(defaultCommand.id).name.name,
                     userId = defaultCommand.userId,
                 ),
@@ -379,12 +411,21 @@ class TemplateUseCaseTest {
                 MockTemplate.getTemplate(2),
             )
 
-            templateUseCase = TemplateUseCase(templateRepository, basketRepository, ownerPermissionService)
+            templateUseCase =
+                TemplateUseCase(
+                    getBasketService,
+                    createTemplateService,
+                    getTemplateService,
+                    deleteTemplateService,
+                    updateTemplateService,
+                    ownerPermissionService,
+                    readerPermissionService,
+                )
 
             val result = templateUseCase.copyOwnTemplate(defaultCommand)
 
             assertEquals(MockTemplate.getTemplate(2), result)
-            verify(basketRepository, times(0)).bulkSave(anyList())
+            verify(createTemplateService, times(0)).createNewBasketsByTemplateId(anyList(), anyLong())
         }
     }
 
@@ -400,13 +441,22 @@ class TemplateUseCaseTest {
         @Test
         fun `템플릿이 본인 것이 아닐 때 에러`() {
             `when`(
-                templateRepository.getById(
+                getTemplateService.getByIdOrFail(
                     id = defaultCommand.id,
                 ),
             ).thenReturn(
                 null,
             )
-            templateUseCase = TemplateUseCase(templateRepository, basketRepository, ownerPermissionService)
+            templateUseCase =
+                TemplateUseCase(
+                    getBasketService,
+                    createTemplateService,
+                    getTemplateService,
+                    deleteTemplateService,
+                    updateTemplateService,
+                    ownerPermissionService,
+                    readerPermissionService,
+                )
 
             val exception =
                 org.junit.jupiter.api.assertThrows<CustomException> {
@@ -419,13 +469,22 @@ class TemplateUseCaseTest {
         @Test
         fun `템플릿이 퍼블릭이 아닐 경우 에러`() {
             `when`(
-                templateRepository.getById(
+                getTemplateService.getByIdOrFail(
                     id = defaultCommand.id,
                 ),
             ).thenReturn(
                 MockTemplate.getTemplateByPublic(defaultCommand.id, false),
             )
-            templateUseCase = TemplateUseCase(templateRepository, basketRepository, ownerPermissionService)
+            templateUseCase =
+                TemplateUseCase(
+                    getBasketService,
+                    createTemplateService,
+                    getTemplateService,
+                    deleteTemplateService,
+                    updateTemplateService,
+                    ownerPermissionService,
+                    readerPermissionService,
+                )
 
             val exception =
                 org.junit.jupiter.api.assertThrows<CustomException> {
@@ -438,14 +497,14 @@ class TemplateUseCaseTest {
         @Test
         fun `반환값 template`() {
             `when`(
-                templateRepository.getById(
+                getTemplateService.getByIdOrFail(
                     id = defaultCommand.id,
                 ),
             ).thenReturn(
                 MockTemplate.getTemplateByPublic(defaultCommand.id, true),
             )
             `when`(
-                templateRepository.create(
+                createTemplateService.create(
                     name = MockTemplate.getTemplate(defaultCommand.id).name.name,
                     userId = defaultCommand.userId,
                 ),
@@ -453,7 +512,16 @@ class TemplateUseCaseTest {
                 MockTemplate.getTemplate(2),
             )
 
-            templateUseCase = TemplateUseCase(templateRepository, basketRepository, ownerPermissionService)
+            templateUseCase =
+                TemplateUseCase(
+                    getBasketService,
+                    createTemplateService,
+                    getTemplateService,
+                    deleteTemplateService,
+                    updateTemplateService,
+                    ownerPermissionService,
+                    readerPermissionService,
+                )
 
             val copyTemplate = templateUseCase.copyTemplate(defaultCommand)
 

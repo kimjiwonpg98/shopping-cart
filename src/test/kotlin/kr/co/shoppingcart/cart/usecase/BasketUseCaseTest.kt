@@ -2,17 +2,19 @@ package kr.co.shoppingcart.cart.usecase
 
 import kr.co.shoppingcart.cart.common.error.CustomException
 import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
-import kr.co.shoppingcart.cart.domain.basket.BasketRepository
 import kr.co.shoppingcart.cart.domain.basket.BasketUseCase
 import kr.co.shoppingcart.cart.domain.basket.command.CreateBasketCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketByTemplateIdAndCategoryIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketFlagCommand
+import kr.co.shoppingcart.cart.domain.basket.service.BasketCreationService
+import kr.co.shoppingcart.cart.domain.basket.service.BasketUpdateService
+import kr.co.shoppingcart.cart.domain.basket.service.GetBasketService
 import kr.co.shoppingcart.cart.domain.basket.vo.Basket
-import kr.co.shoppingcart.cart.domain.category.CategoryRepository
+import kr.co.shoppingcart.cart.domain.category.services.GetCategoryService
 import kr.co.shoppingcart.cart.domain.permissions.services.OwnerPermissionService
 import kr.co.shoppingcart.cart.domain.permissions.services.ReaderPermissionService
 import kr.co.shoppingcart.cart.domain.permissions.services.WriterPermissionService
-import kr.co.shoppingcart.cart.domain.template.TemplateRepository
+import kr.co.shoppingcart.cart.domain.template.services.GetTemplateService
 import kr.co.shoppingcart.cart.mock.vo.MockBasket
 import kr.co.shoppingcart.cart.mock.vo.MockCategory
 import kr.co.shoppingcart.cart.mock.vo.MockPermissions
@@ -39,13 +41,19 @@ import org.mockito.junit.jupiter.MockitoExtension
 )
 class BasketUseCaseTest {
     @Mock
-    private lateinit var basketRepository: BasketRepository
+    private lateinit var getCategoryService: GetCategoryService
 
     @Mock
-    private lateinit var categoryRepository: CategoryRepository
+    private lateinit var getBasketService: GetBasketService
 
     @Mock
-    private lateinit var templateRepository: TemplateRepository
+    private lateinit var basketUpdateService: BasketUpdateService
+
+    @Mock
+    private lateinit var basketCreationService: BasketCreationService
+
+    @Mock
+    private lateinit var getTemplateService: GetTemplateService
 
     @Mock
     private lateinit var ownerPermissionService: OwnerPermissionService
@@ -79,19 +87,21 @@ class BasketUseCaseTest {
 
         @Test
         fun `생성 시 템플릿이 없으면 에러를 뱉는다`() {
-            given(categoryRepository.getByNameOrBasic("기타")).willReturn(
+            given(getCategoryService.getByNameOrBasic("기타")).willReturn(
                 MockCategory.getCategory(1),
             )
 
-            `when`(templateRepository.getById(command.templateId)).thenReturn(
-                null,
+            `when`(getTemplateService.getByIdOrFail(command.templateId)).thenThrow(
+                CustomException.responseBody(ExceptionCode.E_404_001),
             )
 
             basketUseCase =
                 BasketUseCase(
-                    basketRepository,
-                    categoryRepository,
-                    templateRepository,
+                    getCategoryService,
+                    getBasketService,
+                    basketUpdateService,
+                    basketCreationService,
+                    getTemplateService,
                     ownerPermissionService,
                     writerPermissionService,
                     readerPermissionService,
@@ -104,7 +114,7 @@ class BasketUseCaseTest {
                     )
                 }
 
-            assertEquals(ExceptionCode.E_403_000.name, exception.code.name)
+            assertEquals(ExceptionCode.E_404_001.name, exception.code.name)
         }
 
         @Test
@@ -114,10 +124,10 @@ class BasketUseCaseTest {
             val mockBasket = MockBasket.getBasketByCreate(command)
 
             given(
-                categoryRepository.getByNameOrBasic(command.categoryName),
+                getCategoryService.getByNameOrBasic(command.categoryName),
             ).willReturn(mockCategory)
             given(
-                templateRepository.getById(command.templateId),
+                getTemplateService.getByIdOrFail(command.templateId),
             ).willReturn(MockTemplate.getTemplate(command.templateId))
 
             `when`(
@@ -127,18 +137,18 @@ class BasketUseCaseTest {
             )
 
             given(
-                basketRepository.save(
+                basketCreationService.save(
                     mockBasket,
-                    mockTemplate,
-                    mockCategory,
                 ),
             ).willReturn(MockBasket.getBasketByCreate(command))
 
             basketUseCase =
                 BasketUseCase(
-                    basketRepository,
-                    categoryRepository,
-                    templateRepository,
+                    getCategoryService,
+                    getBasketService,
+                    basketUpdateService,
+                    basketCreationService,
+                    getTemplateService,
                     ownerPermissionService,
                     writerPermissionService,
                     readerPermissionService,
@@ -160,15 +170,17 @@ class BasketUseCaseTest {
     inner class UpdateIsAddedByFlagAndIdTest {
         @Test
         fun `물품이 없을 시 에러 발생`() {
-            `when`(basketRepository.getById(anyLong())).thenReturn(
-                null,
+            `when`(getBasketService.getByIdOrFail(anyLong())).thenThrow(
+                CustomException.responseBody(ExceptionCode.E_404_002),
             )
 
             basketUseCase =
                 BasketUseCase(
-                    basketRepository,
-                    categoryRepository,
-                    templateRepository,
+                    getCategoryService,
+                    getBasketService,
+                    basketUpdateService,
+                    basketCreationService,
+                    getTemplateService,
                     ownerPermissionService,
                     writerPermissionService,
                     readerPermissionService,
@@ -190,7 +202,7 @@ class BasketUseCaseTest {
 
         @Test
         fun `권한이 없을 떄 에러 발생`() {
-            `when`(basketRepository.getById(1)).thenReturn(
+            `when`(getBasketService.getByIdOrFail(1)).thenReturn(
                 MockBasket.getBasket(1, true),
             )
 
@@ -200,9 +212,11 @@ class BasketUseCaseTest {
 
             basketUseCase =
                 BasketUseCase(
-                    basketRepository,
-                    categoryRepository,
-                    templateRepository,
+                    getCategoryService,
+                    getBasketService,
+                    basketUpdateService,
+                    basketCreationService,
+                    getTemplateService,
                     ownerPermissionService,
                     writerPermissionService,
                     readerPermissionService,
@@ -224,7 +238,7 @@ class BasketUseCaseTest {
 
         @Test
         fun `권한이 writer 미만일 떄 에러 발생`() {
-            `when`(basketRepository.getById(1)).thenReturn(
+            `when`(getBasketService.getByIdOrFail(1)).thenReturn(
                 MockBasket.getBasket(1, true),
             )
 
@@ -234,9 +248,11 @@ class BasketUseCaseTest {
 
             basketUseCase =
                 BasketUseCase(
-                    basketRepository,
-                    categoryRepository,
-                    templateRepository,
+                    getCategoryService,
+                    getBasketService,
+                    basketUpdateService,
+                    basketCreationService,
+                    getTemplateService,
                     ownerPermissionService,
                     writerPermissionService,
                     readerPermissionService,
@@ -258,7 +274,7 @@ class BasketUseCaseTest {
 
         @Test
         fun `정상적으로 저장될 시 반환값은 Basket 객체를 반환한다`() {
-            `when`(basketRepository.getById(1)).thenReturn(
+            `when`(getBasketService.getByIdOrFail(1)).thenReturn(
                 MockBasket.getBasket(1, false),
             )
 
@@ -266,15 +282,17 @@ class BasketUseCaseTest {
                 MockPermissions.getPermission(1, 0),
             )
 
-            `when`(basketRepository.updateCheckedById(1, true)).thenReturn(
+            `when`(basketUpdateService.updateCheckedById(1, true)).thenReturn(
                 MockBasket.getBasket(1, true),
             )
 
             basketUseCase =
                 BasketUseCase(
-                    basketRepository,
-                    categoryRepository,
-                    templateRepository,
+                    getCategoryService,
+                    getBasketService,
+                    basketUpdateService,
+                    basketCreationService,
+                    getTemplateService,
                     ownerPermissionService,
                     writerPermissionService,
                     readerPermissionService,
@@ -306,7 +324,7 @@ class BasketUseCaseTest {
         @Test
         fun `조회 시 없으면 빈 list`() {
             `when`(
-                basketRepository.getByTemplateIdAndCategoryIdByUpdatedDesc(command.templateId, command.categoryId),
+                getBasketService.getByTemplateIdAndCategoryIdByUpdatedDesc(command.templateId, command.categoryId),
             ).thenReturn(
                 emptyList(),
             )
@@ -318,9 +336,11 @@ class BasketUseCaseTest {
 
             basketUseCase =
                 BasketUseCase(
-                    basketRepository,
-                    categoryRepository,
-                    templateRepository,
+                    getCategoryService,
+                    getBasketService,
+                    basketUpdateService,
+                    basketCreationService,
+                    getTemplateService,
                     ownerPermissionService,
                     writerPermissionService,
                     readerPermissionService,
@@ -337,7 +357,7 @@ class BasketUseCaseTest {
         @Test
         fun `정상적으로 조회했을 떄 확인`() {
             `when`(
-                basketRepository.getByTemplateIdAndCategoryIdByUpdatedDesc(command.templateId, command.categoryId),
+                getBasketService.getByTemplateIdAndCategoryIdByUpdatedDesc(command.templateId, command.categoryId),
             ).thenReturn(
                 emptyList(),
             )
@@ -350,9 +370,11 @@ class BasketUseCaseTest {
 
             basketUseCase =
                 BasketUseCase(
-                    basketRepository,
-                    categoryRepository,
-                    templateRepository,
+                    getCategoryService,
+                    getBasketService,
+                    basketUpdateService,
+                    basketCreationService,
+                    getTemplateService,
                     ownerPermissionService,
                     writerPermissionService,
                     readerPermissionService,
