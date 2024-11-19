@@ -15,4 +15,13 @@ object TemplateEntityMapper {
             createdAt = templateEntity.createdAt?.let { convertZonedDateTimeToSeoulTime(it) },
             updatedAt = templateEntity.updatedAt?.let { convertZonedDateTimeToSeoulTime(it) },
         )
+
+    fun toEntity(template: Template): TemplateEntity =
+        TemplateEntity(
+            id = template.id.id,
+            name = template.name.name,
+            userId = template.userId.userId,
+            isPublic = template.isPublic.isPublic,
+            thumbnailIdx = template.thumbnailIndex.thumbnail,
+        )
 }

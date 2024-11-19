@@ -9,4 +9,10 @@ object CategoryEntityMapper {
             id = entity.id,
             name = entity.name,
         )
+
+    fun toEntity(category: Category): CategoryEntity =
+        CategoryEntity(
+            id = category.id.id,
+            name = category.name.name,
+        )
 }

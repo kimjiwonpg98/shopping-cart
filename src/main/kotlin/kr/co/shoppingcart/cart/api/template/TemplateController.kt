@@ -6,6 +6,9 @@ import kr.co.shoppingcart.cart.api.template.dto.request.CreateTemplateRequestBod
 import kr.co.shoppingcart.cart.api.template.dto.request.GetWIthPercentRequestParamsDto
 import kr.co.shoppingcart.cart.api.template.dto.request.UpdateTemplateRequestDto
 import kr.co.shoppingcart.cart.api.template.dto.request.UpdateTemplateSharedRequestBodyDto
+import kr.co.shoppingcart.cart.api.template.dto.response.CopyPublicTemplateAllResponseBodyDto
+import kr.co.shoppingcart.cart.api.template.dto.response.CopyTemplateAllResponseBodyDto
+import kr.co.shoppingcart.cart.api.template.dto.response.CopyTemplateIncompleteResponseBodyDto
 import kr.co.shoppingcart.cart.api.template.dto.response.CreateTemplateResponseBodyDto
 import kr.co.shoppingcart.cart.api.template.dto.response.GetTemplateByIdResponseBodyDto
 import kr.co.shoppingcart.cart.api.template.dto.response.GetTemplateResponseBodyDto
@@ -129,14 +132,19 @@ class TemplateController(
     fun copyTemplateIncomplete(
         @PathVariable id: String,
         @CurrentUser currentUser: JwtPayload,
-    ): ResponseEntity<Unit> {
-        templateUseCase.copyOwnTemplateInComplete(
-            CopyTemplateInCompleteCommand(
-                id = id.toLong(),
-                userId = currentUser.identificationValue.toLong(),
+    ): ResponseEntity<CopyTemplateIncompleteResponseBodyDto> {
+        val result =
+            templateUseCase.copyOwnTemplateInComplete(
+                CopyTemplateInCompleteCommand(
+                    id = id.toLong(),
+                    userId = currentUser.identificationValue.toLong(),
+                ),
+            )
+        return ResponseEntity.status(201).body(
+            CopyTemplateIncompleteResponseBodyDto(
+                result = result.let(TemplateResponseMapper::toResponse),
             ),
         )
-        return ResponseEntity.status(201).build()
     }
 
     @OpenApiSpecApiException([ExceptionCode.E_401_000, ExceptionCode.E_403_000])
@@ -144,15 +152,20 @@ class TemplateController(
     fun copyTemplateAll(
         @PathVariable id: String,
         @CurrentUser currentUser: JwtPayload,
-    ): ResponseEntity<Unit> {
-        templateUseCase.copyOwnTemplate(
-            CopyOwnTemplateCommand(
-                id = id.toLong(),
-                userId = currentUser.identificationValue.toLong(),
+    ): ResponseEntity<CopyTemplateAllResponseBodyDto> {
+        val result =
+            templateUseCase.copyOwnTemplate(
+                CopyOwnTemplateCommand(
+                    id = id.toLong(),
+                    userId = currentUser.identificationValue.toLong(),
+                ),
+            )
+
+        return ResponseEntity.status(201).body(
+            CopyTemplateAllResponseBodyDto(
+                result = result.let(TemplateResponseMapper::toResponse),
             ),
         )
-
-        return ResponseEntity.status(201).build()
     }
 
     @OpenApiSpecApiException([ExceptionCode.E_401_000, ExceptionCode.E_403_000])
@@ -160,15 +173,20 @@ class TemplateController(
     fun copyPublicTemplateAll(
         @PathVariable id: String,
         @CurrentUser currentUser: JwtPayload,
-    ): ResponseEntity<Unit> {
-        templateUseCase.copyTemplate(
-            CopyTemplateCommand(
-                id = id.toLong(),
-                userId = currentUser.identificationValue.toLong(),
+    ): ResponseEntity<CopyPublicTemplateAllResponseBodyDto> {
+        val result =
+            templateUseCase.copyTemplate(
+                CopyTemplateCommand(
+                    id = id.toLong(),
+                    userId = currentUser.identificationValue.toLong(),
+                ),
+            )
+
+        return ResponseEntity.status(201).body(
+            CopyPublicTemplateAllResponseBodyDto(
+                result = result.let(TemplateResponseMapper::toResponse),
             ),
         )
-
-        return ResponseEntity.status(201).build()
     }
 
     @OpenApiSpecApiException([ExceptionCode.E_401_000, ExceptionCode.E_403_000])

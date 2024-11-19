@@ -3,12 +3,10 @@ package kr.co.shoppingcart.cart.database.mysql.basket
 import kr.co.shoppingcart.cart.database.mysql.basket.entity.BasketEntity
 import kr.co.shoppingcart.cart.database.mysql.basket.entity.BasketJdbcEntity
 import kr.co.shoppingcart.cart.database.mysql.basket.mapper.BasketEntityMapper
-import kr.co.shoppingcart.cart.database.mysql.category.entity.CategoryEntity
-import kr.co.shoppingcart.cart.database.mysql.template.entity.TemplateEntity
+import kr.co.shoppingcart.cart.database.mysql.category.mapper.CategoryEntityMapper
+import kr.co.shoppingcart.cart.database.mysql.template.mapper.TemplateEntityMapper
 import kr.co.shoppingcart.cart.domain.basket.BasketRepository
 import kr.co.shoppingcart.cart.domain.basket.vo.Basket
-import kr.co.shoppingcart.cart.domain.category.vo.Category
-import kr.co.shoppingcart.cart.domain.template.vo.Template
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -19,22 +17,11 @@ class BasketRepositoryAdapter(
     private val basketEntityRepository: BasketEntityRepository<BasketEntity, Long>,
     private val basketJdbcRepository: BasketJdbcRepository,
 ) : BasketRepository {
-    override fun save(
-        basket: Basket,
-        template: Template,
-        category: Category,
-    ): Basket {
-        val categoryEntity =
-            CategoryEntity(
-                id = category.id.id,
-                name = category.name.name,
-            )
+    override fun save(basket: Basket): Basket {
+        val categoryEntity = CategoryEntityMapper.toEntity(basket.category)
+
         val templateEntity =
-            TemplateEntity(
-                id = template.id.id,
-                name = template.name.name,
-                userId = template.userId.userId,
-            )
+            TemplateEntityMapper.toEntity(basket.template)
 
         return basketEntityRepository
             .save(
