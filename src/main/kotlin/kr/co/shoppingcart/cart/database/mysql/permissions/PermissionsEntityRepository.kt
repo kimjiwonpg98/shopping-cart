@@ -9,10 +9,14 @@ interface PermissionsEntityRepository<T, ID> : Repository<T, ID> {
         templateId: Long,
     ): PermissionsEntity?
 
+    fun findByUserId(userId: Long): List<PermissionsEntity>
+
     fun save(entity: PermissionsEntity): PermissionsEntity
 
     fun deleteByUserIdAndTemplateId(
         userId: Long,
         templateId: Long,
     )
+
+    fun deleteByIdIn(ids: List<Long>)
 }

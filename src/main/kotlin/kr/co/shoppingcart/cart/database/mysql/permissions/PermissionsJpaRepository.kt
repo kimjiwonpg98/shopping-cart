@@ -8,10 +8,14 @@ interface PermissionsJpaRepository : PermissionsEntityRepository<PermissionsEnti
         templateId: Long,
     ): PermissionsEntity?
 
+    override fun findByUserId(userId: Long): List<PermissionsEntity>
+
     override fun save(entity: PermissionsEntity): PermissionsEntity
 
     override fun deleteByUserIdAndTemplateId(
         userId: Long,
         templateId: Long,
     )
+
+    override fun deleteByIdIn(ids: List<Long>)
 }

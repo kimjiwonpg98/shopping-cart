@@ -6,6 +6,7 @@ import kr.co.shoppingcart.cart.domain.permissions.vo.Permissions
 object PermissionsEntityMapper {
     fun toDomain(permissionsEntity: PermissionsEntity): Permissions =
         Permissions.toDomain(
+            id = permissionsEntity.id!!,
             templateId = permissionsEntity.templateId,
             userId = permissionsEntity.userId,
             level = permissionsEntity.level,

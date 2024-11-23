@@ -3,6 +3,7 @@ package kr.co.shoppingcart.cart.domain.permissions.services
 import kr.co.shoppingcart.cart.domain.permissions.PermissionsRepository
 import kr.co.shoppingcart.cart.domain.permissions.enums.PermissionLevelEnum
 import kr.co.shoppingcart.cart.domain.permissions.vo.Permissions
+import kr.co.shoppingcart.cart.domain.permissions.vo.SeparatePermissions
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -35,9 +36,23 @@ class OwnerPermissionService(
         return permission
     }
 
+    fun getByUserId(userId: Long): SeparatePermissions {
+        val permission = permissionsRepository.getByUserId(userId)
+
+        val (ownerPermission, anotherPermission) = permission.partition { it.level.isOwnerLevel() }
+
+        return SeparatePermissions(
+            ownerPermission,
+            anotherPermission,
+        )
+    }
+
     @Transactional(propagation = Propagation.MANDATORY)
     fun deleteByUserIdAndTemplateId(
         userId: Long,
         templateId: Long,
     ) = permissionsRepository.deleteByUserIdAndTemplateId(userId, templateId)
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    fun deleteByIds(ids: List<Long>) = permissionsRepository.deleteByIds(ids)
 }

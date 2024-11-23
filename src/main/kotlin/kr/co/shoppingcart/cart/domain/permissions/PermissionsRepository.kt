@@ -8,6 +8,8 @@ interface PermissionsRepository {
         templateId: Long,
     ): Permissions?
 
+    fun getByUserId(userId: Long): List<Permissions>
+
     fun create(permission: Permissions): Permissions
 
     fun createPermissionByLevel(
@@ -20,4 +22,6 @@ interface PermissionsRepository {
         userId: Long,
         templateId: Long,
     )
+
+    fun deleteByIds(ids: List<Long>)
 }

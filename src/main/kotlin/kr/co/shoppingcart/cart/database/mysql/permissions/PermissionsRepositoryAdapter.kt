@@ -20,6 +20,9 @@ class PermissionsRepositoryAdapter(
                 templateId,
             )?.let(PermissionsEntityMapper::toDomain)
 
+    override fun getByUserId(userId: Long): List<Permissions> =
+        permissionsEntityRepository.findByUserId(userId).map(PermissionsEntityMapper::toDomain)
+
     override fun create(permission: Permissions) =
         permissionsEntityRepository
             .save(
@@ -35,6 +38,7 @@ class PermissionsRepositoryAdapter(
             .save(
                 PermissionsEntityMapper.toEntity(
                     Permissions.toDomain(
+                        id = 0,
                         userId = userId,
                         templateId = templateId,
                         level = level,
@@ -47,5 +51,9 @@ class PermissionsRepositoryAdapter(
         templateId: Long,
     ) {
         permissionsEntityRepository.deleteByUserIdAndTemplateId(userId, templateId)
+    }
+
+    override fun deleteByIds(ids: List<Long>) {
+        permissionsEntityRepository.deleteByIdIn(ids)
     }
 }
