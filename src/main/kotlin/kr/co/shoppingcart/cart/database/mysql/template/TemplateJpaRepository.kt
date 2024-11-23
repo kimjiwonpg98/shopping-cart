@@ -28,4 +28,6 @@ interface TemplateJpaRepository : TemplateEntityRepository<TemplateEntity, Long>
     ): TemplateEntity?
 
     override fun deleteById(id: Long)
+
+    override fun deleteByIdIn(ids: List<Long>)
 }

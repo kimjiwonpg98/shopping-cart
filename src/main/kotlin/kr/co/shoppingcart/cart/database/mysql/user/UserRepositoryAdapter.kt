@@ -6,6 +6,7 @@ import kr.co.shoppingcart.cart.domain.user.UserRepository
 import kr.co.shoppingcart.cart.domain.user.enums.LoginProvider
 import kr.co.shoppingcart.cart.domain.user.vo.User
 import org.springframework.stereotype.Component
+import java.time.ZonedDateTime
 
 @Component
 class UserRepositoryAdapter(
@@ -38,4 +39,20 @@ class UserRepositoryAdapter(
                 authIdentifier,
                 provider.name,
             )?.let(UserEntityMapper::toDomain)
+
+    override fun deleteByUniqueKeyAndLoginType(
+        authIdentifier: String,
+        provider: LoginProvider,
+    ): User? {
+        val user =
+            userEntityRepository
+                .getByAuthIdentifierAndProvider(
+                    authIdentifier,
+                    provider.name,
+                ) ?: return null
+
+        user.deletedAt = ZonedDateTime.now()
+
+        return user.let(UserEntityMapper::toDomain)
+    }
 }

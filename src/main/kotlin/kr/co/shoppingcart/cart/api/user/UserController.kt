@@ -7,9 +7,11 @@ import kr.co.shoppingcart.cart.auth.annotation.CurrentUser
 import kr.co.shoppingcart.cart.common.error.annotations.OpenApiSpecApiException
 import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
 import kr.co.shoppingcart.cart.domain.auth.CreateTokensUseCase
-import kr.co.shoppingcart.cart.domain.user.UserUserCase
+import kr.co.shoppingcart.cart.domain.user.UserUseCase
+import kr.co.shoppingcart.cart.domain.user.command.DeleteUserCommand
 import kr.co.shoppingcart.cart.domain.user.command.GetByAuthIdentifierAndProviderCommand
 import kr.co.shoppingcart.cart.domain.user.command.LoginCommand
+import kr.co.shoppingcart.cart.domain.user.enums.LoginProvider
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -19,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class UserController(
-    private val userUseCase: UserUserCase,
+    private val userUseCase: UserUseCase,
     private val createTokensUseCase: CreateTokensUseCase,
 ) {
     @OpenApiSpecApiException([ExceptionCode.E_401_000])
@@ -64,5 +66,13 @@ class UserController(
     @DeleteMapping("/v1/user")
     fun delete(
         @CurrentUser currentUser: JwtPayload,
-    ): ResponseEntity<Unit> = ResponseEntity.status(HttpStatus.CREATED).build()
+    ): ResponseEntity<Unit> {
+        userUseCase.deleteUser(
+            DeleteUserCommand(
+                currentUser.identificationValue,
+                LoginProvider.valueOf(currentUser.provider),
+            ),
+        )
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+    }
 }

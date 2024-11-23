@@ -32,4 +32,6 @@ interface TemplateRepository {
     fun getWithCompletePercent(userId: Long): List<TemplateWithCheckedCount>
 
     fun deleteById(id: Long)
+
+    fun deleteByIds(id: List<Long>)
 }
