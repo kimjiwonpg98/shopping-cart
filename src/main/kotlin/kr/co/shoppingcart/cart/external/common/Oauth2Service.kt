@@ -1,6 +1,6 @@
 package kr.co.shoppingcart.cart.external.common
 
-import kr.co.shoppingcart.cart.domain.user.UserUserCase
+import kr.co.shoppingcart.cart.domain.user.UserUseCase
 import kr.co.shoppingcart.cart.domain.user.command.LoginCommand
 import kr.co.shoppingcart.cart.domain.user.enums.UserProperties
 import mu.KotlinLogging
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class Oauth2Service(
-    private val userUseCase: UserUserCase,
+    private val userUseCase: UserUseCase,
 ) : DefaultOAuth2UserService() {
     @Throws(OAuth2AuthenticationException::class)
     override fun loadUser(userRequest: OAuth2UserRequest): OAuth2User {

@@ -21,7 +21,9 @@ class JwtProvider(
     fun createJwt(jwtPayloadDto: JwtPayloadDto): String {
         val expiredTime = jwtPayloadDto.now.plusSeconds(jwtPayloadDto.expiredTimestamp)
 
-        return Jwts.builder().claims(jwtPayloadDto.claims)
+        return Jwts
+            .builder()
+            .claims(jwtPayloadDto.claims)
             .id(UUID.randomUUID().toString())
             .subject(jwtPayloadDto.identificationValue)
             .issuer(issuer)
@@ -33,17 +35,22 @@ class JwtProvider(
 
     fun verifyToken(jwt: String?): JwtPayload {
         val claimsJwt =
-            Jwts.parser().verifyWith(secretKey).build()
+            Jwts
+                .parser()
+                .verifyWith(secretKey)
+                .build()
                 .parseSignedClaims(jwt)
 
         if (!claimsJwt.payload.containsKey("email")) {
             return JwtPayload(
                 identificationValue = claimsJwt.payload.subject,
+                provider = claimsJwt.payload["provider"] as String,
             )
         }
 
         return JwtPayload(
             identificationValue = claimsJwt.payload.subject,
+            provider = claimsJwt.payload["provider"] as String,
             email = claimsJwt.payload["email"] as String,
         )
     }

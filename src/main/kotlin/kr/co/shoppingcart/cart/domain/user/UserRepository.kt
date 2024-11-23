@@ -16,4 +16,9 @@ interface UserRepository {
         authIdentifier: String,
         provider: LoginProvider,
     ): User?
+
+    fun deleteByUniqueKeyAndLoginType(
+        authIdentifier: String,
+        provider: LoginProvider,
+    ): User?
 }
