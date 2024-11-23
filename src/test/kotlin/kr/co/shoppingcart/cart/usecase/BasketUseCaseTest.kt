@@ -119,7 +119,6 @@ class BasketUseCaseTest {
 
         @Test
         fun `정상적으로 저장될 시 반환값은 Basket 객체를 반환한다`() {
-            val mockTemplate = MockTemplate.getTemplate(command.templateId)
             val mockCategory = MockCategory.getCategory(1)
             val mockBasket = MockBasket.getBasketByCreate(command)
 
