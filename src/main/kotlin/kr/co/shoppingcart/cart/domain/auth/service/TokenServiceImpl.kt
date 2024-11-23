@@ -19,7 +19,7 @@ class TokenServiceImpl(
     ): String {
         val tokenInfo = getTokenExpByType(provider) ?: throw BadRequestException()
 
-        val claims = mapOf("scope" to "MASTER")
+        val claims = mapOf("scope" to "MASTER", "provider" to provider)
 
         val jwtPayload =
             JwtPayloadDto(
