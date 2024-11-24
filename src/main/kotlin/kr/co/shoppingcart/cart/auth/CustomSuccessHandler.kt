@@ -55,6 +55,6 @@ class CustomSuccessHandler(
                 .toString(),
         )
 
-        response.sendRedirect("http://localhost:3000")
+        response.sendRedirect("http://localhost:3000/home")
     }
 }
