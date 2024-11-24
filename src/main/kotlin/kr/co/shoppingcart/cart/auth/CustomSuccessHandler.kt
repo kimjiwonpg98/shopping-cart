@@ -40,8 +40,7 @@ class CustomSuccessHandler(
                 .from("accessToken", accessToken)
                 .httpOnly(true)
 //                .secure(true)
-//                .sameSite("None")
-                .sameSite("Lax")
+                .sameSite("None")
                 .build()
                 .toString(),
         )
@@ -51,8 +50,7 @@ class CustomSuccessHandler(
                 .from("refreshToken", refreshToken)
                 .httpOnly(true)
 //                .secure(true)
-//                .sameSite("None")
-                .sameSite("Lax")
+                .sameSite("None")
                 .build()
                 .toString(),
         )
