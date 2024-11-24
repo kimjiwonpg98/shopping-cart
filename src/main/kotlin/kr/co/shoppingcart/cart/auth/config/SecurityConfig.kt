@@ -38,13 +38,13 @@ class SecurityConfig(
             .oauth2Login { oauth2Configurer ->
                 oauth2Configurer
                     // TODO: 로그인 시 사용할 페이지
-                    .loginPage("http://localhost:3000")
+                    .loginPage("https://kka-dam.vercel.app")
                     .userInfoEndpoint { userInfoEndpoint ->
                         userInfoEndpoint.userService(oauth2Service)
                     }.successHandler(customSuccessHandler)
                     .failureHandler(customFailHandler)
                     // TODO: 실패 시 redirect 페이지
-                    .failureUrl("http://localhost:3000")
+                    .failureUrl("https://kka-dam.vercel.app")
             }.authorizeHttpRequests { requests ->
                 requests.requestMatchers(HttpMethod.GET, "/v1/search").permitAll()
                 requests.requestMatchers(HttpMethod.GET, "/login/oauth2/code").permitAll()
