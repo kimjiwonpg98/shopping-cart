@@ -61,6 +61,8 @@ class CustomSuccessHandler(
                 .toString(),
         )
 
+        response.setHeader("Access-Control-Allow-Credentials", "true")
+
         redirectStrategy.sendRedirect(request, response, "https://kka-dam.vercel.app/home")
     }
 }
