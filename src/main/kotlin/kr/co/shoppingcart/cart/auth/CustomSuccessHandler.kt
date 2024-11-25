@@ -44,7 +44,7 @@ class CustomSuccessHandler(
                 .httpOnly(true)
                 .secure(true)
                 .path("/")
-                .sameSite("Strict")
+                .sameSite("None")
                 .build()
                 .toString(),
         )
@@ -56,6 +56,7 @@ class CustomSuccessHandler(
                 .httpOnly(true)
                 .secure(true)
                 .path("/")
+                .sameSite("None")
                 .build()
                 .toString(),
         )
