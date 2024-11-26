@@ -44,8 +44,6 @@ class SecurityConfig(
                 }
             }.oauth2Login { oauth2Configurer ->
                 oauth2Configurer
-                    // TODO: 로그인 시 사용할 페이지
-                    .loginPage("https://kka-dam.vercel.app")
                     .userInfoEndpoint { userInfoEndpoint ->
                         userInfoEndpoint.userService(oauth2Service)
                     }.successHandler(customSuccessHandler)
