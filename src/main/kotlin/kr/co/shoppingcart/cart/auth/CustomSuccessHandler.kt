@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import kr.co.shoppingcart.cart.domain.auth.service.TokenService
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseCookie
 import org.springframework.security.core.Authentication
 import org.springframework.security.oauth2.core.user.OAuth2User
@@ -61,10 +62,10 @@ class CustomSuccessHandler(
                 .toString(),
         )
 
-//        response.setHeader("Access-Control-Allow-Credentials", "true")
-//        response.contentType = "application/json"
-//        response.writer.write("{\"token\": \"$accessToken\", \"refreshToken\": \"$refreshToken\"}")
-//        response.status = HttpStatus.OK.value()
-        redirectStrategy.sendRedirect(request, response, "https://kka-dam.vercel.app/home")
+        response.setHeader("Access-Control-Allow-Credentials", "true")
+        response.contentType = "application/json"
+        response.writer.write("{\"token\": \"$accessToken\", \"refreshToken\": \"$refreshToken\"}")
+        response.status = HttpStatus.OK.value()
+//        redirectStrategy.sendRedirect(request, response, "https://kka-dam.vercel.app/home")
     }
 }
