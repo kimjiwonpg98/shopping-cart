@@ -62,7 +62,9 @@ class CustomSuccessHandler(
         )
 
         response.setHeader("Access-Control-Allow-Credentials", "true")
-
+//        response.contentType = "application/json"
+//        response.writer.write("{\"token\": \"$accessToken\", \"refreshToken\": \"$refreshToken\"}")
+//        response.status = HttpStatus.OK.value()
         redirectStrategy.sendRedirect(request, response, "https://kka-dam.vercel.app/home")
     }
 }

@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configurers.CorsConfigurer
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer
 import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer
@@ -34,8 +33,16 @@ class SecurityConfig(
             .httpBasic { obj: HttpBasicConfigurer<HttpSecurity> -> obj.disable() }
             .csrf { obj: CsrfConfigurer<HttpSecurity> ->
                 obj.disable()
-            }.cors { obj: CorsConfigurer<HttpSecurity> -> obj.disable() }
-            .oauth2Login { oauth2Configurer ->
+            }.cors { cors ->
+                cors.configurationSource { request ->
+                    org.springframework.web.cors.CorsConfiguration().apply {
+                        allowedOrigins = listOf("http://localhost:3000", "https://kka-dam.vercel.app") // 허용할 도메인
+                        allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS") // 허용할 HTTP 메서드
+                        allowedHeaders = listOf("Authorization", "Content-Type") // 허용할 헤더
+                        allowCredentials = true // 쿠키 및 인증 정보 허용 여부
+                    }
+                }
+            }.oauth2Login { oauth2Configurer ->
                 oauth2Configurer
                     // TODO: 로그인 시 사용할 페이지
                     .loginPage("https://kka-dam.vercel.app")
