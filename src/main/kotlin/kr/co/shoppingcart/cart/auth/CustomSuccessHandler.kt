@@ -43,6 +43,7 @@ class CustomSuccessHandler(
                 .from("accessToken", accessToken)
                 .httpOnly(true)
                 .secure(true)
+                .domain("kka-dam.vercel.app")
                 .path("/")
                 .sameSite("None")
                 .build()
@@ -55,16 +56,20 @@ class CustomSuccessHandler(
                 .from("refreshToken", refreshToken)
                 .httpOnly(true)
                 .secure(true)
+                .domain("kka-dam.vercel.app")
                 .path("/")
                 .sameSite("None")
                 .build()
                 .toString(),
         )
-
-//        response.setHeader("Access-Control-Allow-Credentials", "true")
+        response.setHeader("Access-Control-Allow-Credentials", "true")
 //        response.contentType = "application/json"
 //        response.writer.write("{\"token\": \"$accessToken\", \"refreshToken\": \"$refreshToken\"}")
 //        response.status = HttpStatus.OK.value()
-        redirectStrategy.sendRedirect(request, response, "https://kka-dam.vercel.app/home")
+        redirectStrategy.sendRedirect(
+            request,
+            response,
+            "https://kka-dam.vercel.app/home",
+        )
     }
 }
