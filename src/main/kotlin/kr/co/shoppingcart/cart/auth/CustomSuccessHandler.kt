@@ -47,7 +47,7 @@ class CustomSuccessHandler(
 
         val referer = request.getHeader("Referer")
 
-        if (referer == "http://localhost:3000/") {
+        if (referer.contains("localhost:3000")) {
             redirectStrategy.sendRedirect(
                 request,
                 response,
