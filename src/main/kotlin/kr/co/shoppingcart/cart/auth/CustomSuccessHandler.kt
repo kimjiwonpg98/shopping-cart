@@ -3,16 +3,20 @@ package kr.co.shoppingcart.cart.auth
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import kr.co.shoppingcart.cart.domain.auth.service.TokenService
-import org.springframework.http.HttpHeaders
-import org.springframework.http.ResponseCookie
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.Authentication
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.security.web.DefaultRedirectStrategy
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
 import org.springframework.stereotype.Service
+import java.util.UUID
 
 @Service
 class CustomSuccessHandler(
+    @Value("\${jwt.redirect-local-url}")
+    private val localRedirectUrl: String,
+    @Value("\${jwt.redirect-url}")
+    private val redirectUrl: String,
     private val tokenService: TokenService,
 ) : AuthenticationSuccessHandler {
     private val redirectStrategy = DefaultRedirectStrategy()
@@ -37,39 +41,24 @@ class CustomSuccessHandler(
                 provider = attributes["provider"] as String,
             )
 
-        response.addHeader(
-            HttpHeaders.SET_COOKIE,
-            ResponseCookie
-                .from("accessToken", accessToken)
-                .httpOnly(true)
-                .secure(true)
-                .domain("kka-dam.vercel.app")
-                .path("/")
-                .sameSite("None")
-                .build()
-                .toString(),
-        )
+        val randomKey = UUID.randomUUID().toString().replace("-".toRegex(), "")
 
-        response.addHeader(
-            HttpHeaders.SET_COOKIE,
-            ResponseCookie
-                .from("refreshToken", refreshToken)
-                .httpOnly(true)
-                .secure(true)
-                .domain("kka-dam.vercel.app")
-                .path("/")
-                .sameSite("None")
-                .build()
-                .toString(),
-        )
-        response.setHeader("Access-Control-Allow-Credentials", "true")
-//        response.contentType = "application/json"
-//        response.writer.write("{\"token\": \"$accessToken\", \"refreshToken\": \"$refreshToken\"}")
-//        response.status = HttpStatus.OK.value()
-        redirectStrategy.sendRedirect(
-            request,
-            response,
-            "https://kka-dam.vercel.app/home",
-        )
+        tokenService.settingCacheTokenByOauth2(randomKey, accessToken, refreshToken)
+
+        val referer = request.getHeader("Referer")
+
+        if (referer == "http://localhost:3000/") {
+            redirectStrategy.sendRedirect(
+                request,
+                response,
+                "$localRedirectUrl/bridge?q=$randomKey",
+            )
+        } else {
+            redirectStrategy.sendRedirect(
+                request,
+                response,
+                "$redirectUrl/bridge?q=$randomKey",
+            )
+        }
     }
 }

@@ -82,6 +82,8 @@ client:
 jwt:
   secret: ${JWT_SECRET:xxxxxzsqwsasd123afdcdfwqdsddasdqwdsacasdqwdcfv12312dsacvxcasdwhrtjh465yu1234xsddsvssdvdsdvdsvvsvdvsdsdv}
   issuer: ${JWT_ISSUER:cart}
+  redirect-url: ${OAUTH2_SUCCESS_REDIRECT_URL:https://kka-dam.vercel.app}
+  redirect-local-url: ${OAUTH2_SUCCESS_REDIRECT_LOCAL_URL:http://localhost:3000}
 springdoc:
   show-actuator: true
   default-consumes-media-type: application/json;charset=UTF-8

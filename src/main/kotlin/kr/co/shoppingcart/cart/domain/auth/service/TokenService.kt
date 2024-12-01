@@ -1,5 +1,7 @@
 package kr.co.shoppingcart.cart.domain.auth.service
 
+import kr.co.shoppingcart.cart.domain.auth.vo.tokens.Tokens
+
 interface TokenService {
     fun createAccessToken(
         userId: Long,
@@ -12,4 +14,14 @@ interface TokenService {
     ): String
 
     fun createTmpToken(identificationValue: String): String
+
+    fun settingCacheTokenByOauth2(
+        identifier: String,
+        accessToken: String,
+        refreshToken: String,
+    ): Tokens
+
+    fun getCacheTokenByOauth2(identifier: String): Tokens?
+
+    fun deleteCacheByIdentifier(identifier: String)
 }

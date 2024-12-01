@@ -7,6 +7,7 @@ import kr.co.shoppingcart.cart.auth.annotation.CurrentUser
 import kr.co.shoppingcart.cart.common.error.annotations.OpenApiSpecApiException
 import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
 import kr.co.shoppingcart.cart.domain.auth.CreateTokensUseCase
+import kr.co.shoppingcart.cart.domain.auth.DeleteTokensUseCase
 import kr.co.shoppingcart.cart.domain.user.UserUseCase
 import kr.co.shoppingcart.cart.domain.user.command.DeleteUserCommand
 import kr.co.shoppingcart.cart.domain.user.command.GetByAuthIdentifierAndProviderCommand
@@ -15,6 +16,8 @@ import kr.co.shoppingcart.cart.domain.user.enums.LoginProvider
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
@@ -23,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController
 class UserController(
     private val userUseCase: UserUseCase,
     private val createTokensUseCase: CreateTokensUseCase,
+    private val deleteTokensUseCase: DeleteTokensUseCase,
 ) {
     @OpenApiSpecApiException([ExceptionCode.E_401_000])
     @PostMapping("/v1/login")
@@ -74,5 +78,21 @@ class UserController(
             ),
         )
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+    }
+
+    @OpenApiSpecApiException([ExceptionCode.E_401_001])
+    @GetMapping("/v1/oauth2/login/{identifier}")
+    fun getCacheTokenByOauth2Login(
+        @PathVariable identifier: String,
+    ): ResponseEntity<LoginResponseBodyDto> {
+        val tokens = createTokensUseCase.getTokensByIdentifier(identifier)
+
+        val responseBody =
+            LoginResponseBodyDto(
+                tokens.accessToken.token,
+                tokens.refreshToken.token,
+            )
+        deleteTokensUseCase.deleteCacheTokenByIdentifier(identifier)
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseBody)
     }
 }
