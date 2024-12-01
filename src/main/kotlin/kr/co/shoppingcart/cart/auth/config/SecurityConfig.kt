@@ -41,7 +41,6 @@ class SecurityConfig(
                         userInfoEndpoint.userService(oauth2Service)
                     }.successHandler(customSuccessHandler)
                     .failureHandler(customFailHandler)
-                    .tokenEndpoint { }
                     // TODO: 실패 시 redirect 페이지
                     .failureUrl("https://kka-dam.vercel.app")
             }.authorizeHttpRequests { requests ->
