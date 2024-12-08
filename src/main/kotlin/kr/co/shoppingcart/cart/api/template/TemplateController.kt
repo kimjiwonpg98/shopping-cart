@@ -44,6 +44,13 @@ class TemplateController(
     private val templateUseCase: TemplateUseCase,
     private val basketUseCase: BasketUseCase,
 ) {
+    @OpenApiSpecApiException(
+        [
+            ExceptionCode.E_400_000,
+            ExceptionCode.E_401_002,
+            ExceptionCode.E_401_001,
+        ],
+    )
     @PostMapping("/v1/template")
     fun save(
         @Valid @RequestBody(required = false) @Nullable body: CreateTemplateRequestBodyDto?,
@@ -62,7 +69,11 @@ class TemplateController(
         )
     }
 
-    @OpenApiSpecApiException([ExceptionCode.E_401_000, ExceptionCode.E_403_000])
+    @OpenApiSpecApiException(
+        [
+            ExceptionCode.E_401_000, ExceptionCode.E_403_000, ExceptionCode.E_401_001, ExceptionCode.E_401_002,
+        ],
+    )
     @GetMapping("/v1/template/{id}")
     fun getById(
         @PathVariable id: Long,
@@ -82,7 +93,9 @@ class TemplateController(
         )
     }
 
-    @OpenApiSpecApiException([ExceptionCode.E_401_000, ExceptionCode.E_403_000])
+    @OpenApiSpecApiException(
+        [ExceptionCode.E_401_000, ExceptionCode.E_403_000, ExceptionCode.E_401_001, ExceptionCode.E_401_002],
+    )
     @PutMapping("/v1/template/{id}")
     fun updateTemplate(
         @PathVariable id: String,
@@ -105,7 +118,9 @@ class TemplateController(
         )
     }
 
-    @OpenApiSpecApiException([ExceptionCode.E_401_000, ExceptionCode.E_403_000])
+    @OpenApiSpecApiException(
+        [ExceptionCode.E_401_000, ExceptionCode.E_403_000, ExceptionCode.E_401_001, ExceptionCode.E_401_002],
+    )
     @PutMapping("/v1/template/{id}/share")
     fun updateSharedById(
         @PathVariable id: String,
@@ -127,7 +142,9 @@ class TemplateController(
         )
     }
 
-    @OpenApiSpecApiException([ExceptionCode.E_401_000, ExceptionCode.E_403_000])
+    @OpenApiSpecApiException(
+        [ExceptionCode.E_401_000, ExceptionCode.E_403_000, ExceptionCode.E_401_001, ExceptionCode.E_401_002],
+    )
     @PostMapping("/v1/template/{id}/copy/incomplete")
     fun copyTemplateIncomplete(
         @PathVariable id: String,
@@ -147,7 +164,9 @@ class TemplateController(
         )
     }
 
-    @OpenApiSpecApiException([ExceptionCode.E_401_000, ExceptionCode.E_403_000])
+    @OpenApiSpecApiException(
+        [ExceptionCode.E_401_000, ExceptionCode.E_403_000, ExceptionCode.E_401_001, ExceptionCode.E_401_002],
+    )
     @PostMapping("/v1/template/{id}/copy")
     fun copyTemplateAll(
         @PathVariable id: String,
@@ -168,7 +187,9 @@ class TemplateController(
         )
     }
 
-    @OpenApiSpecApiException([ExceptionCode.E_401_000, ExceptionCode.E_403_000])
+    @OpenApiSpecApiException(
+        [ExceptionCode.E_401_000, ExceptionCode.E_403_000, ExceptionCode.E_401_001, ExceptionCode.E_401_002],
+    )
     @PostMapping("/v1/template/public/{id}/copy")
     fun copyPublicTemplateAll(
         @PathVariable id: String,
@@ -189,7 +210,9 @@ class TemplateController(
         )
     }
 
-    @OpenApiSpecApiException([ExceptionCode.E_401_000, ExceptionCode.E_403_000])
+    @OpenApiSpecApiException(
+        [ExceptionCode.E_401_000, ExceptionCode.E_403_000, ExceptionCode.E_401_001, ExceptionCode.E_401_002],
+    )
     @GetMapping("/v1/templates")
     fun getAll(
         @CurrentUser currentUser: JwtPayload,
@@ -223,7 +246,9 @@ class TemplateController(
         )
     }
 
-    @OpenApiSpecApiException([ExceptionCode.E_401_000, ExceptionCode.E_403_000])
+    @OpenApiSpecApiException(
+        [ExceptionCode.E_401_000, ExceptionCode.E_403_000, ExceptionCode.E_401_001, ExceptionCode.E_401_002],
+    )
     @DeleteMapping("/v1/template/{id}")
     fun deleteById(
         @PathVariable id: String,

@@ -4,7 +4,6 @@ import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import kr.co.shoppingcart.cart.auth.enums.TokenInformationEnum
-import kr.co.shoppingcart.cart.common.error.CustomException
 import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.GrantedAuthority
@@ -17,7 +16,6 @@ import org.springframework.web.filter.OncePerRequestFilter
 class JwtFilter(
     private val jwtProvider: JwtProvider,
 ) : OncePerRequestFilter() {
-    @Throws(CustomException::class)
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
@@ -31,9 +29,11 @@ class JwtFilter(
         }
 
         val token =
-            authorizationHeader.split(" ".toRegex()).dropLastWhile {
-                it.isEmpty()
-            }.toTypedArray()[1]
+            authorizationHeader
+                .split(" ".toRegex())
+                .dropLastWhile {
+                    it.isEmpty()
+                }.toTypedArray()[1]
         val jwtPayload: JwtPayload = jwtProvider.verifyToken(token)
         request.setAttribute(TokenInformationEnum.USER.name, jwtPayload)
         setAuthentication(jwtPayload)

@@ -2,6 +2,8 @@ package kr.co.shoppingcart.cart.auth
 
 import kr.co.shoppingcart.cart.auth.annotation.CurrentUser
 import kr.co.shoppingcart.cart.auth.enums.TokenInformationEnum
+import kr.co.shoppingcart.cart.common.error.CustomException
+import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
 import org.springframework.core.MethodParameter
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.support.WebDataBinderFactory
@@ -13,9 +15,8 @@ import org.springframework.web.method.support.ModelAndViewContainer
 
 @Component
 class AuthAccountResolver : HandlerMethodArgumentResolver {
-    override fun supportsParameter(parameter: MethodParameter): Boolean {
-        return parameter.hasParameterAnnotation(CurrentUser::class.java)
-    }
+    override fun supportsParameter(parameter: MethodParameter): Boolean =
+        parameter.hasParameterAnnotation(CurrentUser::class.java)
 
     override fun resolveArgument(
         parameter: MethodParameter,
@@ -24,6 +25,11 @@ class AuthAccountResolver : HandlerMethodArgumentResolver {
         binderFactory: WebDataBinderFactory?,
     ): Any? {
         val request = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes).request
-        return request.getAttribute(TokenInformationEnum.USER.name)
+        val user =
+            request.getAttribute(
+                TokenInformationEnum.USER.name,
+            ) ?: throw CustomException.responseBody(ExceptionCode.E_401_002)
+
+        return user
     }
 }

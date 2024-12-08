@@ -2,6 +2,7 @@ package kr.co.shoppingcart.cart.auth.config
 
 import kr.co.shoppingcart.cart.auth.CustomFailHandler
 import kr.co.shoppingcart.cart.auth.CustomSuccessHandler
+import kr.co.shoppingcart.cart.auth.JwtExceptionFilter
 import kr.co.shoppingcart.cart.auth.JwtFilter
 import kr.co.shoppingcart.cart.auth.enums.TokenInformationEnum
 import kr.co.shoppingcart.cart.external.common.Oauth2Service
@@ -16,12 +17,13 @@ import org.springframework.security.config.annotation.web.configurers.HttpBasicC
 import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
     private val jwtFilter: JwtFilter,
+    private val jwtExceptionFilter: JwtExceptionFilter,
     private val entryPoint: JwtAuthenticationEntryPoint,
     private val oauth2Service: Oauth2Service,
     private val customSuccessHandler: CustomSuccessHandler,
@@ -29,7 +31,10 @@ class SecurityConfig(
 ) {
     @Bean
     @Throws(Exception::class)
-    fun securityFilterChain(httpSecurity: HttpSecurity): SecurityFilterChain =
+    fun securityFilterChain(
+        httpSecurity: HttpSecurity,
+        jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint,
+    ): SecurityFilterChain =
         httpSecurity
             .httpBasic { obj: HttpBasicConfigurer<HttpSecurity> -> obj.disable() }
             .csrf { obj: CsrfConfigurer<HttpSecurity> ->
@@ -55,7 +60,8 @@ class SecurityConfig(
                 sessionManagement.sessionCreationPolicy(
                     SessionCreationPolicy.STATELESS,
                 )
-            }.addFilterBefore(jwtFilter, BasicAuthenticationFilter::class.java)
+            }.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter::class.java)
+            .addFilterBefore(jwtExceptionFilter, JwtFilter::class.java)
             .exceptionHandling { it.authenticationEntryPoint(entryPoint) }
             .build()
 }
