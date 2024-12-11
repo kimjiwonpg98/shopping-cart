@@ -82,10 +82,6 @@ class TokenServiceImpl(
     override fun deleteCacheByIdentifier(identifier: String) {
     }
 
-    override fun createTmpToken(identificationValue: String): String {
-        TODO("Not yet implemented")
-    }
-
     private fun getTokenExpByType(provider: String): TokenExpiration? =
         tokenExpirationRepositoryAdapter.getByName(
             provider,

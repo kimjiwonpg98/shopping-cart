@@ -1,11 +1,13 @@
 package kr.co.shoppingcart.cart.api.user
 
 import kr.co.shoppingcart.cart.api.user.dto.request.LoginRequestBodyDto
+import kr.co.shoppingcart.cart.api.user.dto.request.UpdateTokenByRefreshTokenRequestBodyDto
 import kr.co.shoppingcart.cart.api.user.dto.response.LoginResponseBodyDto
 import kr.co.shoppingcart.cart.auth.JwtPayload
 import kr.co.shoppingcart.cart.auth.annotation.CurrentUser
 import kr.co.shoppingcart.cart.common.error.annotations.OpenApiSpecApiException
 import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
+import kr.co.shoppingcart.cart.domain.auth.AuthUseCase
 import kr.co.shoppingcart.cart.domain.auth.CreateTokensUseCase
 import kr.co.shoppingcart.cart.domain.auth.DeleteTokensUseCase
 import kr.co.shoppingcart.cart.domain.user.UserUseCase
@@ -27,6 +29,7 @@ class UserController(
     private val userUseCase: UserUseCase,
     private val createTokensUseCase: CreateTokensUseCase,
     private val deleteTokensUseCase: DeleteTokensUseCase,
+    private val authUseCase: AuthUseCase,
 ) {
     @OpenApiSpecApiException([ExceptionCode.E_401_000])
     @PostMapping("/v1/login")
@@ -93,6 +96,22 @@ class UserController(
                 tokens.refreshToken.token,
             )
         deleteTokensUseCase.deleteCacheTokenByIdentifier(identifier)
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseBody)
+    }
+
+    @OpenApiSpecApiException([ExceptionCode.E_401_001])
+    @PostMapping("/v1/refresh")
+    fun updateTokenByRefreshToken(
+        @RequestBody dto: UpdateTokenByRefreshTokenRequestBodyDto,
+    ): ResponseEntity<LoginResponseBodyDto> {
+        val tokens = authUseCase.updateTokenByRefreshToken(dto.refreshToken)
+
+        val responseBody =
+            LoginResponseBodyDto(
+                tokens.accessToken.token,
+                tokens.refreshToken.token,
+            )
+
         return ResponseEntity.status(HttpStatus.CREATED).body(responseBody)
     }
 }

@@ -13,8 +13,6 @@ interface TokenService {
         provider: String,
     ): String
 
-    fun createTmpToken(identificationValue: String): String
-
     fun settingCacheTokenByOauth2(
         identifier: String,
         accessToken: String,
