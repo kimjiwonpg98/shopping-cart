@@ -40,6 +40,8 @@ dependencies {
     // cache
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
+    // websocket
+    implementation("org.springframework.boot:spring-boot-starter-websocket")
 
     implementation("io.jsonwebtoken:jjwt-api:0.12.3")
     implementation("org.springframework.boot:spring-boot-starter-security")
