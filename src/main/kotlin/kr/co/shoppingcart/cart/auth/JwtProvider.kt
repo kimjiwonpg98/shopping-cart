@@ -3,6 +3,8 @@ package kr.co.shoppingcart.cart.auth
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
+import kr.co.shoppingcart.cart.common.error.CustomException
+import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
 import kr.co.shoppingcart.cart.utils.DateUtil
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
@@ -34,24 +36,28 @@ class JwtProvider(
     }
 
     fun verifyToken(jwt: String?): JwtPayload {
-        val claimsJwt =
-            Jwts
-                .parser()
-                .verifyWith(secretKey)
-                .build()
-                .parseSignedClaims(jwt)
+        try {
+            val claimsJwt =
+                Jwts
+                    .parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(jwt)
 
-        if (!claimsJwt.payload.containsKey("email")) {
+            if (!claimsJwt.payload.containsKey("email")) {
+                return JwtPayload(
+                    identificationValue = claimsJwt.payload.subject,
+                    provider = claimsJwt.payload["provider"] as String,
+                )
+            }
+
             return JwtPayload(
                 identificationValue = claimsJwt.payload.subject,
                 provider = claimsJwt.payload["provider"] as String,
+                email = claimsJwt.payload["email"] as String,
             )
+        } catch (exception: IllegalArgumentException) {
+            throw CustomException.responseBody(ExceptionCode.E_401_000)
         }
-
-        return JwtPayload(
-            identificationValue = claimsJwt.payload.subject,
-            provider = claimsJwt.payload["provider"] as String,
-            email = claimsJwt.payload["email"] as String,
-        )
     }
 }

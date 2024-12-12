@@ -39,6 +39,10 @@ class MockTemplateRepository : TemplateRepository {
     override fun deleteById(id: Long) {
     }
 
+    override fun deleteByIds(id: List<Long>) {
+        TODO("Not yet implemented")
+    }
+
     companion object {
         private const val TEMPLATE_ID_RETURN_NULL = 100L
     }

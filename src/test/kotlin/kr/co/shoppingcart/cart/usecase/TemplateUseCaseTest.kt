@@ -17,6 +17,7 @@ import kr.co.shoppingcart.cart.domain.template.services.GetTemplateService
 import kr.co.shoppingcart.cart.domain.template.services.UpdateTemplateService
 import kr.co.shoppingcart.cart.domain.template.vo.Template
 import kr.co.shoppingcart.cart.mock.vo.MockBasket
+import kr.co.shoppingcart.cart.mock.vo.MockPermissions
 import kr.co.shoppingcart.cart.mock.vo.MockTemplate
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertInstanceOf
@@ -120,14 +121,13 @@ class TemplateUseCaseTest {
         @Test
         fun `본인의 tempalte이 아니라면 에러`() {
             `when`(
-                getTemplateService.getByIdOrFail(
-                    id = defaultCommand.id,
+                ownerPermissionService.getByUserIdAndTemplateId(
+                    userId = defaultCommand.userId,
+                    templateId = defaultCommand.id,
                 ),
             ).thenReturn(
                 null,
             )
-
-            // owner 추가
 
             templateUseCase =
                 TemplateUseCase(
@@ -151,11 +151,12 @@ class TemplateUseCaseTest {
         @Test
         fun `반환값은 Template`() {
             `when`(
-                getTemplateService.getByIdOrFail(
-                    id = defaultCommand.id,
+                ownerPermissionService.getByUserIdAndTemplateId(
+                    userId = defaultCommand.userId,
+                    templateId = defaultCommand.id,
                 ),
             ).thenReturn(
-                MockTemplate.getTemplate(defaultCommand.id),
+                MockPermissions.getPermission(1, 0),
             )
 
             `when`(
@@ -197,8 +198,9 @@ class TemplateUseCaseTest {
         @Test
         fun `본인의 tempalte이 아니라면 에러`() {
             `when`(
-                getTemplateService.getByIdOrFail(
-                    id = defaultCommand.id,
+                ownerPermissionService.getByUserIdAndTemplateId(
+                    userId = defaultCommand.userId,
+                    templateId = defaultCommand.id,
                 ),
             ).thenReturn(
                 null,
@@ -225,6 +227,15 @@ class TemplateUseCaseTest {
 
         @Test
         fun `basket이 없으면 bulksave 호출 X`() {
+            `when`(
+                ownerPermissionService.getByUserIdAndTemplateId(
+                    userId = defaultCommand.userId,
+                    templateId = defaultCommand.id,
+                ),
+            ).thenReturn(
+                MockPermissions.getPermission(1, 0),
+            )
+
             `when`(
                 getTemplateService.getByIdOrFail(
                     id = defaultCommand.id,
@@ -269,6 +280,15 @@ class TemplateUseCaseTest {
         @Test
         fun `check 안된 basket이 없으면 bulksave 호출 X`() {
             `when`(
+                ownerPermissionService.getByUserIdAndTemplateId(
+                    userId = defaultCommand.userId,
+                    templateId = defaultCommand.id,
+                ),
+            ).thenReturn(
+                MockPermissions.getPermission(1, 0),
+            )
+
+            `when`(
                 getTemplateService.getByIdOrFail(
                     id = defaultCommand.id,
                 ),
@@ -312,6 +332,15 @@ class TemplateUseCaseTest {
 
         @Test
         fun `체크 안된 basket 있으면 저장`() {
+            `when`(
+                ownerPermissionService.getByUserIdAndTemplateId(
+                    userId = defaultCommand.userId,
+                    templateId = defaultCommand.id,
+                ),
+            ).thenReturn(
+                MockPermissions.getPermission(1, 0),
+            )
+
             `when`(
                 getTemplateService.getByIdOrFail(
                     id = defaultCommand.id,
@@ -367,12 +396,12 @@ class TemplateUseCaseTest {
         @Test
         fun `템플릿이 본인 것이 아닐 때 에러`() {
             `when`(
-                getTemplateService.getByIdOrFail(
-                    id = defaultCommand.id,
+                ownerPermissionService.getByUserIdAndTemplateId(
+                    userId = defaultCommand.userId,
+                    templateId = defaultCommand.id,
                 ),
-            ).thenReturn(
-                null,
-            )
+            ).thenReturn(null)
+
             templateUseCase =
                 TemplateUseCase(
                     getBasketService,
@@ -394,6 +423,15 @@ class TemplateUseCaseTest {
 
         @Test
         fun `템플릿에 basket이 없을 경우 bulksave 호출 x`() {
+            `when`(
+                ownerPermissionService.getByUserIdAndTemplateId(
+                    userId = defaultCommand.userId,
+                    templateId = defaultCommand.id,
+                ),
+            ).thenReturn(
+                MockPermissions.getPermission(1, 0),
+            )
+
             `when`(
                 getTemplateService.getByIdOrFail(
                     id = defaultCommand.id,
@@ -437,34 +475,6 @@ class TemplateUseCaseTest {
                 id = 1,
                 userId = 1,
             )
-
-        @Test
-        fun `템플릿이 본인 것이 아닐 때 에러`() {
-            `when`(
-                getTemplateService.getByIdOrFail(
-                    id = defaultCommand.id,
-                ),
-            ).thenReturn(
-                null,
-            )
-            templateUseCase =
-                TemplateUseCase(
-                    getBasketService,
-                    createTemplateService,
-                    getTemplateService,
-                    deleteTemplateService,
-                    updateTemplateService,
-                    ownerPermissionService,
-                    readerPermissionService,
-                )
-
-            val exception =
-                org.junit.jupiter.api.assertThrows<CustomException> {
-                    templateUseCase.copyTemplate(defaultCommand)
-                }
-
-            assertEquals(ExceptionCode.E_404_001.name, exception.code.name)
-        }
 
         @Test
         fun `템플릿이 퍼블릭이 아닐 경우 에러`() {

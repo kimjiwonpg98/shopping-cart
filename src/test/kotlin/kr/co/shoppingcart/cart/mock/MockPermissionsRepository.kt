@@ -1,6 +1,7 @@
 package kr.co.shoppingcart.cart.mock
 
 import kr.co.shoppingcart.cart.domain.permissions.PermissionsRepository
+import kr.co.shoppingcart.cart.domain.permissions.vo.PermissionId
 import kr.co.shoppingcart.cart.domain.permissions.vo.PermissionLevel
 import kr.co.shoppingcart.cart.domain.permissions.vo.PermissionTemplateId
 import kr.co.shoppingcart.cart.domain.permissions.vo.PermissionUserId
@@ -13,6 +14,10 @@ class MockPermissionsRepository : PermissionsRepository {
         templateId: Long,
     ): Permissions? = MockPermissions.getOptionalPermission(userId, PERMISSION_ID_RETURN_NULL != userId)
 
+    override fun getByUserId(userId: Long): List<Permissions> {
+        TODO("Not yet implemented")
+    }
+
     override fun create(permission: Permissions): Permissions = permission
 
     override fun createPermissionByLevel(
@@ -21,6 +26,7 @@ class MockPermissionsRepository : PermissionsRepository {
         level: Int,
     ): Permissions =
         Permissions(
+            id = PermissionId(1),
             userId = PermissionUserId(userId),
             templateId = PermissionTemplateId(templateId),
             level = PermissionLevel(level),
@@ -30,6 +36,10 @@ class MockPermissionsRepository : PermissionsRepository {
         userId: Long,
         templateId: Long,
     ) {
+    }
+
+    override fun deleteByIds(ids: List<Long>) {
+        TODO("Not yet implemented")
     }
 
     companion object {
