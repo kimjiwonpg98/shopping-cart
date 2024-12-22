@@ -42,8 +42,9 @@ class BasketController(
             ExceptionCode.E_403_000,
             ExceptionCode.E_400_000,
             ExceptionCode.E_404_003,
-            ExceptionCode.E_401_002,
             ExceptionCode.E_401_001,
+            ExceptionCode.E_401_002,
+            ExceptionCode.E_401_003,
         ],
     )
     @PostMapping("/v1/basket")
@@ -73,8 +74,9 @@ class BasketController(
         [
             ExceptionCode.E_403_000,
             ExceptionCode.E_404_002,
-            ExceptionCode.E_401_002,
             ExceptionCode.E_401_001,
+            ExceptionCode.E_401_002,
+            ExceptionCode.E_401_003,
         ],
     )
     @PutMapping("/v1/basket/check")
@@ -95,7 +97,11 @@ class BasketController(
 
     @OpenApiSpecApiException(
         [
-            ExceptionCode.E_403_000, ExceptionCode.E_404_002, ExceptionCode.E_401_002, ExceptionCode.E_401_001,
+            ExceptionCode.E_403_000,
+            ExceptionCode.E_404_002,
+            ExceptionCode.E_401_001,
+            ExceptionCode.E_401_002,
+            ExceptionCode.E_401_003,
         ],
     )
     @PutMapping("/v1/basket")
@@ -121,7 +127,11 @@ class BasketController(
 
     @OpenApiSpecApiException(
         [
-            ExceptionCode.E_403_000, ExceptionCode.E_401_000, ExceptionCode.E_401_002, ExceptionCode.E_401_001,
+            ExceptionCode.E_403_000,
+            ExceptionCode.E_401_000,
+            ExceptionCode.E_401_001,
+            ExceptionCode.E_401_002,
+            ExceptionCode.E_401_003,
         ],
     )
     @GetMapping("/v1/basket")
@@ -146,7 +156,11 @@ class BasketController(
 
     @OpenApiSpecApiException(
         [
-            ExceptionCode.E_403_000, ExceptionCode.E_401_000, ExceptionCode.E_401_002, ExceptionCode.E_401_001,
+            ExceptionCode.E_403_000,
+            ExceptionCode.E_401_000,
+            ExceptionCode.E_401_001,
+            ExceptionCode.E_401_002,
+            ExceptionCode.E_401_003,
         ],
     )
     @GetMapping("/v1/basket/{id}")
@@ -171,7 +185,11 @@ class BasketController(
 
     @OpenApiSpecApiException(
         [
-            ExceptionCode.E_403_000, ExceptionCode.E_401_000, ExceptionCode.E_401_002, ExceptionCode.E_401_001,
+            ExceptionCode.E_403_000,
+            ExceptionCode.E_401_000,
+            ExceptionCode.E_401_001,
+            ExceptionCode.E_401_002,
+            ExceptionCode.E_401_003,
         ],
     )
     @GetMapping("/v1/categories/{categoryId}/baskets")
@@ -198,7 +216,11 @@ class BasketController(
 
     @OpenApiSpecApiException(
         [
-            ExceptionCode.E_403_000, ExceptionCode.E_401_000, ExceptionCode.E_401_002, ExceptionCode.E_401_001,
+            ExceptionCode.E_403_000,
+            ExceptionCode.E_401_000,
+            ExceptionCode.E_401_001,
+            ExceptionCode.E_401_002,
+            ExceptionCode.E_401_003,
         ],
     )
     @DeleteMapping("/v1/basket/{id}")

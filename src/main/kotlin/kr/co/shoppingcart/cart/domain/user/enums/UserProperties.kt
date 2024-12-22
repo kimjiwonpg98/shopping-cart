@@ -10,9 +10,10 @@ enum class UserProperties(
     KAKAO("kakao", { attribute ->
         val pro = attribute["profile_nickname_needs_agreement"] as Boolean? ?: false
         val id = attribute["id"] as Long
+        val email = attribute["account_email"] as String ?: null
 
         User.toDomain(
-            email = null,
+            email = email,
             provider = LoginProvider.KAKAO.name,
             authIdentifier = id.toString(),
             gender = null,

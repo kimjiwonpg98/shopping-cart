@@ -47,8 +47,9 @@ class TemplateController(
     @OpenApiSpecApiException(
         [
             ExceptionCode.E_400_000,
-            ExceptionCode.E_401_002,
             ExceptionCode.E_401_001,
+            ExceptionCode.E_401_002,
+            ExceptionCode.E_401_003,
         ],
     )
     @PostMapping("/v1/template")
@@ -71,7 +72,11 @@ class TemplateController(
 
     @OpenApiSpecApiException(
         [
-            ExceptionCode.E_401_000, ExceptionCode.E_403_000, ExceptionCode.E_401_001, ExceptionCode.E_401_002,
+            ExceptionCode.E_401_000,
+            ExceptionCode.E_403_000,
+            ExceptionCode.E_401_001,
+            ExceptionCode.E_401_002,
+            ExceptionCode.E_401_003,
         ],
     )
     @GetMapping("/v1/template/{id}")
@@ -94,7 +99,13 @@ class TemplateController(
     }
 
     @OpenApiSpecApiException(
-        [ExceptionCode.E_401_000, ExceptionCode.E_403_000, ExceptionCode.E_401_001, ExceptionCode.E_401_002],
+        [
+            ExceptionCode.E_401_000,
+            ExceptionCode.E_403_000,
+            ExceptionCode.E_401_001,
+            ExceptionCode.E_401_002,
+            ExceptionCode.E_401_003,
+        ],
     )
     @PutMapping("/v1/template/{id}")
     fun updateTemplate(
@@ -119,7 +130,13 @@ class TemplateController(
     }
 
     @OpenApiSpecApiException(
-        [ExceptionCode.E_401_000, ExceptionCode.E_403_000, ExceptionCode.E_401_001, ExceptionCode.E_401_002],
+        [
+            ExceptionCode.E_401_000,
+            ExceptionCode.E_403_000,
+            ExceptionCode.E_401_001,
+            ExceptionCode.E_401_002,
+            ExceptionCode.E_401_003,
+        ],
     )
     @PutMapping("/v1/template/{id}/share")
     fun updateSharedById(
@@ -143,7 +160,13 @@ class TemplateController(
     }
 
     @OpenApiSpecApiException(
-        [ExceptionCode.E_401_000, ExceptionCode.E_403_000, ExceptionCode.E_401_001, ExceptionCode.E_401_002],
+        [
+            ExceptionCode.E_401_000,
+            ExceptionCode.E_403_000,
+            ExceptionCode.E_401_001,
+            ExceptionCode.E_401_002,
+            ExceptionCode.E_401_003,
+        ],
     )
     @PostMapping("/v1/template/{id}/copy/incomplete")
     fun copyTemplateIncomplete(
@@ -165,7 +188,13 @@ class TemplateController(
     }
 
     @OpenApiSpecApiException(
-        [ExceptionCode.E_401_000, ExceptionCode.E_403_000, ExceptionCode.E_401_001, ExceptionCode.E_401_002],
+        [
+            ExceptionCode.E_401_000,
+            ExceptionCode.E_403_000,
+            ExceptionCode.E_401_001,
+            ExceptionCode.E_401_002,
+            ExceptionCode.E_401_003,
+        ],
     )
     @PostMapping("/v1/template/{id}/copy")
     fun copyTemplateAll(
@@ -188,7 +217,13 @@ class TemplateController(
     }
 
     @OpenApiSpecApiException(
-        [ExceptionCode.E_401_000, ExceptionCode.E_403_000, ExceptionCode.E_401_001, ExceptionCode.E_401_002],
+        [
+            ExceptionCode.E_401_000,
+            ExceptionCode.E_403_000,
+            ExceptionCode.E_401_001,
+            ExceptionCode.E_401_002,
+            ExceptionCode.E_401_003,
+        ],
     )
     @PostMapping("/v1/template/public/{id}/copy")
     fun copyPublicTemplateAll(
@@ -211,7 +246,13 @@ class TemplateController(
     }
 
     @OpenApiSpecApiException(
-        [ExceptionCode.E_401_000, ExceptionCode.E_403_000, ExceptionCode.E_401_001, ExceptionCode.E_401_002],
+        [
+            ExceptionCode.E_401_000,
+            ExceptionCode.E_403_000,
+            ExceptionCode.E_401_001,
+            ExceptionCode.E_401_002,
+            ExceptionCode.E_401_003,
+        ],
     )
     @GetMapping("/v1/templates")
     fun getAll(
@@ -247,7 +288,13 @@ class TemplateController(
     }
 
     @OpenApiSpecApiException(
-        [ExceptionCode.E_401_000, ExceptionCode.E_403_000, ExceptionCode.E_401_001, ExceptionCode.E_401_002],
+        [
+            ExceptionCode.E_401_000,
+            ExceptionCode.E_403_000,
+            ExceptionCode.E_401_001,
+            ExceptionCode.E_401_002,
+            ExceptionCode.E_401_003,
+        ],
     )
     @DeleteMapping("/v1/template/{id}")
     fun deleteById(

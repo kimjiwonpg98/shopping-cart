@@ -27,11 +27,11 @@ class JwtExceptionFilter(
         try {
             filterChain.doFilter(request, response)
         } catch (e: MalformedJwtException) {
-            setResponse(response, ExceptionCode.E_401_000, e.message)
+            setResponse(response, ExceptionCode.E_401_003, e.message)
         } catch (e: ExpiredJwtException) {
             setResponse(response, ExceptionCode.E_401_001, e.message)
         } catch (e: SignatureException) {
-            setResponse(response, ExceptionCode.E_401_000, e.message)
+            setResponse(response, ExceptionCode.E_401_003, e.message)
         }
     }
 

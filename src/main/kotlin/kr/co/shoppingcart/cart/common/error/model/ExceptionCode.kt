@@ -13,6 +13,7 @@ enum class ExceptionCode(
     E_401_000(401_000, HttpStatus.UNAUTHORIZED),
     E_401_001(401_001, HttpStatus.UNAUTHORIZED),
     E_401_002(401_002, HttpStatus.UNAUTHORIZED),
+    E_401_003(401_003, HttpStatus.UNAUTHORIZED),
     E_403_000(403_000, HttpStatus.FORBIDDEN),
     E_403_001(403_001, HttpStatus.FORBIDDEN),
 
