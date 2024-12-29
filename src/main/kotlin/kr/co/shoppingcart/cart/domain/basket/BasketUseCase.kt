@@ -7,6 +7,7 @@ import kr.co.shoppingcart.cart.domain.basket.command.DeleteBasketByIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketByIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketByTemplateIdAndCategoryIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketsByTemplateIdCommand
+import kr.co.shoppingcart.cart.domain.basket.command.GetPublicBasketsByTemplateIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketContentCommand
 import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketFlagCommand
 import kr.co.shoppingcart.cart.domain.basket.service.BasketCreationService
@@ -79,11 +80,22 @@ class BasketUseCase(
     }
 
     @Transactional
-    fun getOwnByTemplateId(command: GetBasketsByTemplateIdCommand): List<Basket> {
-        ownerPermissionService.getByUserIdAndTemplateId(
+    fun getByTemplateId(command: GetBasketsByTemplateIdCommand): List<Basket> {
+        readerPermissionService.getOverLevelByUserIdAndTemplateId(
             command.userId,
             command.templateId,
         ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+
+        return getBasketService.getByTemplateId(command.templateId)
+    }
+
+    @Transactional(readOnly = true)
+    fun getPublicBasketByTemplateId(command: GetPublicBasketsByTemplateIdCommand): List<Basket> {
+        val template = getTemplateService.getByIdOrFail(command.templateId)
+
+        if (!template.isPublicTemplate()) {
+            throw CustomException.responseBody(ExceptionCode.E_403_001)
+        }
 
         return getBasketService.getByTemplateId(command.templateId)
     }

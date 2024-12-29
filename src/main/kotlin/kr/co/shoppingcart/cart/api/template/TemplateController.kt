@@ -1,5 +1,6 @@
 package kr.co.shoppingcart.cart.api.template
 
+import io.swagger.v3.oas.annotations.Operation
 import jakarta.annotation.Nullable
 import jakarta.validation.Valid
 import kr.co.shoppingcart.cart.api.template.dto.request.CreateTemplateRequestBodyDto
@@ -52,6 +53,7 @@ class TemplateController(
             ExceptionCode.E_401_003,
         ],
     )
+    @Operation(summary = "장바구니 리스트 추가", description = "이름 기본값: 장바구니")
     @PostMapping("/v1/template")
     fun save(
         @Valid @RequestBody(required = false) @Nullable body: CreateTemplateRequestBodyDto?,
@@ -79,6 +81,7 @@ class TemplateController(
             ExceptionCode.E_401_003,
         ],
     )
+    @Operation(summary = "장바구니 리스트 조회", description = "장바구니 id로 조회")
     @GetMapping("/v1/template/{id}")
     fun getById(
         @PathVariable id: Long,
@@ -107,6 +110,7 @@ class TemplateController(
             ExceptionCode.E_401_003,
         ],
     )
+    @Operation(summary = "장바구니 리스트 내용 변경", description = "이름과 섬네일 이미지 변경")
     @PutMapping("/v1/template/{id}")
     fun updateTemplate(
         @PathVariable id: String,
@@ -138,6 +142,7 @@ class TemplateController(
             ExceptionCode.E_401_003,
         ],
     )
+    @Operation(summary = "장바구니 공유 여부 변경", description = "장바구니 공유 여부 변경(소유자만 가능)")
     @PutMapping("/v1/template/{id}/share")
     fun updateSharedById(
         @PathVariable id: String,
@@ -168,6 +173,7 @@ class TemplateController(
             ExceptionCode.E_401_003,
         ],
     )
+    @Operation(summary = "장바구니 체크 안된 물품만 카피(소유자만 가능)", description = "소유자만 가능")
     @PostMapping("/v1/template/{id}/copy/incomplete")
     fun copyTemplateIncomplete(
         @PathVariable id: String,
@@ -196,6 +202,7 @@ class TemplateController(
             ExceptionCode.E_401_003,
         ],
     )
+    @Operation(summary = "장바구니 전체 카피(소유자만 가능)", description = "소유자만 가능")
     @PostMapping("/v1/template/{id}/copy")
     fun copyTemplateAll(
         @PathVariable id: String,
@@ -225,6 +232,7 @@ class TemplateController(
             ExceptionCode.E_401_003,
         ],
     )
+    @Operation(summary = "공유된 장바구니 카피 (public인 경우 가능)", description = "public인 경우 가능")
     @PostMapping("/v1/template/public/{id}/copy")
     fun copyPublicTemplateAll(
         @PathVariable id: String,
@@ -254,6 +262,7 @@ class TemplateController(
             ExceptionCode.E_401_003,
         ],
     )
+    @Operation(summary = "본인의 장바구니 리스트 조회", description = "퍼센트까지 모두 조회")
     @GetMapping("/v1/templates")
     fun getAll(
         @CurrentUser currentUser: JwtPayload,
@@ -296,6 +305,7 @@ class TemplateController(
             ExceptionCode.E_401_003,
         ],
     )
+    @Operation(summary = "장바구니 리스트 삭제", description = "id로 삭제")
     @DeleteMapping("/v1/template/{id}")
     fun deleteById(
         @PathVariable id: String,

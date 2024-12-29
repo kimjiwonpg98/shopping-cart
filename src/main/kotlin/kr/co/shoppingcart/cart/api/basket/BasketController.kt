@@ -1,5 +1,6 @@
 package kr.co.shoppingcart.cart.api.basket
 
+import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.Valid
 import kr.co.shoppingcart.cart.api.basket.dto.request.CheckedBasketReqBodyDto
 import kr.co.shoppingcart.cart.api.basket.dto.request.CreateBasketReqBodyDto
@@ -21,6 +22,7 @@ import kr.co.shoppingcart.cart.domain.basket.command.DeleteBasketByIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketByIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketByTemplateIdAndCategoryIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketsByTemplateIdCommand
+import kr.co.shoppingcart.cart.domain.basket.command.GetPublicBasketsByTemplateIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketContentCommand
 import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketFlagCommand
 import org.springframework.http.ResponseEntity
@@ -47,6 +49,7 @@ class BasketController(
             ExceptionCode.E_401_003,
         ],
     )
+    @Operation(summary = "장바구니 추가", description = "장바구니 추가 시 카테고리와 이름, 개수를 입력")
     @PostMapping("/v1/basket")
     fun save(
         @RequestBody body: CreateBasketReqBodyDto,
@@ -79,6 +82,7 @@ class BasketController(
             ExceptionCode.E_401_003,
         ],
     )
+    @Operation(summary = "물품 체크 수정", description = "물품의 체크 수정")
     @PutMapping("/v1/basket/check")
     fun check(
         @RequestBody body: CheckedBasketReqBodyDto,
@@ -104,6 +108,7 @@ class BasketController(
             ExceptionCode.E_401_003,
         ],
     )
+    @Operation(summary = "물품 수정", description = "개수와 내용을 수정")
     @PutMapping("/v1/basket")
     fun updateBasketContent(
         @RequestBody body: UpdateBasketContentReqBodyDto,
@@ -134,16 +139,42 @@ class BasketController(
             ExceptionCode.E_401_003,
         ],
     )
-    @GetMapping("/v1/basket")
-    fun getByTemplateId(
+    @Operation(summary = "장바구니 리스트 조회", description = "읽기 권한 이상의 유저가 조회")
+    @GetMapping("/v1/baskets")
+    fun getListByTemplateId(
         @ModelAttribute params: GetByTemplateIdReqDto,
         @CurrentUser currentUser: JwtPayload,
     ): ResponseEntity<GetByTemplateIdResDto> {
         val result =
-            basketUseCase.getOwnByTemplateId(
+            basketUseCase.getByTemplateId(
                 GetBasketsByTemplateIdCommand(
                     params.templateId.toLong(),
                     currentUser.identificationValue.toLong(),
+                ),
+            )
+
+        return ResponseEntity.status(200).body(
+            GetByTemplateIdResDto(
+                result = result.map(BasketResponseMapper::toResponse),
+            ),
+        )
+    }
+
+    @OpenApiSpecApiException(
+        [
+            ExceptionCode.E_404_001,
+            ExceptionCode.E_403_001,
+        ],
+    )
+    @Operation(summary = "공유된 장바구니 리스트 조회", description = "public인 장바구니만 조회")
+    @GetMapping("/v1/baskets/public")
+    fun getPublicList(
+        @ModelAttribute params: GetByTemplateIdReqDto,
+    ): ResponseEntity<GetByTemplateIdResDto> {
+        val result =
+            basketUseCase.getPublicBasketByTemplateId(
+                GetPublicBasketsByTemplateIdCommand(
+                    params.templateId.toLong(),
                 ),
             )
 
@@ -163,7 +194,8 @@ class BasketController(
             ExceptionCode.E_401_003,
         ],
     )
-    @GetMapping("/v1/basket/{id}")
+    @Operation(summary = "장바구니 상세 조회", description = "특정 물품 조회")
+    @GetMapping("/v1/baskets/{id}")
     fun getByTemplateId(
         @Valid @PathVariable id: Long,
         @CurrentUser currentUser: JwtPayload,
@@ -192,6 +224,7 @@ class BasketController(
             ExceptionCode.E_401_003,
         ],
     )
+    @Operation(summary = "카테고리에 해당하는 물품 조회", description = "카테고리에 해당하는 물품 조회")
     @GetMapping("/v1/categories/{categoryId}/baskets")
     fun getByTemplateIdAndCategoryId(
         @ModelAttribute params: GetByTemplateIdAndCategoryIdReqQueryDto,
@@ -223,7 +256,8 @@ class BasketController(
             ExceptionCode.E_401_003,
         ],
     )
-    @DeleteMapping("/v1/basket/{id}")
+    @Operation(summary = "특정 물품 삭제", description = "특정 물품 id로 삭제")
+    @DeleteMapping("/v1/baskets/{id}")
     fun deleteById(
         @PathVariable id: Long,
         @CurrentUser currentUser: JwtPayload,
