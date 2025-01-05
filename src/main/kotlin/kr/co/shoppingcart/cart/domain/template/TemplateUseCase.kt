@@ -3,8 +3,7 @@ package kr.co.shoppingcart.cart.domain.template
 import kr.co.shoppingcart.cart.common.error.CustomException
 import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
 import kr.co.shoppingcart.cart.domain.basket.service.GetBasketService
-import kr.co.shoppingcart.cart.domain.permissions.services.OwnerPermissionService
-import kr.co.shoppingcart.cart.domain.permissions.services.ReaderPermissionService
+import kr.co.shoppingcart.cart.domain.permissions.services.PermissionService
 import kr.co.shoppingcart.cart.domain.template.command.CopyOwnTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.CopyTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.CopyTemplateInCompleteCommand
@@ -20,6 +19,7 @@ import kr.co.shoppingcart.cart.domain.template.services.GetTemplateService
 import kr.co.shoppingcart.cart.domain.template.services.UpdateTemplateService
 import kr.co.shoppingcart.cart.domain.template.vo.Template
 import kr.co.shoppingcart.cart.domain.template.vo.TemplateWithCheckedCount
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -30,8 +30,10 @@ class TemplateUseCase(
     private val getTemplateService: GetTemplateService,
     private val deleteTemplateService: DeleteTemplateService,
     private val updateTemplateService: UpdateTemplateService,
-    private val ownerPermissionService: OwnerPermissionService,
-    private val readerPermissionService: ReaderPermissionService,
+    @Qualifier("ownerPermissionService")
+    private val ownerPermissionService: PermissionService,
+    @Qualifier("readerPermissionService")
+    private val readerPermissionService: PermissionService,
 ) {
     @Transactional
     fun createByApi(createTemplateCommand: CreateTemplateCommand): Template =
@@ -93,7 +95,7 @@ class TemplateUseCase(
         val baskets = getBasketService.getByTemplateId(copyTemplateInCompleteCommand.id)
         if (baskets.isEmpty()) return newTemplate
 
-        val (checkedItems, nonCheckedItems) = baskets.partition { it.checked.checked }
+        val (_, nonCheckedItems) = baskets.partition { it.checked.checked }
 
         if (nonCheckedItems.isEmpty()) return newTemplate
 

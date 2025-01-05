@@ -11,6 +11,8 @@ data class PermissionLevel(
 
     fun isReaderLevel(): Boolean = this.level == PermissionLevelEnum.READER_LEVEL.level
 
+    fun isOverOwnerLevel(): Boolean = this.level <= PermissionLevelEnum.OWNER_LEVEL.level
+
     fun isOverWriterLevel(): Boolean = this.level <= PermissionLevelEnum.WRITER_LEVEL.level
 
     fun isOverReaderLevel(): Boolean = this.level <= PermissionLevelEnum.READER_LEVEL.level

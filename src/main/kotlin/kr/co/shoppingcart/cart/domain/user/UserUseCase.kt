@@ -2,7 +2,8 @@ package kr.co.shoppingcart.cart.domain.user
 
 import kr.co.shoppingcart.cart.common.error.CustomException
 import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
-import kr.co.shoppingcart.cart.domain.permissions.services.OwnerPermissionService
+import kr.co.shoppingcart.cart.domain.permissions.services.PermissionService
+import kr.co.shoppingcart.cart.domain.permissions.vo.SeparatePermissions
 import kr.co.shoppingcart.cart.domain.template.services.DeleteTemplateService
 import kr.co.shoppingcart.cart.domain.user.command.DeleteUserCommand
 import kr.co.shoppingcart.cart.domain.user.command.GetByAuthIdentifierAndProviderCommand
@@ -11,6 +12,7 @@ import kr.co.shoppingcart.cart.domain.user.services.GetUserService
 import kr.co.shoppingcart.cart.domain.user.services.UserCreationService
 import kr.co.shoppingcart.cart.domain.user.services.UserUpdateService
 import kr.co.shoppingcart.cart.domain.user.vo.User
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -20,7 +22,8 @@ class UserUseCase(
     private val userCreationService: UserCreationService,
     private val getUserService: GetUserService,
     private val userUpdateService: UserUpdateService,
-    private val ownerPermissionService: OwnerPermissionService,
+    @Qualifier("ownerPermissionService")
+    private val ownerPermissionService: PermissionService,
     private val deleteTemplateService: DeleteTemplateService,
 ) {
     @Transactional
@@ -44,10 +47,11 @@ class UserUseCase(
     fun deleteUser(command: DeleteUserCommand) {
         val user = userUpdateService.deleteUser(command.authIdentifier, command.loginProvider)
         val permissions = ownerPermissionService.getByUserId(user.userId.id)
+        val separatedPermissions = SeparatePermissions.toDomain(permissions)
 
-        deleteTemplateService.deleteByIds(permissions.ownerPermissions.map { it.templateId.templateId })
+        deleteTemplateService.deleteByIds(separatedPermissions.ownerPermissions.map { it.templateId.templateId })
         ownerPermissionService.deleteByIds(
-            permissions.otherPermissions.map {
+            separatedPermissions.otherPermissions.map {
                 it.id.id
             },
         )

@@ -15,10 +15,9 @@ import kr.co.shoppingcart.cart.domain.basket.service.BasketUpdateService
 import kr.co.shoppingcart.cart.domain.basket.service.GetBasketService
 import kr.co.shoppingcart.cart.domain.basket.vo.Basket
 import kr.co.shoppingcart.cart.domain.category.services.GetCategoryService
-import kr.co.shoppingcart.cart.domain.permissions.services.OwnerPermissionService
-import kr.co.shoppingcart.cart.domain.permissions.services.ReaderPermissionService
-import kr.co.shoppingcart.cart.domain.permissions.services.WriterPermissionService
+import kr.co.shoppingcart.cart.domain.permissions.services.PermissionService
 import kr.co.shoppingcart.cart.domain.template.services.GetTemplateService
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -30,9 +29,10 @@ class BasketUseCase(
     private val basketUpdateService: BasketUpdateService,
     private val basketCreationService: BasketCreationService,
     private val getTemplateService: GetTemplateService,
-    private val ownerPermissionService: OwnerPermissionService,
-    private val writerPermissionService: WriterPermissionService,
-    private val readerPermissionService: ReaderPermissionService,
+    @Qualifier("writerPermissionService")
+    private val writerPermissionService: PermissionService,
+    @Qualifier("readerPermissionService")
+    private val readerPermissionService: PermissionService,
 ) {
     @Transactional
     fun create(createBasketCommand: CreateBasketCommand): Basket {

@@ -1,31 +1,31 @@
 package kr.co.shoppingcart.cart.mock
 
 import kr.co.shoppingcart.cart.domain.permissions.PermissionsRepository
+import kr.co.shoppingcart.cart.domain.permissions.vo.Permission
 import kr.co.shoppingcart.cart.domain.permissions.vo.PermissionId
 import kr.co.shoppingcart.cart.domain.permissions.vo.PermissionLevel
 import kr.co.shoppingcart.cart.domain.permissions.vo.PermissionTemplateId
 import kr.co.shoppingcart.cart.domain.permissions.vo.PermissionUserId
-import kr.co.shoppingcart.cart.domain.permissions.vo.Permissions
 import kr.co.shoppingcart.cart.mock.vo.MockPermissions
 
 class MockPermissionsRepository : PermissionsRepository {
     override fun getByUserIdAndTemplateId(
         userId: Long,
         templateId: Long,
-    ): Permissions? = MockPermissions.getOptionalPermission(userId, PERMISSION_ID_RETURN_NULL != userId)
+    ): Permission? = MockPermissions.getOptionalPermission(userId, PERMISSION_ID_RETURN_NULL != userId)
 
-    override fun getByUserId(userId: Long): List<Permissions> {
+    override fun getByUserId(userId: Long): List<Permission> {
         TODO("Not yet implemented")
     }
 
-    override fun create(permission: Permissions): Permissions = permission
+    override fun create(permission: Permission): Permission = permission
 
     override fun createPermissionByLevel(
         userId: Long,
         templateId: Long,
         level: Int,
-    ): Permissions =
-        Permissions(
+    ): Permission =
+        Permission(
             id = PermissionId(1),
             userId = PermissionUserId(userId),
             templateId = PermissionTemplateId(templateId),

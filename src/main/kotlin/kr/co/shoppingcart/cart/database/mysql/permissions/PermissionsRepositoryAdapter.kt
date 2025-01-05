@@ -3,7 +3,7 @@ package kr.co.shoppingcart.cart.database.mysql.permissions
 import kr.co.shoppingcart.cart.database.mysql.permissions.entity.PermissionsEntity
 import kr.co.shoppingcart.cart.database.mysql.permissions.mapper.PermissionsEntityMapper
 import kr.co.shoppingcart.cart.domain.permissions.PermissionsRepository
-import kr.co.shoppingcart.cart.domain.permissions.vo.Permissions
+import kr.co.shoppingcart.cart.domain.permissions.vo.Permission
 import org.springframework.stereotype.Component
 
 @Component
@@ -13,17 +13,17 @@ class PermissionsRepositoryAdapter(
     override fun getByUserIdAndTemplateId(
         userId: Long,
         templateId: Long,
-    ): Permissions? =
+    ): Permission? =
         permissionsEntityRepository
             .findOneByUserIdAndTemplateId(
                 userId,
                 templateId,
             )?.let(PermissionsEntityMapper::toDomain)
 
-    override fun getByUserId(userId: Long): List<Permissions> =
+    override fun getByUserId(userId: Long): List<Permission> =
         permissionsEntityRepository.findByUserId(userId).map(PermissionsEntityMapper::toDomain)
 
-    override fun create(permission: Permissions) =
+    override fun create(permission: Permission) =
         permissionsEntityRepository
             .save(
                 permission.let(PermissionsEntityMapper::toEntity),
@@ -33,11 +33,11 @@ class PermissionsRepositoryAdapter(
         userId: Long,
         templateId: Long,
         level: Int,
-    ): Permissions =
+    ): Permission =
         permissionsEntityRepository
             .save(
                 PermissionsEntityMapper.toEntity(
-                    Permissions.toDomain(
+                    Permission.toDomain(
                         id = 0,
                         userId = userId,
                         templateId = templateId,

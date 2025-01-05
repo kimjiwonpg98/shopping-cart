@@ -3,16 +3,21 @@ package kr.co.shoppingcart.cart.mock.vo
 import kr.co.shoppingcart.cart.domain.template.command.CreateTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.vo.Template
 import kr.co.shoppingcart.cart.domain.template.vo.TemplateWithCheckedCount
+import kr.co.shoppingcart.cart.fixture.TemplateFixture.DEFAULT_ID
+import kr.co.shoppingcart.cart.fixture.TemplateFixture.DEFAULT_NAME
+import kr.co.shoppingcart.cart.fixture.TemplateFixture.DEFAULT_THUMBNAIL
+import kr.co.shoppingcart.cart.fixture.TemplateFixture.DEFAULT_USER_ID
+import kr.co.shoppingcart.cart.fixture.TemplateFixture.PRIVATE
 import java.time.ZonedDateTime
 
 object MockTemplate {
     fun getTemplate(i: Long): Template =
         Template.toDomain(
             i,
-            "test",
-            1L,
-            true,
-            1,
+            DEFAULT_NAME,
+            DEFAULT_USER_ID,
+            PRIVATE,
+            DEFAULT_THUMBNAIL,
             null,
             null,
         )
@@ -20,10 +25,10 @@ object MockTemplate {
     fun getTemplateWithPercent(i: Long): TemplateWithCheckedCount =
         TemplateWithCheckedCount.toDomain(
             i,
-            "test",
-            1L,
-            true,
-            1,
+            DEFAULT_NAME,
+            DEFAULT_USER_ID,
+            PRIVATE,
+            DEFAULT_THUMBNAIL,
             0,
             0,
             ZonedDateTime.now(),
@@ -36,10 +41,10 @@ object MockTemplate {
     ): Template =
         Template.toDomain(
             i,
-            "test",
-            1L,
+            DEFAULT_NAME,
+            DEFAULT_USER_ID,
             isPublic,
-            1,
+            DEFAULT_THUMBNAIL,
             null,
             null,
         )
@@ -67,11 +72,11 @@ object MockTemplate {
 
     fun getTemplateByCreate(createTemplateCommand: CreateTemplateCommand): Template =
         Template.toDomain(
-            1,
+            DEFAULT_ID,
             createTemplateCommand.name,
             createTemplateCommand.userId,
-            false,
-            1,
+            PRIVATE,
+            DEFAULT_THUMBNAIL,
             null,
             null,
         )

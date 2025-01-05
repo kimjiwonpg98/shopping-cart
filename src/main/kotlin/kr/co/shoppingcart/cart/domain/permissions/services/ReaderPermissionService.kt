@@ -2,7 +2,7 @@ package kr.co.shoppingcart.cart.domain.permissions.services
 
 import kr.co.shoppingcart.cart.domain.permissions.PermissionsRepository
 import kr.co.shoppingcart.cart.domain.permissions.enums.PermissionLevelEnum
-import kr.co.shoppingcart.cart.domain.permissions.vo.Permissions
+import kr.co.shoppingcart.cart.domain.permissions.vo.Permission
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -10,22 +10,22 @@ import org.springframework.transaction.annotation.Transactional
 @Component
 class ReaderPermissionService(
     private val permissionsRepository: PermissionsRepository,
-) {
+) : PermissionService {
     @Transactional(propagation = Propagation.MANDATORY)
-    fun createPermission(
+    override fun createPermission(
         userId: Long,
         templateId: Long,
-    ): Permissions =
+    ): Permission =
         permissionsRepository.createPermissionByLevel(
             userId,
             templateId,
             PermissionLevelEnum.WRITER_LEVEL.level,
         )
 
-    fun getOverLevelByUserIdAndTemplateId(
+    override fun getOverLevelByUserIdAndTemplateId(
         userId: Long,
         templateId: Long,
-    ): Permissions? {
+    ): Permission? {
         val permission = permissionsRepository.getByUserIdAndTemplateId(userId, templateId) ?: return null
 
         if (!permission.level.isOverReaderLevel()) {
@@ -34,4 +34,22 @@ class ReaderPermissionService(
 
         return permission
     }
+
+    override fun getByUserIdAndTemplateId(
+        userId: Long,
+        templateId: Long,
+    ): Permission? {
+        val permission = permissionsRepository.getByUserIdAndTemplateId(userId, templateId) ?: return null
+
+        if (!permission.level.isReaderLevel()) {
+            return null
+        }
+
+        return permission
+    }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    override fun deleteByIds(ids: List<Long>) = permissionsRepository.deleteByIds(ids)
+
+    override fun getByUserId(userId: Long): List<Permission> = permissionsRepository.getByUserId(userId)
 }

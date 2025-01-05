@@ -1,21 +1,21 @@
 package kr.co.shoppingcart.cart.database.mysql.permissions.mapper
 
 import kr.co.shoppingcart.cart.database.mysql.permissions.entity.PermissionsEntity
-import kr.co.shoppingcart.cart.domain.permissions.vo.Permissions
+import kr.co.shoppingcart.cart.domain.permissions.vo.Permission
 
 object PermissionsEntityMapper {
-    fun toDomain(permissionsEntity: PermissionsEntity): Permissions =
-        Permissions.toDomain(
+    fun toDomain(permissionsEntity: PermissionsEntity): Permission =
+        Permission.toDomain(
             id = permissionsEntity.id!!,
             templateId = permissionsEntity.templateId,
             userId = permissionsEntity.userId,
             level = permissionsEntity.level,
         )
 
-    fun toEntity(permissions: Permissions): PermissionsEntity =
+    fun toEntity(permission: Permission): PermissionsEntity =
         PermissionsEntity(
-            userId = permissions.userId.userId,
-            level = permissions.level.level,
-            templateId = permissions.templateId.templateId,
+            userId = permission.userId.userId,
+            level = permission.level.level,
+            templateId = permission.templateId.templateId,
         )
 }

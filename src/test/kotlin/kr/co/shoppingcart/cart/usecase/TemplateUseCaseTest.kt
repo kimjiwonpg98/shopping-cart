@@ -16,6 +16,8 @@ import kr.co.shoppingcart.cart.domain.template.services.DeleteTemplateService
 import kr.co.shoppingcart.cart.domain.template.services.GetTemplateService
 import kr.co.shoppingcart.cart.domain.template.services.UpdateTemplateService
 import kr.co.shoppingcart.cart.domain.template.vo.Template
+import kr.co.shoppingcart.cart.fixture.TemplateFixture.PRIVATE
+import kr.co.shoppingcart.cart.fixture.TemplateFixture.PUBLIC
 import kr.co.shoppingcart.cart.mock.vo.MockBasket
 import kr.co.shoppingcart.cart.mock.vo.MockPermissions
 import kr.co.shoppingcart.cart.mock.vo.MockTemplate
@@ -483,7 +485,7 @@ class TemplateUseCaseTest {
                     id = defaultCommand.id,
                 ),
             ).thenReturn(
-                MockTemplate.getTemplateByPublic(defaultCommand.id, false),
+                MockTemplate.getTemplateByPublic(defaultCommand.id, PRIVATE),
             )
             templateUseCase =
                 TemplateUseCase(
@@ -511,7 +513,7 @@ class TemplateUseCaseTest {
                     id = defaultCommand.id,
                 ),
             ).thenReturn(
-                MockTemplate.getTemplateByPublic(defaultCommand.id, true),
+                MockTemplate.getTemplateByPublic(defaultCommand.id, PUBLIC),
             )
             `when`(
                 createTemplateService.create(

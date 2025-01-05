@@ -11,7 +11,6 @@ import kr.co.shoppingcart.cart.domain.basket.service.BasketUpdateService
 import kr.co.shoppingcart.cart.domain.basket.service.GetBasketService
 import kr.co.shoppingcart.cart.domain.basket.vo.Basket
 import kr.co.shoppingcart.cart.domain.category.services.GetCategoryService
-import kr.co.shoppingcart.cart.domain.permissions.services.OwnerPermissionService
 import kr.co.shoppingcart.cart.domain.permissions.services.ReaderPermissionService
 import kr.co.shoppingcart.cart.domain.permissions.services.WriterPermissionService
 import kr.co.shoppingcart.cart.domain.template.services.GetTemplateService
@@ -54,9 +53,6 @@ class BasketUseCaseTest {
 
     @Mock
     private lateinit var getTemplateService: GetTemplateService
-
-    @Mock
-    private lateinit var ownerPermissionService: OwnerPermissionService
 
     @Mock
     private lateinit var writerPermissionService: WriterPermissionService
@@ -102,7 +98,6 @@ class BasketUseCaseTest {
                     basketUpdateService,
                     basketCreationService,
                     getTemplateService,
-                    ownerPermissionService,
                     writerPermissionService,
                     readerPermissionService,
                 )
@@ -148,7 +143,6 @@ class BasketUseCaseTest {
                     basketUpdateService,
                     basketCreationService,
                     getTemplateService,
-                    ownerPermissionService,
                     writerPermissionService,
                     readerPermissionService,
                 )
@@ -180,7 +174,6 @@ class BasketUseCaseTest {
                     basketUpdateService,
                     basketCreationService,
                     getTemplateService,
-                    ownerPermissionService,
                     writerPermissionService,
                     readerPermissionService,
                 )
@@ -216,7 +209,6 @@ class BasketUseCaseTest {
                     basketUpdateService,
                     basketCreationService,
                     getTemplateService,
-                    ownerPermissionService,
                     writerPermissionService,
                     readerPermissionService,
                 )
@@ -252,7 +244,6 @@ class BasketUseCaseTest {
                     basketUpdateService,
                     basketCreationService,
                     getTemplateService,
-                    ownerPermissionService,
                     writerPermissionService,
                     readerPermissionService,
                 )
@@ -292,7 +283,6 @@ class BasketUseCaseTest {
                     basketUpdateService,
                     basketCreationService,
                     getTemplateService,
-                    ownerPermissionService,
                     writerPermissionService,
                     readerPermissionService,
                 )
@@ -340,7 +330,6 @@ class BasketUseCaseTest {
                     basketUpdateService,
                     basketCreationService,
                     getTemplateService,
-                    ownerPermissionService,
                     writerPermissionService,
                     readerPermissionService,
                 )
@@ -374,7 +363,6 @@ class BasketUseCaseTest {
                     basketUpdateService,
                     basketCreationService,
                     getTemplateService,
-                    ownerPermissionService,
                     writerPermissionService,
                     readerPermissionService,
                 )
