@@ -34,7 +34,7 @@ interface TemplateJpaRepository : TemplateEntityRepository<TemplateEntity, Long>
     @Query(
         value =
             "SELECT t.* FROM template t " +
-                " WHERE t.user_id = :userId AND t.name REGEXP '^장바구니[0-9]+\$' ORDER BY t.id DESC LIMIT 1",
+                " WHERE t.user_id = :userId AND t.name REGEXP '^장바구니 [0-9]+\$' ORDER BY t.id DESC LIMIT 1",
         nativeQuery = true,
     )
     override fun getByUserIdForDefaultName(

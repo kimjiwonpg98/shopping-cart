@@ -604,7 +604,7 @@ class TemplateUseCaseTest {
                     userId = DEFAULT_USER_ID,
                 ),
             ).thenReturn(
-                MockTemplate.getTemplate(1, "장바구니100"),
+                MockTemplate.getTemplate(1, "장바구니 100"),
             )
 
             templateUseCase =

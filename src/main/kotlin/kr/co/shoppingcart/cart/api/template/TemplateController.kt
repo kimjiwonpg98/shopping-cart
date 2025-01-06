@@ -60,7 +60,7 @@ class TemplateController(
         @CurrentUser currentUser: JwtPayload,
     ): ResponseEntity<CreateTemplateResponseBodyDto> {
         val name =
-            body?.name ?: "장바구니${templateUseCase.getDefaultNameByUserId(currentUser.identificationValue.toLong())}"
+            body?.name ?: "장바구니 ${templateUseCase.getDefaultNameByUserId(currentUser.identificationValue.toLong())}"
 
         val template =
             CreateTemplateCommand(
