@@ -66,4 +66,7 @@ class TemplateRepositoryAdapter(
     override fun deleteById(id: Long) = templateEntityRepository.deleteById(id)
 
     override fun deleteByIds(ids: List<Long>) = templateEntityRepository.deleteByIdIn(ids)
+
+    override fun getByUserIdForDefaultName(userId: Long): Template? =
+        templateEntityRepository.getByUserIdForDefaultName(userId)?.let(TemplateEntityMapper::toDomain)
 }

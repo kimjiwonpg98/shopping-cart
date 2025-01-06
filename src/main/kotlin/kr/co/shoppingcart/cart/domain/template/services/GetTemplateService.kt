@@ -24,4 +24,6 @@ class GetTemplateService(
 
     fun getWithCompletePercentAndPreview(userId: Long): List<TemplateWithCheckedCount> =
         templateRepository.getWithCompletePercent(userId)
+
+    fun getByUserIdForDefaultName(userId: Long): Template? = templateRepository.getByUserIdForDefaultName(userId)
 }

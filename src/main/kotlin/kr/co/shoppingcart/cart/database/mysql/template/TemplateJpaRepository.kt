@@ -30,4 +30,14 @@ interface TemplateJpaRepository : TemplateEntityRepository<TemplateEntity, Long>
     override fun deleteById(id: Long)
 
     override fun deleteByIdIn(ids: List<Long>)
+
+    @Query(
+        value =
+            "SELECT t.* FROM template t " +
+                " WHERE t.user_id = :userId AND t.name REGEXP '^장바구니[0-9]+\$' ORDER BY t.id DESC LIMIT 1",
+        nativeQuery = true,
+    )
+    override fun getByUserIdForDefaultName(
+        @Param("userId") userId: Long,
+    ): TemplateEntity?
 }

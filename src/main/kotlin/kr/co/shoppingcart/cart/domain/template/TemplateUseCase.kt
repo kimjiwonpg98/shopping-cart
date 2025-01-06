@@ -175,4 +175,17 @@ class TemplateUseCase(
         )
         return template
     }
+
+    @Transactional(readOnly = true)
+    fun getDefaultNameByUserId(userId: Long): Long {
+        val regexNumber = """([0-9]+$)""".toRegex()
+
+        return getTemplateService.getByUserIdForDefaultName(userId)?.let {
+            regexNumber
+                .find(it.name.name)
+                ?.value
+                ?.toLongOrNull()
+                ?.plus(1) ?: 1
+        } ?: 1
+    }
 }

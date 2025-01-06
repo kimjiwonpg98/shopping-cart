@@ -59,11 +59,15 @@ class TemplateController(
         @Valid @RequestBody(required = false) @Nullable body: CreateTemplateRequestBodyDto?,
         @CurrentUser currentUser: JwtPayload,
     ): ResponseEntity<CreateTemplateResponseBodyDto> {
+        val name =
+            body?.name ?: "장바구니${templateUseCase.getDefaultNameByUserId(currentUser.identificationValue.toLong())}"
+
         val template =
             CreateTemplateCommand(
-                name = body?.name ?: "장바구니",
+                name = name,
                 userId = currentUser.identificationValue.toLong(),
             )
+
         val result = templateUseCase.createByApi(template)
         return ResponseEntity.status(201).body(
             CreateTemplateResponseBodyDto(
