@@ -11,13 +11,19 @@ import kr.co.shoppingcart.cart.fixture.TemplateFixture.PRIVATE
 import java.time.ZonedDateTime
 
 object MockTemplate {
-    fun getTemplate(i: Long): Template =
+    fun getTemplate(
+        i: Long,
+        name: String = DEFAULT_NAME,
+        userId: Long = DEFAULT_USER_ID,
+        isPublic: Boolean = PRIVATE,
+        thumbnailIndex: Int = DEFAULT_THUMBNAIL,
+    ): Template =
         Template.toDomain(
             i,
-            DEFAULT_NAME,
-            DEFAULT_USER_ID,
-            PRIVATE,
-            DEFAULT_THUMBNAIL,
+            name,
+            userId,
+            isPublic,
+            thumbnailIndex,
             null,
             null,
         )

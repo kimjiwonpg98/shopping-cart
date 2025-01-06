@@ -3,6 +3,7 @@ package kr.co.shoppingcart.cart.mock
 import kr.co.shoppingcart.cart.domain.template.TemplateRepository
 import kr.co.shoppingcart.cart.domain.template.vo.Template
 import kr.co.shoppingcart.cart.domain.template.vo.TemplateWithCheckedCount
+import kr.co.shoppingcart.cart.fixture.TemplateFixture.DEFAULT_ID
 import kr.co.shoppingcart.cart.mock.vo.MockTemplate
 
 class MockTemplateRepository : TemplateRepository {
@@ -42,6 +43,8 @@ class MockTemplateRepository : TemplateRepository {
     override fun deleteByIds(id: List<Long>) {
         TODO("Not yet implemented")
     }
+
+    override fun getByUserIdForDefaultName(userId: Long): Template? = MockTemplate.getOptionalTemplate(DEFAULT_ID, true)
 
     companion object {
         private const val TEMPLATE_ID_RETURN_NULL = 100L

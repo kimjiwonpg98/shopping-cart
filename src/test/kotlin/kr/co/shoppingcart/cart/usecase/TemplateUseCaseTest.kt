@@ -16,6 +16,7 @@ import kr.co.shoppingcart.cart.domain.template.services.DeleteTemplateService
 import kr.co.shoppingcart.cart.domain.template.services.GetTemplateService
 import kr.co.shoppingcart.cart.domain.template.services.UpdateTemplateService
 import kr.co.shoppingcart.cart.domain.template.vo.Template
+import kr.co.shoppingcart.cart.fixture.TemplateFixture.DEFAULT_USER_ID
 import kr.co.shoppingcart.cart.fixture.TemplateFixture.PRIVATE
 import kr.co.shoppingcart.cart.fixture.TemplateFixture.PUBLIC
 import kr.co.shoppingcart.cart.mock.vo.MockBasket
@@ -538,6 +539,88 @@ class TemplateUseCaseTest {
             val copyTemplate = templateUseCase.copyTemplate(defaultCommand)
 
             assertEquals(MockTemplate.getTemplate(2), copyTemplate)
+        }
+    }
+
+    @Nested
+    @DisplayName("getDefaultNameByUserId test")
+    inner class GetDefaultNameByUserIdTest {
+        @Test
+        fun `장바구니N으로 저장된 내용이 있을 때 +1된 값으로 반환한다`() {
+            `when`(
+                getTemplateService.getByUserIdForDefaultName(
+                    userId = DEFAULT_USER_ID,
+                ),
+            ).thenReturn(
+                MockTemplate.getTemplate(1),
+            )
+
+            templateUseCase =
+                TemplateUseCase(
+                    getBasketService,
+                    createTemplateService,
+                    getTemplateService,
+                    deleteTemplateService,
+                    updateTemplateService,
+                    ownerPermissionService,
+                    readerPermissionService,
+                )
+
+            val result = templateUseCase.getDefaultNameByUserId(DEFAULT_USER_ID)
+
+            assertEquals(2, result)
+        }
+
+        @Test
+        fun `기본값으로 되어있는 장바구니가 없을 때 기본값으로 반환한다`() {
+            `when`(
+                getTemplateService.getByUserIdForDefaultName(
+                    userId = DEFAULT_USER_ID,
+                ),
+            ).thenReturn(
+                null,
+            )
+
+            templateUseCase =
+                TemplateUseCase(
+                    getBasketService,
+                    createTemplateService,
+                    getTemplateService,
+                    deleteTemplateService,
+                    updateTemplateService,
+                    ownerPermissionService,
+                    readerPermissionService,
+                )
+
+            val result = templateUseCase.getDefaultNameByUserId(DEFAULT_USER_ID)
+
+            assertEquals(1, result)
+        }
+
+        @Test
+        fun `장바구니N이 2자리 이상이여도 가능하다`() {
+            `when`(
+                getTemplateService.getByUserIdForDefaultName(
+                    userId = DEFAULT_USER_ID,
+                ),
+            ).thenReturn(
+                MockTemplate.getTemplate(1, "장바구니100"),
+            )
+
+            templateUseCase =
+                TemplateUseCase(
+                    getBasketService,
+                    createTemplateService,
+                    getTemplateService,
+                    deleteTemplateService,
+                    updateTemplateService,
+                    ownerPermissionService,
+                    readerPermissionService,
+                )
+
+            val result = templateUseCase.getDefaultNameByUserId(DEFAULT_USER_ID)
+
+            assertEquals(101, result)
         }
     }
 }
