@@ -8,16 +8,18 @@ enum class UserProperties(
     val of: (Map<String, Any>) -> User,
 ) {
     KAKAO("kakao", { attribute ->
-        val pro = attribute["profile_nickname_needs_agreement"] as Boolean? ?: false
         val id = attribute["id"] as Long
-        val email = attribute["kakao_account.email"]?.toString()
+        val kakaoAccount = attribute["kakao_account"] as Map<*, *>? ?: emptyMap<String, String>()
+        val email = kakaoAccount["email"] as String?
+        val ageRange = kakaoAccount["age_range"] as String?
+        val gender = kakaoAccount["gender"] as String?
 
         User.toDomain(
             email = email,
             provider = LoginProvider.KAKAO.name,
             authIdentifier = id.toString(),
-            gender = null,
-            ageRange = null,
+            gender = gender,
+            ageRange = ageRange,
         )
     }),
     ;
