@@ -15,6 +15,7 @@ import kr.co.shoppingcart.cart.domain.basket.service.BasketCreationService
 import kr.co.shoppingcart.cart.domain.basket.service.BasketUpdateService
 import kr.co.shoppingcart.cart.domain.basket.service.GetBasketService
 import kr.co.shoppingcart.cart.domain.basket.vo.Basket
+import kr.co.shoppingcart.cart.domain.basket.vo.BasketListAndTemplate
 import kr.co.shoppingcart.cart.domain.category.services.GetCategoryService
 import kr.co.shoppingcart.cart.domain.permissions.services.PermissionService
 import kr.co.shoppingcart.cart.domain.template.services.GetTemplateService
@@ -91,14 +92,17 @@ class BasketUseCase(
     }
 
     @Transactional(readOnly = true)
-    fun getPublicBasketByTemplateId(command: GetPublicBasketsByTemplateIdCommand): List<Basket> {
+    fun getPublicBasketByTemplateId(command: GetPublicBasketsByTemplateIdCommand): BasketListAndTemplate {
         val template = getTemplateService.getByIdOrFail(command.templateId)
 
         if (!template.isPublicTemplate()) {
             throw CustomException.responseBody(ExceptionCode.E_403_001)
         }
 
-        return getBasketService.getByTemplateId(command.templateId)
+        return BasketListAndTemplate(
+            basketList = getBasketService.getByTemplateId(command.templateId),
+            template = template,
+        )
     }
 
     @Transactional

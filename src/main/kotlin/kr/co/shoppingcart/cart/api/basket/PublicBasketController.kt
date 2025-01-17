@@ -5,6 +5,7 @@ import kr.co.shoppingcart.cart.api.basket.dto.request.GetByTemplateIdAndCategory
 import kr.co.shoppingcart.cart.api.basket.dto.request.GetByTemplateIdReqDto
 import kr.co.shoppingcart.cart.api.basket.dto.response.GetByPublicResDto
 import kr.co.shoppingcart.cart.api.basket.dto.response.GetByTemplateIdAndCategoryIdResDto
+import kr.co.shoppingcart.cart.api.template.TemplateResponseMapper
 import kr.co.shoppingcart.cart.common.error.annotations.OpenApiSpecApiException
 import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
 import kr.co.shoppingcart.cart.domain.basket.BasketUseCase
@@ -40,7 +41,8 @@ class PublicBasketController(
 
         return ResponseEntity.status(200).body(
             GetByPublicResDto(
-                result = result.map(BasketResponseMapper::toPublicResponse),
+                result = result.basketList.map(BasketResponseMapper::toPublicResponse),
+                template = result.template.let(TemplateResponseMapper::toResponse),
             ),
         )
     }
