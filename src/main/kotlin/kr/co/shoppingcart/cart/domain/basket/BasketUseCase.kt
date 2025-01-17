@@ -7,6 +7,7 @@ import kr.co.shoppingcart.cart.domain.basket.command.DeleteBasketByIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketByIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketByTemplateIdAndCategoryIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketsByTemplateIdCommand
+import kr.co.shoppingcart.cart.domain.basket.command.GetPublicBasketByTemplateIdAndCategoryIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetPublicBasketsByTemplateIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketContentCommand
 import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketFlagCommand
@@ -136,6 +137,16 @@ class BasketUseCase(
             command.userId,
             command.templateId,
         ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+
+        return getBasketService.getByTemplateIdAndCategoryIdByUpdatedDesc(command.templateId, command.categoryId)
+    }
+
+    fun getByTemplateIdAndCategoryIdPublic(command: GetPublicBasketByTemplateIdAndCategoryIdCommand): List<Basket> {
+        val template = getTemplateService.getByIdOrFail(command.templateId)
+
+        if (!template.isPublicTemplate()) {
+            throw CustomException.responseBody(ExceptionCode.E_403_001)
+        }
 
         return getBasketService.getByTemplateIdAndCategoryIdByUpdatedDesc(command.templateId, command.categoryId)
     }

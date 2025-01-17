@@ -22,7 +22,6 @@ import kr.co.shoppingcart.cart.domain.basket.command.DeleteBasketByIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketByIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketByTemplateIdAndCategoryIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketsByTemplateIdCommand
-import kr.co.shoppingcart.cart.domain.basket.command.GetPublicBasketsByTemplateIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketContentCommand
 import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketFlagCommand
 import org.springframework.http.ResponseEntity
@@ -150,31 +149,6 @@ class BasketController(
                 GetBasketsByTemplateIdCommand(
                     params.templateId.toLong(),
                     currentUser.identificationValue.toLong(),
-                ),
-            )
-
-        return ResponseEntity.status(200).body(
-            GetByTemplateIdResDto(
-                result = result.map(BasketResponseMapper::toResponse),
-            ),
-        )
-    }
-
-    @OpenApiSpecApiException(
-        [
-            ExceptionCode.E_404_001,
-            ExceptionCode.E_403_001,
-        ],
-    )
-    @Operation(summary = "공유된 장바구니 리스트 조회", description = "public인 장바구니만 조회")
-    @GetMapping("/v1/baskets/public")
-    fun getPublicList(
-        @ModelAttribute params: GetByTemplateIdReqDto,
-    ): ResponseEntity<GetByTemplateIdResDto> {
-        val result =
-            basketUseCase.getPublicBasketByTemplateId(
-                GetPublicBasketsByTemplateIdCommand(
-                    params.templateId.toLong(),
                 ),
             )
 
