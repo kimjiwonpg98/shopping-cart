@@ -9,7 +9,7 @@ import org.springframework.data.repository.Repository
 interface BasketEntityRepository<T, ID> : Repository<T, ID> {
     fun save(basketEntity: BasketEntity): BasketEntity
 
-    fun getByTemplateIdOrderByUpdatedAtDescCheckedAsc(templateId: Long): List<BasketEntity>
+    fun getByTemplateIdOrderByCheckedAscUpdatedAtDesc(templateId: Long): List<BasketEntity>
 
     fun getByTemplateIdOrderByUpdatedAtDesc(
         templateId: Long,

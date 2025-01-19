@@ -14,10 +14,8 @@ data class Basket(
     val createTime: BasketCreatedAt?,
     val updateTime: BasketUpdatedAt?,
     val category: Category,
-    val template: Template,
+    val template: Template?,
 ) {
-    fun validatedByUserId(userId: Long): Boolean = this.template.userId.userId == userId
-
     companion object {
         fun toDomain(
             id: Long,
@@ -25,7 +23,7 @@ data class Basket(
             checked: Boolean,
             count: Long,
             category: Category,
-            template: Template,
+            template: Template?,
             templateId: Long?,
             categoryId: Long?,
             createdTime: ZonedDateTime?,

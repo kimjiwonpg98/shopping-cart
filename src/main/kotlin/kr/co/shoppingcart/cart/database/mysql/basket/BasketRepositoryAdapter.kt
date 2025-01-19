@@ -21,7 +21,7 @@ class BasketRepositoryAdapter(
         val categoryEntity = CategoryEntityMapper.toEntity(basket.category)
 
         val templateEntity =
-            TemplateEntityMapper.toEntity(basket.template)
+            TemplateEntityMapper.toEntity(basket.template!!)
 
         return basketEntityRepository
             .save(
@@ -38,7 +38,7 @@ class BasketRepositoryAdapter(
 
     override fun getByTemplateId(templateId: Long): List<Basket> =
         basketEntityRepository
-            .getByTemplateIdOrderByUpdatedAtDescCheckedAsc(
+            .getByTemplateIdOrderByCheckedAscUpdatedAtDesc(
                 templateId,
             ).map(BasketEntityMapper::toDomain)
 

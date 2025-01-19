@@ -17,7 +17,7 @@ object BasketEntityMapper {
             updatedTime = basketEntity.updatedAt?.let { convertZonedDateTimeToSeoulTime(it) },
             categoryId = basketEntity.category.id,
             templateId = basketEntity.template.id,
-            category = Category.toDomain(id = basketEntity.category.id!!, name = basketEntity.category.name),
+            category = Category.toDomain(id = basketEntity.category.id, name = basketEntity.category.name),
             template =
                 Template.toDomain(
                     id = basketEntity.template.id!!,
