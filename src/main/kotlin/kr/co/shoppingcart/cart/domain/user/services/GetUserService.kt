@@ -15,4 +15,6 @@ class GetUserService(
             command.authIdentifier,
             LoginProvider.valueOf(command.loginProvider),
         )
+
+    fun getById(id: Long): User? = userRepository.findById(id)
 }

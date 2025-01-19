@@ -39,14 +39,8 @@ class UserController(
     fun getById(
         @CurrentUser currentUser: JwtPayload,
     ): ResponseEntity<GetUserByIdResponseBodyDto> {
-        val command =
-            GetByAuthIdentifierAndProviderCommand(
-                currentUser.identificationValue,
-                currentUser.provider,
-            )
-
-        val userInfo = userUseCase.getByAuthIdentifierAndProviderOrFail(command)
-        return ResponseEntity.status(HttpStatus.OK).body(GetUserByIdResponseBodyDto.of(userInfo))
+        val result = userUseCase.getById(currentUser.identificationValue.toLong())
+        return ResponseEntity.status(HttpStatus.OK).body(GetUserByIdResponseBodyDto.of(result))
     }
 
     @OpenApiSpecApiException([ExceptionCode.E_401_000])

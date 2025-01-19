@@ -55,4 +55,9 @@ class UserRepositoryAdapter(
 
         return user.let(UserEntityMapper::toDomain)
     }
+
+    override fun findById(id: Long): User? =
+        userEntityRepository
+            .findById(id)
+            ?.let(UserEntityMapper::toDomain)
 }

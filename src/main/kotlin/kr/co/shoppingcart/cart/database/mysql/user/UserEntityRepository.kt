@@ -12,4 +12,6 @@ interface UserEntityRepository<T, ID> : Repository<T, ID> {
         authIdentifier: String,
         provider: String,
     ): UserEntity?
+
+    fun findById(id: Long): UserEntity?
 }

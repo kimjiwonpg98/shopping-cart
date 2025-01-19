@@ -11,4 +11,6 @@ interface UserJpaRepository : UserEntityRepository<UserEntity, Long> {
         authIdentifier: String,
         provider: String,
     ): UserEntity?
+
+    override fun findById(id: Long): UserEntity?
 }

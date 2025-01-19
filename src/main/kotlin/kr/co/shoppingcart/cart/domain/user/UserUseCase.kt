@@ -56,4 +56,9 @@ class UserUseCase(
             },
         )
     }
+
+    @Transactional(readOnly = true)
+    fun getById(id: Long): User =
+        this.getUserService.getById(id)
+            ?: throw CustomException.responseBody(ExceptionCode.E_401_000)
 }
