@@ -56,6 +56,22 @@ class UserRepositoryAdapter(
         return user.let(UserEntityMapper::toDomain)
     }
 
+    override fun deleteByIdAndLoginType(
+        id: Long,
+        provider: LoginProvider,
+    ): User? {
+        val user =
+            userEntityRepository
+                .findByIdAndProvider(
+                    id,
+                    provider.name,
+                ) ?: return null
+
+        user.deletedAt = ZonedDateTime.now()
+
+        return user.let(UserEntityMapper::toDomain)
+    }
+
     override fun findById(id: Long): User? =
         userEntityRepository
             .findById(id)

@@ -88,7 +88,7 @@ class UserController(
     ): ResponseEntity<Unit> {
         userUseCase.deleteUser(
             DeleteUserCommand(
-                currentUser.identificationValue,
+                currentUser.identificationValue.toLong(),
                 LoginProvider.valueOf(currentUser.provider),
             ),
         )

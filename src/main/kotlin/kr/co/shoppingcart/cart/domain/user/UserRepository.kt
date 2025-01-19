@@ -23,4 +23,9 @@ interface UserRepository {
         authIdentifier: String,
         provider: LoginProvider,
     ): User?
+
+    fun deleteByIdAndLoginType(
+        id: Long,
+        provider: LoginProvider,
+    ): User?
 }

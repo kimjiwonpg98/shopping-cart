@@ -13,8 +13,8 @@ class UserUpdateService(
 ) {
     @Transactional
     fun deleteUser(
-        authIdentifier: String,
+        id: Long,
         provider: LoginProvider,
-    ) = userRepository.deleteByUniqueKeyAndLoginType(authIdentifier, provider)
+    ) = userRepository.deleteByIdAndLoginType(id, provider)
         ?: throw CustomException.responseBody(code = ExceptionCode.E_404_004)
 }
