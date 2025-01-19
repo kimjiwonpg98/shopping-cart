@@ -71,4 +71,6 @@ class TemplateRepositoryAdapter(
 
     override fun getByUserIdForDefaultName(userId: Long): Template? =
         templateEntityRepository.getByUserIdForDefaultName(userId)?.let(TemplateEntityMapper::toDomain)
+
+    override fun getCountByUserId(userId: Long): Long = templateEntityRepository.countByUserId(userId)
 }

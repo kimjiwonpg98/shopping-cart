@@ -40,4 +40,6 @@ interface TemplateJpaRepository : TemplateEntityRepository<TemplateEntity, Long>
     override fun getByUserIdForDefaultName(
         @Param("userId") userId: Long,
     ): TemplateEntity?
+
+    override fun countByUserId(userId: Long): Long
 }

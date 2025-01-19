@@ -26,4 +26,6 @@ class GetTemplateService(
         templateRepository.getWithCompletePercent(userId)
 
     fun getByUserIdForDefaultName(userId: Long): Template? = templateRepository.getByUserIdForDefaultName(userId)
+
+    fun getCountByUserId(userId: Long): Long = templateRepository.getCountByUserId(userId)
 }

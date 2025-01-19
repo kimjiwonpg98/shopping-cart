@@ -196,4 +196,6 @@ class TemplateUseCase(
                 ?.plus(1) ?: 1
         } ?: 1
     }
+
+    fun getCountByUserId(userId: Long): Long = getTemplateService.getCountByUserId(userId)
 }

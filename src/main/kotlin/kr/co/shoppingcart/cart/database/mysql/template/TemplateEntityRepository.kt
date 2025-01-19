@@ -24,4 +24,6 @@ interface TemplateEntityRepository<T, ID> : Repository<T, ID> {
     fun deleteByIdIn(ids: List<Long>)
 
     fun getByUserIdForDefaultName(userId: Long): TemplateEntity?
+
+    fun countByUserId(userId: Long): Long
 }

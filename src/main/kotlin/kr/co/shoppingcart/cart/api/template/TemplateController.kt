@@ -11,6 +11,7 @@ import kr.co.shoppingcart.cart.api.template.dto.response.CopyPublicTemplateAllRe
 import kr.co.shoppingcart.cart.api.template.dto.response.CopyTemplateAllResponseBodyDto
 import kr.co.shoppingcart.cart.api.template.dto.response.CopyTemplateIncompleteResponseBodyDto
 import kr.co.shoppingcart.cart.api.template.dto.response.CreateTemplateResponseBodyDto
+import kr.co.shoppingcart.cart.api.template.dto.response.GetCountResponseDto
 import kr.co.shoppingcart.cart.api.template.dto.response.GetTemplateByIdResponseBodyDto
 import kr.co.shoppingcart.cart.api.template.dto.response.GetTemplateResponseBodyDto
 import kr.co.shoppingcart.cart.api.template.dto.response.UpdateTemplateResponseBodyDto
@@ -323,5 +324,27 @@ class TemplateController(
         templateUseCase.deleteByIdAndUserId(command)
 
         return ResponseEntity.accepted().build()
+    }
+
+    @OpenApiSpecApiException(
+        [
+            ExceptionCode.E_401_000,
+            ExceptionCode.E_401_001,
+            ExceptionCode.E_401_002,
+            ExceptionCode.E_401_003,
+        ],
+    )
+    @Operation(summary = "본인의 장바구니 개수 조회", description = "토큰 필요")
+    @GetMapping("/v1/templates/count")
+    fun getCount(
+        @CurrentUser currentUser: JwtPayload,
+    ): ResponseEntity<GetCountResponseDto> {
+        val count = templateUseCase.getCountByUserId(currentUser.identificationValue.toLong())
+
+        return ResponseEntity.ok().body(
+            GetCountResponseDto(
+                count = count,
+            ),
+        )
     }
 }
