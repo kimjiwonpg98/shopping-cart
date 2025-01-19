@@ -134,7 +134,12 @@ class TemplateUseCase(
 
         if (!template.isPublicTemplate()) throw CustomException.responseBody(ExceptionCode.E_403_001)
 
-        val newTemplate = this.createAsOwner(name = template.name.name, userId = template.userId.userId)
+        val newTemplate =
+            this.createAsOwner(
+                name = template.name.name,
+                userId = copyTemplateCommand.userId,
+                thumbnailIndex = template.thumbnailIndex.thumbnail,
+            )
 
         val baskets = getBasketService.getByTemplateId(copyTemplateCommand.id)
         if (baskets.isEmpty()) return newTemplate
@@ -163,10 +168,12 @@ class TemplateUseCase(
     fun createAsOwner(
         name: String,
         userId: Long,
+        thumbnailIndex: Int = 1,
     ): Template {
         val template =
             this.createTemplateService.create(
                 name = name,
+                thumbnailIndex = thumbnailIndex,
                 userId = userId,
             )
         ownerPermissionService.createPermission(

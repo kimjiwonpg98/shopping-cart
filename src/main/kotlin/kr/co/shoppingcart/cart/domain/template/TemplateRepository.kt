@@ -6,6 +6,7 @@ import kr.co.shoppingcart.cart.domain.template.vo.TemplateWithCheckedCount
 interface TemplateRepository {
     fun create(
         name: String,
+        thumbnailIndex: Int,
         userId: Long,
     ): Template
 

@@ -16,12 +16,14 @@ class TemplateRepositoryAdapter(
 ) : TemplateRepository {
     override fun create(
         name: String,
+        thumbnailIndex: Int,
         userId: Long,
     ): Template =
         templateEntityRepository
             .save(
                 TemplateEntity(
                     name = name,
+                    thumbnailIdx = thumbnailIndex,
                     userId = userId,
                 ),
             ).let(TemplateEntityMapper::toDomain)

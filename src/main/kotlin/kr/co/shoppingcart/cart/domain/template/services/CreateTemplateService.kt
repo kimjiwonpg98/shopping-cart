@@ -16,10 +16,12 @@ class CreateTemplateService(
     @Transactional(propagation = Propagation.MANDATORY)
     fun create(
         name: String,
+        thumbnailIndex: Int,
         userId: Long,
     ): Template =
         templateRepository.create(
             name = name,
+            thumbnailIndex = thumbnailIndex,
             userId = userId,
         )
 
