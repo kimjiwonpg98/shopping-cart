@@ -39,4 +39,9 @@ interface BasketRepository {
     fun deleteById(basketId: Long)
 
     fun bulkSave(basket: List<Basket>)
+
+    fun updateCheckedByIds(
+        basketIds: List<Long>,
+        checked: Boolean,
+    )
 }

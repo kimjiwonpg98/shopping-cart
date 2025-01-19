@@ -9,6 +9,7 @@ import kr.co.shoppingcart.cart.domain.basket.command.GetBasketByTemplateIdAndCat
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketsByTemplateIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetPublicBasketByTemplateIdAndCategoryIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetPublicBasketsByTemplateIdCommand
+import kr.co.shoppingcart.cart.domain.basket.command.UpdateAllCheckedCommand
 import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketContentCommand
 import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketFlagCommand
 import kr.co.shoppingcart.cart.domain.basket.service.BasketCreationService
@@ -78,6 +79,21 @@ class BasketUseCase(
         return this.basketUpdateService.updateCheckedById(
             updateBasketFlagCommand.basketId,
             updateBasketFlagCommand.checked,
+        )
+    }
+
+    @Transactional
+    fun updateAllChecked(command: UpdateAllCheckedCommand) {
+        val baskets = getBasketService.getByTemplateId(command.templateId)
+
+        writerPermissionService.getOverLevelByUserIdAndTemplateId(
+            command.userId,
+            command.templateId,
+        ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+
+        return this.basketUpdateService.updateCheckedAll(
+            baskets.filter { !it.checked.checked }.map { it.id.id },
+            true,
         )
     }
 

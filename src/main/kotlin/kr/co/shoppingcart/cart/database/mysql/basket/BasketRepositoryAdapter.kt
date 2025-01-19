@@ -116,4 +116,9 @@ class BasketRepositoryAdapter(
             },
         )
     }
+
+    override fun updateCheckedByIds(
+        basketIds: List<Long>,
+        checked: Boolean,
+    ) = basketEntityRepository.updateCheckedByIdIn(basketIds, checked)
 }

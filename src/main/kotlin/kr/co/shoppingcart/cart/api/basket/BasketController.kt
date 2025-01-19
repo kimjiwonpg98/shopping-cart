@@ -2,6 +2,7 @@ package kr.co.shoppingcart.cart.api.basket
 
 import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.Valid
+import kr.co.shoppingcart.cart.api.basket.dto.request.CheckedAllBasketReqBodyDto
 import kr.co.shoppingcart.cart.api.basket.dto.request.CheckedBasketReqBodyDto
 import kr.co.shoppingcart.cart.api.basket.dto.request.CreateBasketReqBodyDto
 import kr.co.shoppingcart.cart.api.basket.dto.request.GetByTemplateIdAndCategoryIdReqQueryDto
@@ -22,6 +23,7 @@ import kr.co.shoppingcart.cart.domain.basket.command.DeleteBasketByIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketByIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketByTemplateIdAndCategoryIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketsByTemplateIdCommand
+import kr.co.shoppingcart.cart.domain.basket.command.UpdateAllCheckedCommand
 import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketContentCommand
 import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketFlagCommand
 import org.springframework.http.ResponseEntity
@@ -96,6 +98,30 @@ class BasketController(
 
         basketUseCase.updateIsAddedByFlagAndId(basket)
         return ResponseEntity.status(200).build()
+    }
+
+    @OpenApiSpecApiException(
+        [
+            ExceptionCode.E_403_000,
+            ExceptionCode.E_404_002,
+            ExceptionCode.E_401_001,
+            ExceptionCode.E_401_002,
+            ExceptionCode.E_401_003,
+        ],
+    )
+    @Operation(summary = "물품 체크 전체 수정", description = "물품의 전체 체크 수정")
+    @PutMapping("/v1/basket/check/all")
+    fun checkAll(
+        @RequestBody body: CheckedAllBasketReqBodyDto,
+        @CurrentUser currentUser: JwtPayload,
+    ): ResponseEntity<Unit> {
+        val command =
+            UpdateAllCheckedCommand(
+                userId = currentUser.identificationValue.toLong(),
+                templateId = body.templateId,
+            )
+        basketUseCase.updateAllChecked(command)
+        return ResponseEntity.status(201).build()
     }
 
     @OpenApiSpecApiException(

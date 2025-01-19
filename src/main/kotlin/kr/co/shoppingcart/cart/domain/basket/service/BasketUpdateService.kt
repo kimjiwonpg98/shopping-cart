@@ -25,4 +25,9 @@ class BasketUpdateService(
         basketId: Long,
         checked: Boolean,
     ): Basket = this.basketRepository.updateCheckedById(basketId, checked)
+
+    fun updateCheckedAll(
+        basketIds: List<Long>,
+        checked: Boolean,
+    ): Unit = this.basketRepository.updateCheckedByIds(basketIds, checked)
 }
