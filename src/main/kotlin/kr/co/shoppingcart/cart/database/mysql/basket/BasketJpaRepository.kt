@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository
 interface BasketJpaRepository : BasketEntityRepository<BasketEntity, Long> {
     override fun save(basketEntity: BasketEntity): BasketEntity
 
-    override fun getByTemplateIdOrderByUpdatedAtDesc(templateId: Long): List<BasketEntity>
+    override fun getByTemplateIdOrderByUpdatedAtDescCheckedAsc(templateId: Long): List<BasketEntity>
 
     override fun getByTemplateIdAndCategoryIdOrderByUpdatedAtDescCheckedAsc(
         templateId: Long,

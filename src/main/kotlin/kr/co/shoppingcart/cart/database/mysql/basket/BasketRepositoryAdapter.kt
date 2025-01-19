@@ -37,7 +37,10 @@ class BasketRepositoryAdapter(
     }
 
     override fun getByTemplateId(templateId: Long): List<Basket> =
-        basketEntityRepository.getByTemplateIdOrderByUpdatedAtDesc(templateId).map(BasketEntityMapper::toDomain)
+        basketEntityRepository
+            .getByTemplateIdOrderByUpdatedAtDescCheckedAsc(
+                templateId,
+            ).map(BasketEntityMapper::toDomain)
 
     override fun getByTemplateIdWithPageNation(
         templateId: Long,
