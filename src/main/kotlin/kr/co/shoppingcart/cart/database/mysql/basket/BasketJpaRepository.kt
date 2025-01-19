@@ -23,7 +23,9 @@ interface BasketJpaRepository : BasketEntityRepository<BasketEntity, Long> {
     @Query(
         "SELECT b, c FROM BasketEntity b" +
             " JOIN FETCH b.category c" +
-            " WHERE b.template.id = :templateId AND b.category.id = :categoryId ORDER BY b.checked ASC, b.updatedAt DESC",
+            " WHERE b.template.id = :templateId" +
+            " AND b.category.id = :categoryId" +
+            " ORDER BY b.checked ASC, b.updatedAt DESC",
     )
     override fun getByTemplateIdAndCategoryIdOrderByUpdatedAtDescCheckedAsc(
         @Param("templateId") templateId: Long,
