@@ -34,7 +34,7 @@ interface TemplateRepository {
 
     fun deleteById(id: Long)
 
-    fun deleteByIds(id: List<Long>)
+    fun deleteByIds(ids: List<Long>)
 
     fun getByUserIdForDefaultName(userId: Long): Template?
 }
