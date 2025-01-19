@@ -1,7 +1,9 @@
 package kr.co.shoppingcart.cart.api.user
 
+import io.swagger.v3.oas.annotations.Operation
 import kr.co.shoppingcart.cart.api.user.dto.request.LoginRequestBodyDto
 import kr.co.shoppingcart.cart.api.user.dto.request.UpdateTokenByRefreshTokenRequestBodyDto
+import kr.co.shoppingcart.cart.api.user.dto.response.GetUserByIdResponseBodyDto
 import kr.co.shoppingcart.cart.api.user.dto.response.LoginResponseBodyDto
 import kr.co.shoppingcart.cart.auth.JwtPayload
 import kr.co.shoppingcart.cart.auth.annotation.CurrentUser
@@ -31,6 +33,22 @@ class UserController(
     private val deleteTokensUseCase: DeleteTokensUseCase,
     private val authUseCase: AuthUseCase,
 ) {
+    @OpenApiSpecApiException([ExceptionCode.E_401_000])
+    @Operation(summary = "유저 정보 조회", description = "토큰으로 유저 정보 조회")
+    @GetMapping("/v1/user")
+    fun getById(
+        @CurrentUser currentUser: JwtPayload,
+    ): ResponseEntity<GetUserByIdResponseBodyDto> {
+        val command =
+            GetByAuthIdentifierAndProviderCommand(
+                currentUser.identificationValue,
+                currentUser.provider,
+            )
+
+        val userInfo = userUseCase.getByAuthIdentifierAndProviderOrFail(command)
+        return ResponseEntity.status(HttpStatus.OK).body(GetUserByIdResponseBodyDto.of(userInfo))
+    }
+
     @OpenApiSpecApiException([ExceptionCode.E_401_000])
     @PostMapping("/v1/login")
     fun login(
