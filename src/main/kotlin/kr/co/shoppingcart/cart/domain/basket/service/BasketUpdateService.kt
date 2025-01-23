@@ -10,6 +10,8 @@ class BasketUpdateService(
 ) {
     fun deleteById(basketId: Long) = basketRepository.deleteById(basketId)
 
+    fun deleteByIds(basketIds: List<Long>) = basketRepository.deleteByIds(basketIds)
+
     fun updateContent(
         basketId: Long,
         content: String?,

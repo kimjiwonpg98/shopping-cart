@@ -26,4 +26,6 @@ class GetBasketService(
         basketRepository.getById(id) ?: throw CustomException.responseBody(
             ExceptionCode.E_404_002,
         )
+
+    fun getByIds(ids: List<Long>): List<Basket> = basketRepository.getByIds(ids)
 }

@@ -5,9 +5,11 @@ import jakarta.validation.Valid
 import kr.co.shoppingcart.cart.api.basket.dto.request.CheckedAllBasketReqBodyDto
 import kr.co.shoppingcart.cart.api.basket.dto.request.CheckedBasketReqBodyDto
 import kr.co.shoppingcart.cart.api.basket.dto.request.CreateBasketReqBodyDto
+import kr.co.shoppingcart.cart.api.basket.dto.request.DeleteBasketsReqBodyDto
 import kr.co.shoppingcart.cart.api.basket.dto.request.GetByTemplateIdAndCategoryIdReqQueryDto
 import kr.co.shoppingcart.cart.api.basket.dto.request.GetByTemplateIdReqDto
 import kr.co.shoppingcart.cart.api.basket.dto.request.UpdateBasketContentReqBodyDto
+import kr.co.shoppingcart.cart.api.basket.dto.response.BasketModifyResponseDto
 import kr.co.shoppingcart.cart.api.basket.dto.response.CreateBasketResDto
 import kr.co.shoppingcart.cart.api.basket.dto.response.GetByIdResponseDto
 import kr.co.shoppingcart.cart.api.basket.dto.response.GetByTemplateIdAndCategoryIdResDto
@@ -20,6 +22,7 @@ import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
 import kr.co.shoppingcart.cart.domain.basket.BasketUseCase
 import kr.co.shoppingcart.cart.domain.basket.command.CreateBasketCommand
 import kr.co.shoppingcart.cart.domain.basket.command.DeleteBasketByIdCommand
+import kr.co.shoppingcart.cart.domain.basket.command.DeleteBasketsByIdsCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketByIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketByTemplateIdAndCategoryIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketsByTemplateIdCommand
@@ -271,5 +274,36 @@ class BasketController(
         basketUseCase.deleteById(command)
 
         return ResponseEntity.status(200).build()
+    }
+
+    @OpenApiSpecApiException(
+        [
+            ExceptionCode.E_400_001,
+            ExceptionCode.E_403_000,
+            ExceptionCode.E_401_000,
+            ExceptionCode.E_401_001,
+            ExceptionCode.E_401_002,
+            ExceptionCode.E_401_003,
+        ],
+    )
+    @Operation(summary = "물품 리스트 삭제", description = "물품 id 리스트로 삭제(한 template에 있는 물품 삭제만 됌)")
+    @DeleteMapping("/v1/baskets")
+    fun deleteByIds(
+        @RequestBody dto: DeleteBasketsReqBodyDto,
+        @CurrentUser currentUser: JwtPayload,
+    ): ResponseEntity<BasketModifyResponseDto> {
+        val command =
+            DeleteBasketsByIdsCommand(
+                basketIds = dto.basketIds,
+                userId = currentUser.identificationValue.toLong(),
+            )
+
+        basketUseCase.deleteByIds(command)
+
+        return ResponseEntity.status(200).body(
+            BasketModifyResponseDto(
+                result = true,
+            ),
+        )
     }
 }

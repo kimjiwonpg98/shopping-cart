@@ -28,7 +28,11 @@ interface BasketEntityRepository<T, ID> : Repository<T, ID> {
 
     fun findById(id: Long): BasketEntity?
 
+    fun findByIdIn(ids: List<Long>): List<BasketEntity>
+
     fun deleteById(id: Long)
+
+    fun deleteByIdIn(ids: List<Long>)
 
     fun updateCheckedByIdIn(
         basketIds: List<Long>,

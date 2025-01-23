@@ -39,7 +39,11 @@ interface BasketJpaRepository : BasketEntityRepository<BasketEntity, Long> {
 
     override fun findById(id: Long): BasketEntity?
 
+    override fun findByIdIn(ids: List<Long>): List<BasketEntity>
+
     override fun deleteById(id: Long)
+
+    override fun deleteByIdIn(ids: List<Long>)
 
     @Modifying
     @Query(

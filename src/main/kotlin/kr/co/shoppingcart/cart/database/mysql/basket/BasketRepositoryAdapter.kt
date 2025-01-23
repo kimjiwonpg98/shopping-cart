@@ -63,6 +63,9 @@ class BasketRepositoryAdapter(
     override fun getById(basketId: Long): Basket? =
         basketEntityRepository.findById(basketId)?.let(BasketEntityMapper::toDomain)
 
+    override fun getByIds(basketIds: List<Long>): List<Basket> =
+        basketEntityRepository.findByIdIn(basketIds).map(BasketEntityMapper::toDomain)
+
     override fun getByTemplateIdAndSizeOrderByUpdatedDesc(
         templateId: Long,
         size: Int,
@@ -104,6 +107,8 @@ class BasketRepositoryAdapter(
     }
 
     override fun deleteById(basketId: Long) = basketEntityRepository.deleteById(basketId)
+
+    override fun deleteByIds(basketIds: List<Long>) = basketEntityRepository.deleteByIdIn(basketIds)
 
     override fun bulkSave(basket: List<Basket>) {
         basketJdbcRepository.bulkInsert(

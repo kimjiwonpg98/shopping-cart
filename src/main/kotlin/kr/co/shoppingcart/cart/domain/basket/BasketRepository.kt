@@ -15,6 +15,8 @@ interface BasketRepository {
 
     fun getById(basketId: Long): Basket?
 
+    fun getByIds(basketIds: List<Long>): List<Basket>
+
     fun getByTemplateIdAndSizeOrderByUpdatedDesc(
         templateId: Long,
         size: Int,
@@ -37,6 +39,8 @@ interface BasketRepository {
     ): Basket
 
     fun deleteById(basketId: Long)
+
+    fun deleteByIds(basketIds: List<Long>)
 
     fun bulkSave(basket: List<Basket>)
 

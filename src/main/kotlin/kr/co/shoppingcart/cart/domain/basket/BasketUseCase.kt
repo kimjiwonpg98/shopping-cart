@@ -4,6 +4,7 @@ import kr.co.shoppingcart.cart.common.error.CustomException
 import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
 import kr.co.shoppingcart.cart.domain.basket.command.CreateBasketCommand
 import kr.co.shoppingcart.cart.domain.basket.command.DeleteBasketByIdCommand
+import kr.co.shoppingcart.cart.domain.basket.command.DeleteBasketsByIdsCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketByIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketByTemplateIdAndCategoryIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketsByTemplateIdCommand
@@ -149,6 +150,25 @@ class BasketUseCase(
 
         this.basketUpdateService.deleteById(
             command.basketId,
+        )
+    }
+
+    @Transactional
+    fun deleteByIds(command: DeleteBasketsByIdsCommand) {
+        val baskets =
+            this.getBasketService.getByIds(command.basketIds)
+
+        val templateIds = baskets.map { it.templateId!!.templateId }.toSet().toList()
+
+        if (templateIds.size > 1) throw CustomException.responseBody(ExceptionCode.E_400_001)
+
+        writerPermissionService.getOverLevelByUserIdAndTemplateId(
+            command.userId,
+            templateIds[0],
+        ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+
+        this.basketUpdateService.deleteByIds(
+            command.basketIds,
         )
     }
 
