@@ -9,6 +9,7 @@ class KakaoProperties(
     private val authBaseUrl: String,
     private val clientId: String,
     private val kakaoRedirectUrl: String,
+    private val adminKey: String,
 ) {
     fun getBaseUrl(): String = baseUrl
 
@@ -17,6 +18,8 @@ class KakaoProperties(
     fun getClientId(): String = clientId
 
     fun getKakaoRedirectUrl(): String = kakaoRedirectUrl
+
+    fun getAdminKey(): String = adminKey
 
     companion object {
         const val KAKAO_PROPERTIES = "client.kakao"

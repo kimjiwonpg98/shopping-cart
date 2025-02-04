@@ -3,8 +3,10 @@ package kr.co.shoppingcart.cart.external.kakao
 import kr.co.shoppingcart.cart.config.client.properties.KakaoProperties
 import kr.co.shoppingcart.cart.external.kakao.request.GetUserInfoByAuthTokenRequestQueryParams
 import kr.co.shoppingcart.cart.external.kakao.request.IssueTokenRequestBody
+import kr.co.shoppingcart.cart.external.kakao.request.UnlinkUserRequestBody
 import kr.co.shoppingcart.cart.external.kakao.response.GetKakaoUserByAuthTokenResponse
 import kr.co.shoppingcart.cart.external.kakao.response.IssueTokenResponseBody
+import kr.co.shoppingcart.cart.external.kakao.response.UnlinkUserResponseBody
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.http.HttpHeaders
@@ -20,7 +22,7 @@ class KakaoService(
     @Qualifier("kakaoAuthWebClient")
     private val kakaoAuthWebClient: WebClient,
     private val kakaoProperties: KakaoProperties,
-) : KakaoLoginClient {
+) : KakaoClient {
     override fun getTokenByGrantCode(grantCode: String): String? {
         val data =
             IssueTokenRequestBody(
@@ -68,9 +70,33 @@ class KakaoService(
         return response
     }
 
+    override fun unlinkUser(authIdentifier: String): Long? {
+        val data =
+            UnlinkUserRequestBody(
+                authIdentifier = authIdentifier.toLong(),
+            ).toFormDataRequestBody()
+
+        val response =
+            kakaoWebClient
+                .post()
+                .uri {
+                    it.path(POST_USER_UNLINK).build()
+                }.accept(MediaType.APPLICATION_FORM_URLENCODED)
+                .header(HttpHeaders.AUTHORIZATION, "KakaoAK ${kakaoProperties.getAdminKey()}")
+                .bodyValue(data)
+                .retrieve()
+                .bodyToMono<UnlinkUserResponseBody>()
+                .doOnError { e ->
+                    logger.warn { e.cause }
+                }.block()
+
+        return response?.id
+    }
+
     companion object {
         private const val GET_TOKEN_URI = "/oauth/token"
         private const val GET_USER_INFO = "/v2/user/me"
+        private const val POST_USER_UNLINK = "/v1/user/unlink"
         private const val AUTHORIZATION_CODE = "authorization_code"
 
         private val logger = KotlinLogging.logger {}

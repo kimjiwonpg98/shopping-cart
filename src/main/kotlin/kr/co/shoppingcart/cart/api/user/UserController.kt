@@ -92,6 +92,7 @@ class UserController(
                 LoginProvider.valueOf(currentUser.provider),
             ),
         )
+
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 

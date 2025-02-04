@@ -12,6 +12,7 @@ import kr.co.shoppingcart.cart.domain.user.services.GetUserService
 import kr.co.shoppingcart.cart.domain.user.services.UserCreationService
 import kr.co.shoppingcart.cart.domain.user.services.UserUpdateService
 import kr.co.shoppingcart.cart.domain.user.vo.User
+import kr.co.shoppingcart.cart.external.kakao.KakaoClient
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
@@ -25,6 +26,7 @@ class UserUseCase(
     @Qualifier("ownerPermissionService")
     private val ownerPermissionService: PermissionService,
     private val deleteTemplateService: DeleteTemplateService,
+    private val kakaoClient: KakaoClient,
 ) {
     @Transactional
     fun createIfAbsent(loginCommand: LoginCommand): User =
@@ -44,8 +46,8 @@ class UserUseCase(
             ?: throw CustomException.responseBody(ExceptionCode.E_401_000)
 
     @Transactional
-    fun deleteUser(command: DeleteUserCommand) {
-        val user = userUpdateService.deleteUser(command.authIdentifier, command.loginProvider)
+    fun deleteUser(command: DeleteUserCommand): User {
+        val user = userUpdateService.deleteUser(command.userId, command.loginProvider)
         val permissions = ownerPermissionService.getByUserId(user.userId.id)
         val separatedPermissions = SeparatePermissions.toDomain(permissions)
 
@@ -55,6 +57,8 @@ class UserUseCase(
                 it.id.id
             },
         )
+        userUpdateService.unlinkProvider(user)
+        return user
     }
 
     @Transactional(readOnly = true)
