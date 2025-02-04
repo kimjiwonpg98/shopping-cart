@@ -81,7 +81,7 @@ class KakaoService(
                 .post()
                 .uri {
                     it.path(POST_USER_UNLINK).build()
-                }.accept(MediaType.APPLICATION_FORM_URLENCODED)
+                }.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "KakaoAK ${kakaoProperties.getAdminKey()}")
                 .bodyValue(data)
                 .retrieve()
