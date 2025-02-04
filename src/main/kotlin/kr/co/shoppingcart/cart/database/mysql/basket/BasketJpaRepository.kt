@@ -32,6 +32,11 @@ interface BasketJpaRepository : BasketEntityRepository<BasketEntity, Long> {
         @Param("categoryId") categoryId: Long,
     ): List<BasketEntity>
 
+    override fun getByTemplateIdOrderByUpdatedAtDesc(
+        templateId: Long,
+        pageable: Pageable,
+    ): List<BasketEntity>
+
     override fun findByTemplateId(
         templateId: Long,
         pageable: Pageable,

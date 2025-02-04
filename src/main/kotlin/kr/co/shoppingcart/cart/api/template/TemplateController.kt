@@ -283,7 +283,7 @@ class TemplateController(
             GetTemplateResponseBodyDto(
                 result =
                     templates.map { template ->
-                        if (template.checkedCount.count != 0L && template.unCheckedCount.count != 0L) {
+                        if (template.checkedCount.count + template.unCheckedCount.count != 0L) {
                             val basketNames =
                                 basketUseCase
                                     .getByTemplateIdAndSizeOrderByUpdatedDesc(
@@ -292,10 +292,10 @@ class TemplateController(
                                             params?.previewCount?.toIntOrNull() ?: 3,
                                     ).map { it.name.name }
                             TemplateResponseMapper.toResponseWithPercentAndPreview(template, basketNames)
+                        } else {
+                            val basketNames = emptyList<String>()
+                            TemplateResponseMapper.toResponseWithPercentAndPreview(template, basketNames)
                         }
-                        val basketNames = emptyList<String>()
-
-                        TemplateResponseMapper.toResponseWithPercentAndPreview(template, basketNames)
                     },
             ),
         )
