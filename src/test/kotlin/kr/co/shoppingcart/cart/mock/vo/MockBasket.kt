@@ -3,6 +3,7 @@ package kr.co.shoppingcart.cart.mock.vo
 import kr.co.shoppingcart.cart.domain.basket.command.CreateBasketCommand
 import kr.co.shoppingcart.cart.domain.basket.vo.Basket
 import kr.co.shoppingcart.cart.domain.basket.vo.BasketCategoryId
+import kr.co.shoppingcart.cart.domain.basket.vo.BasketCategoryName
 import kr.co.shoppingcart.cart.domain.basket.vo.BasketChecked
 import kr.co.shoppingcart.cart.domain.basket.vo.BasketCount
 import kr.co.shoppingcart.cart.domain.basket.vo.BasketCreatedAt
@@ -38,6 +39,7 @@ object MockBasket {
             createTime = BasketCreatedAt(ZonedDateTime.now()),
             updateTime = BasketUpdatedAt(ZonedDateTime.now()),
             templateId = BasketTemplateId(i),
+            categoryName = BasketCategoryName("test"),
         )
 
     fun getBasketsAllChecked(): List<Basket> {
@@ -71,6 +73,7 @@ object MockBasket {
                     1,
                     createBasketCommand.categoryName,
                 ),
+            categoryName = BasketCategoryName(createBasketCommand.categoryName),
             count = BasketCount(createBasketCommand.count ?: 1),
             checked = BasketChecked(false),
             template = Template.toDomain(createBasketCommand.templateId, "test", 1L, true, 1, null, null),

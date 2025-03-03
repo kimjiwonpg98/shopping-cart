@@ -28,6 +28,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.anyList
 import org.mockito.ArgumentMatchers.anyLong
@@ -88,6 +89,7 @@ class TemplateUseCaseTest {
                 createTemplateService.create(
                     name = createTemplateCommand.name,
                     userId = createTemplateCommand.userId,
+                    thumbnailIndex = 1,
                 ),
             ).thenReturn(
                 MockTemplate.getTemplateByCreate(createTemplateCommand),
@@ -144,7 +146,7 @@ class TemplateUseCaseTest {
                 )
 
             val exception =
-                org.junit.jupiter.api.assertThrows<CustomException> {
+                assertThrows<CustomException> {
                     templateUseCase.updateSharedById(defaultCommand)
                 }
 
@@ -221,7 +223,7 @@ class TemplateUseCaseTest {
                 )
 
             val exception =
-                org.junit.jupiter.api.assertThrows<CustomException> {
+                assertThrows<CustomException> {
                     templateUseCase.copyOwnTemplateInComplete(defaultCommand)
                 }
 
@@ -249,8 +251,9 @@ class TemplateUseCaseTest {
 
             `when`(
                 createTemplateService.create(
-                    name = "test",
+                    name = "장바구니 1",
                     userId = defaultCommand.userId,
+                    thumbnailIndex = 1,
                 ),
             ).thenReturn(
                 MockTemplate.getTemplate(2),
@@ -301,8 +304,9 @@ class TemplateUseCaseTest {
 
             `when`(
                 createTemplateService.create(
-                    name = "test",
+                    name = "장바구니 1",
                     userId = defaultCommand.userId,
+                    thumbnailIndex = 1,
                 ),
             ).thenReturn(
                 MockTemplate.getTemplate(2),
@@ -354,8 +358,9 @@ class TemplateUseCaseTest {
 
             `when`(
                 createTemplateService.create(
-                    name = "test",
+                    name = "장바구니 1",
                     userId = defaultCommand.userId,
+                    thumbnailIndex = 1,
                 ),
             ).thenReturn(
                 MockTemplate.getTemplate(2),
@@ -417,7 +422,7 @@ class TemplateUseCaseTest {
                 )
 
             val exception =
-                org.junit.jupiter.api.assertThrows<CustomException> {
+                assertThrows<CustomException> {
                     templateUseCase.copyOwnTemplate(defaultCommand)
                 }
 
@@ -447,6 +452,7 @@ class TemplateUseCaseTest {
                 createTemplateService.create(
                     name = MockTemplate.getTemplate(defaultCommand.id).name.name,
                     userId = defaultCommand.userId,
+                    thumbnailIndex = 1,
                 ),
             ).thenReturn(
                 MockTemplate.getTemplate(2),
@@ -500,7 +506,7 @@ class TemplateUseCaseTest {
                 )
 
             val exception =
-                org.junit.jupiter.api.assertThrows<CustomException> {
+                assertThrows<CustomException> {
                     templateUseCase.copyTemplate(defaultCommand)
                 }
 
@@ -520,6 +526,7 @@ class TemplateUseCaseTest {
                 createTemplateService.create(
                     name = MockTemplate.getTemplate(defaultCommand.id).name.name,
                     userId = defaultCommand.userId,
+                    thumbnailIndex = 1,
                 ),
             ).thenReturn(
                 MockTemplate.getTemplate(2),

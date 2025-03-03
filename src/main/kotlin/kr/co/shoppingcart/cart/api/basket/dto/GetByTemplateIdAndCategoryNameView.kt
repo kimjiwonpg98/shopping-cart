@@ -1,3 +1,5 @@
+@file:Suppress("ktlint:standard:filename")
+
 package kr.co.shoppingcart.cart.api.basket.dto
 
 import jakarta.validation.constraints.NotBlank

@@ -9,6 +9,7 @@ import kr.co.shoppingcart.cart.mock.vo.MockTemplate
 class MockTemplateRepository : TemplateRepository {
     override fun create(
         name: String,
+        thumbnailIndex: Int,
         userId: Long,
     ): Template = MockTemplate.getTemplate(1)
 
@@ -45,6 +46,10 @@ class MockTemplateRepository : TemplateRepository {
     }
 
     override fun getByUserIdForDefaultName(userId: Long): Template? = MockTemplate.getOptionalTemplate(DEFAULT_ID, true)
+
+    override fun getCountByUserId(userId: Long): Long {
+        TODO("Not yet implemented")
+    }
 
     companion object {
         private const val TEMPLATE_ID_RETURN_NULL = 100L

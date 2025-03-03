@@ -29,6 +29,7 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.anyLong
 import org.mockito.BDDMockito.given
+import org.mockito.BDDMockito.willReturn
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
@@ -132,7 +133,9 @@ class BasketUseCaseTest {
 
             given(
                 basketCreationService.save(
-                    mockBasket,
+                    mockBasket.copy(
+                        template = MockTemplate.getTemplate(command.templateId),
+                    ),
                 ),
             ).willReturn(MockBasket.getBasketByCreate(command))
 
