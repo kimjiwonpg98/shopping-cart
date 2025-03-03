@@ -32,6 +32,17 @@ interface BasketJpaRepository : BasketEntityRepository<BasketEntity, Long> {
         @Param("categoryId") categoryId: Long,
     ): List<BasketEntity>
 
+    @Query(
+        "SELECT b FROM BasketEntity b" +
+            " WHERE b.template.id = :templateId" +
+            " AND b.categoryName = :categoryName" +
+            " ORDER BY b.checked ASC, b.updatedAt DESC",
+    )
+    override fun getByTemplateIdAndCategoryNameOrderByUpdatedAtDescCheckedAsc(
+        @Param("templateId") templateId: Long,
+        @Param("categoryName") categoryName: String,
+    ): List<BasketEntity>
+
     override fun getByTemplateIdOrderByUpdatedAtDesc(
         templateId: Long,
         pageable: Pageable,
@@ -57,5 +68,20 @@ interface BasketJpaRepository : BasketEntityRepository<BasketEntity, Long> {
     override fun updateCheckedByIdIn(
         basketIds: List<Long>,
         checked: Boolean,
+    )
+
+    @Query(
+        "SELECT DISTINCT b.categoryName FROM BasketEntity b" +
+            " WHERE b.template.id = :templateId",
+    )
+    override fun getCategoriesByTemplateId(templateId: Long): List<String>
+
+    @Modifying
+    @Query(
+        "UPDATE BasketEntity b SET b.categoryName = :categoryName WHERE b.id IN :basketIds",
+    )
+    override fun updateCategoryNameByIdIn(
+        basketIds: List<Long>,
+        categoryName: String,
     )
 }

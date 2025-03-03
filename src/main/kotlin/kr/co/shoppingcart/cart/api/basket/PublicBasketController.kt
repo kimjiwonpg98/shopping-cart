@@ -1,6 +1,7 @@
 package kr.co.shoppingcart.cart.api.basket
 
 import io.swagger.v3.oas.annotations.Operation
+import kr.co.shoppingcart.cart.api.basket.dto.GetByTemplateIdAndCategoryNameReqQuery
 import kr.co.shoppingcart.cart.api.basket.dto.request.GetByTemplateIdAndCategoryIdReqQueryDto
 import kr.co.shoppingcart.cart.api.basket.dto.request.GetByTemplateIdReqDto
 import kr.co.shoppingcart.cart.api.basket.dto.response.GetByPublicResDto
@@ -66,6 +67,27 @@ class PublicBasketController(
                     categoryId,
                 ),
             )
+
+        return ResponseEntity.status(200).body(
+            GetByTemplateIdAndCategoryIdResDto(
+                result = result.map(BasketResponseMapper::toResponse),
+            ),
+        )
+    }
+
+    @OpenApiSpecApiException(
+        [
+            ExceptionCode.E_403_001,
+            ExceptionCode.E_404_001,
+        ],
+    )
+    @Operation(summary = "공유된 카테고리에 해당하는 물품 조회", description = "공유된 카테고리에 해당하는 물품 조회")
+    @GetMapping("/v1/categories/baskets/public")
+    fun getByTemplateIdAndCategoryId(
+        @ModelAttribute params: GetByTemplateIdAndCategoryNameReqQuery,
+    ): ResponseEntity<GetByTemplateIdAndCategoryIdResDto> {
+        val result =
+            basketUseCase.getByTemplateIdAndCategoryNamePublic(params.of())
 
         return ResponseEntity.status(200).body(
             GetByTemplateIdAndCategoryIdResDto(

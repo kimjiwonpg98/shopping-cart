@@ -15,6 +15,7 @@ object BasketEntityMapper {
             checked = basketEntity.checked,
             createdTime = basketEntity.createdAt?.let { convertZonedDateTimeToSeoulTime(it) },
             updatedTime = basketEntity.updatedAt?.let { convertZonedDateTimeToSeoulTime(it) },
+            categoryName = basketEntity.categoryName,
             categoryId = basketEntity.category.id,
             templateId = basketEntity.template.id,
             category = Category.toDomain(id = basketEntity.category.id, name = basketEntity.category.name),

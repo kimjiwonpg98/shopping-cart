@@ -27,6 +27,13 @@ interface BasketRepository {
         categoryId: Long,
     ): List<Basket>
 
+    fun getByTemplateIdAndCategoryNameByUpdatedDesc(
+        templateId: Long,
+        categoryName: String,
+    ): List<Basket>
+
+    fun getCategoriesByTemplateId(templateId: Long): List<String>
+
     fun updateCheckedById(
         basketId: Long,
         checked: Boolean,
@@ -47,5 +54,10 @@ interface BasketRepository {
     fun updateCheckedByIds(
         basketIds: List<Long>,
         checked: Boolean,
+    )
+
+    fun updateCategoryName(
+        basketIds: List<Long>,
+        categoryName: String,
     )
 }

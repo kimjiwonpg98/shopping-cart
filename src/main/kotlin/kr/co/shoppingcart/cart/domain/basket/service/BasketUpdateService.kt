@@ -32,4 +32,9 @@ class BasketUpdateService(
         basketIds: List<Long>,
         checked: Boolean,
     ): Unit = this.basketRepository.updateCheckedByIds(basketIds, checked)
+
+    fun updateCategoryName(
+        basketIds: List<Long>,
+        categoryName: String,
+    ): Unit = this.basketRepository.updateCategoryName(basketIds, categoryName)
 }

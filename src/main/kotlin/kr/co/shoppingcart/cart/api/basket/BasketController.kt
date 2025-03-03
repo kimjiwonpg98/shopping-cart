@@ -2,6 +2,8 @@ package kr.co.shoppingcart.cart.api.basket
 
 import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.Valid
+import kr.co.shoppingcart.cart.api.basket.dto.GetByTemplateIdAndCategoryNameReqQuery
+import kr.co.shoppingcart.cart.api.basket.dto.UpdateBasketsByCategoryReqBody
 import kr.co.shoppingcart.cart.api.basket.dto.request.CheckedAllBasketReqBodyDto
 import kr.co.shoppingcart.cart.api.basket.dto.request.CheckedBasketReqBodyDto
 import kr.co.shoppingcart.cart.api.basket.dto.request.CreateBasketReqBodyDto
@@ -9,6 +11,7 @@ import kr.co.shoppingcart.cart.api.basket.dto.request.DeleteBasketsReqBodyDto
 import kr.co.shoppingcart.cart.api.basket.dto.request.GetByTemplateIdAndCategoryIdReqQueryDto
 import kr.co.shoppingcart.cart.api.basket.dto.request.GetByTemplateIdReqDto
 import kr.co.shoppingcart.cart.api.basket.dto.request.UpdateBasketContentReqBodyDto
+import kr.co.shoppingcart.cart.api.basket.dto.response.BasketModifyResponse
 import kr.co.shoppingcart.cart.api.basket.dto.response.BasketModifyResponseDto
 import kr.co.shoppingcart.cart.api.basket.dto.response.CreateBasketResDto
 import kr.co.shoppingcart.cart.api.basket.dto.response.GetByIdResponseDto
@@ -247,6 +250,54 @@ class BasketController(
             GetByTemplateIdAndCategoryIdResDto(
                 result = result.map(BasketResponseMapper::toResponse),
             ),
+        )
+    }
+
+    @OpenApiSpecApiException(
+        [
+            ExceptionCode.E_403_000,
+            ExceptionCode.E_401_000,
+            ExceptionCode.E_401_001,
+            ExceptionCode.E_401_002,
+            ExceptionCode.E_401_003,
+        ],
+    )
+    @Operation(summary = "카테고리에 해당하는 물품 조회 (카테고리 이름으로 조회)", description = "카테고리에 해당하는 물품 조회")
+    @GetMapping("/v1/categories/baskets")
+    fun getByTemplateIdAndCategoryName(
+        @ModelAttribute params: GetByTemplateIdAndCategoryNameReqQuery,
+        @CurrentUser currentUser: JwtPayload,
+    ): ResponseEntity<GetByTemplateIdAndCategoryIdResDto> {
+        val result =
+            basketUseCase.getByTemplateIdAndCategoryName(params.of(currentUser.identificationValue.toLong()))
+
+        return ResponseEntity.status(200).body(
+            GetByTemplateIdAndCategoryIdResDto(
+                result = result.map(BasketResponseMapper::toResponse),
+            ),
+        )
+    }
+
+    @OpenApiSpecApiException(
+        [
+            ExceptionCode.E_403_000,
+            ExceptionCode.E_401_000,
+            ExceptionCode.E_401_001,
+            ExceptionCode.E_401_002,
+            ExceptionCode.E_401_003,
+        ],
+    )
+    @Operation(summary = "카테고리 수정", description = "여러 물품의 카테고리 수정")
+    @PutMapping("/v1/baskets/category")
+    fun updateCategoryByBaskets(
+        @RequestBody dto: UpdateBasketsByCategoryReqBody,
+        @CurrentUser currentUser: JwtPayload,
+    ): ResponseEntity<BasketModifyResponse> {
+        val result =
+            basketUseCase.updateCategoryName(dto.toCommand(currentUser.identificationValue.toLong()))
+
+        return ResponseEntity.status(200).body(
+            BasketModifyResponse(),
         )
     }
 

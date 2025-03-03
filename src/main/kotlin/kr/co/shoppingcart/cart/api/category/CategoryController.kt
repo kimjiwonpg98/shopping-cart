@@ -1,6 +1,7 @@
 package kr.co.shoppingcart.cart.api.category
 
 import io.swagger.v3.oas.annotations.Operation
+import kr.co.shoppingcart.cart.api.category.dto.GetCategoriesByTemplateIdV2ResDto
 import kr.co.shoppingcart.cart.api.category.response.GetCategoriesResDto
 import kr.co.shoppingcart.cart.domain.category.CategoryUseCase
 import org.springframework.http.ResponseEntity
@@ -39,5 +40,22 @@ class CategoryController(
                                 templateId = templateId,
                             ).map(CategoryResponseMapper::toResponse),
                 ),
+            )
+
+    @Operation(summary = "장바구니 리스트에 존재하는 카테고리만 조회 (개인 카테고리 포함)", description = "장바구니 리스트에 존재하는 카테고리만 조회")
+    @GetMapping("/v2/template/{templateId}/categories")
+    fun getCategoriesByTemplateIdV2(
+        @PathVariable templateId: Long,
+    ): ResponseEntity<List<String>> =
+        ResponseEntity
+            .status(200)
+            .body(
+                GetCategoriesByTemplateIdV2ResDto(
+                    categories =
+                        categoryUseCase
+                            .getByTemplateIdV2(
+                                templateId = templateId,
+                            ),
+                ).categories,
             )
 }

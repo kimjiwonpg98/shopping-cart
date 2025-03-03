@@ -14,6 +14,7 @@ import kr.co.shoppingcart.cart.database.mysql.category.entity.CategoryEntity
 import kr.co.shoppingcart.cart.database.mysql.common.entity.CommonEntity
 import kr.co.shoppingcart.cart.database.mysql.template.entity.TemplateEntity
 import org.hibernate.annotations.DynamicUpdate
+import java.time.ZonedDateTime.now
 
 @Table(name = BASKET_ENTITY_NAME)
 @Entity
@@ -31,6 +32,8 @@ class BasketEntity(
     var checked: Boolean = false,
     @Column(nullable = false, columnDefinition = "BOOLEAN", name = "is_pinned")
     val isPinned: Boolean = false,
+    @Column(nullable = false, name = "category_name")
+    var categoryName: String = "기타",
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "template_id", referencedColumnName = "id", nullable = false)
     val template: TemplateEntity,
@@ -38,6 +41,11 @@ class BasketEntity(
     @JoinColumn(name = "category_id", referencedColumnName = "id", nullable = false)
     val category: CategoryEntity,
 ) : CommonEntity() {
+    fun updateCategoryName(categoryName: String) {
+        this.categoryName = categoryName
+        updatedAt = now()
+    }
+
     companion object {
         const val BASKET_ENTITY_NAME = "basket"
     }

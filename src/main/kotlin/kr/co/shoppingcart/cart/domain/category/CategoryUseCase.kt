@@ -17,4 +17,7 @@ class CategoryUseCase(
 
     @Transactional(readOnly = true)
     fun getByTemplateId(templateId: Long): List<Category> = getCategoryService.getByTemplateId(templateId)
+
+    @Transactional(readOnly = true)
+    fun getByTemplateIdV2(templateId: Long): List<String> = getCategoryService.getByTemplateIdV2(templateId)
 }

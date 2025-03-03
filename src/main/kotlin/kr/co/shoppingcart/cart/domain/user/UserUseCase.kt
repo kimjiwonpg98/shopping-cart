@@ -12,7 +12,6 @@ import kr.co.shoppingcart.cart.domain.user.services.GetUserService
 import kr.co.shoppingcart.cart.domain.user.services.UserCreationService
 import kr.co.shoppingcart.cart.domain.user.services.UserUpdateService
 import kr.co.shoppingcart.cart.domain.user.vo.User
-import kr.co.shoppingcart.cart.external.kakao.KakaoClient
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
@@ -26,7 +25,6 @@ class UserUseCase(
     @Qualifier("ownerPermissionService")
     private val ownerPermissionService: PermissionService,
     private val deleteTemplateService: DeleteTemplateService,
-    private val kakaoClient: KakaoClient,
 ) {
     @Transactional
     fun createIfAbsent(loginCommand: LoginCommand): User =

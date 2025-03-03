@@ -86,6 +86,19 @@ class BasketRepositoryAdapter(
                 categoryId,
             ).map(BasketEntityMapper::toDomain)
 
+    override fun getByTemplateIdAndCategoryNameByUpdatedDesc(
+        templateId: Long,
+        categoryName: String,
+    ): List<Basket> =
+        basketEntityRepository
+            .getByTemplateIdAndCategoryNameOrderByUpdatedAtDescCheckedAsc(
+                templateId,
+                categoryName,
+            ).map(BasketEntityMapper::toDomain)
+
+    override fun getCategoriesByTemplateId(templateId: Long): List<String> =
+        basketEntityRepository.getCategoriesByTemplateId(templateId)
+
     override fun updateCheckedById(
         basketId: Long,
         checked: Boolean,
@@ -129,4 +142,11 @@ class BasketRepositoryAdapter(
         basketIds: List<Long>,
         checked: Boolean,
     ) = basketEntityRepository.updateCheckedByIdIn(basketIds, checked)
+
+    override fun updateCategoryName(
+        basketIds: List<Long>,
+        categoryName: String,
+    ) {
+        basketEntityRepository.updateCategoryNameByIdIn(basketIds, categoryName)
+    }
 }

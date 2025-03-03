@@ -15,6 +15,11 @@ class GetBasketService(
         categoryId: Long,
     ): List<Basket> = basketRepository.getByTemplateIdAndCategoryIdByUpdatedDesc(templateId, categoryId)
 
+    fun getByTemplateIdAndCategoryNameByUpdatedDesc(
+        templateId: Long,
+        categoryName: String,
+    ): List<Basket> = basketRepository.getByTemplateIdAndCategoryNameByUpdatedDesc(templateId, categoryName)
+
     fun getByTemplateIdAndSizeOrderByUpdatedDesc(
         templateId: Long,
         size: Int,

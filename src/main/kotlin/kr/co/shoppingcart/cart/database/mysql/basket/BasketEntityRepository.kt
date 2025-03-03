@@ -26,6 +26,11 @@ interface BasketEntityRepository<T, ID> : Repository<T, ID> {
         categoryId: Long,
     ): List<BasketEntity>
 
+    fun getByTemplateIdAndCategoryNameOrderByUpdatedAtDescCheckedAsc(
+        templateId: Long,
+        categoryName: String,
+    ): List<BasketEntity>
+
     fun findById(id: Long): BasketEntity?
 
     fun findByIdIn(ids: List<Long>): List<BasketEntity>
@@ -37,5 +42,12 @@ interface BasketEntityRepository<T, ID> : Repository<T, ID> {
     fun updateCheckedByIdIn(
         basketIds: List<Long>,
         checked: Boolean,
+    )
+
+    fun getCategoriesByTemplateId(templateId: Long): List<String>
+
+    fun updateCategoryNameByIdIn(
+        basketIds: List<Long>,
+        categoryName: String,
     )
 }

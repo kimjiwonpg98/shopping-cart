@@ -7,12 +7,15 @@ import kr.co.shoppingcart.cart.domain.basket.command.DeleteBasketByIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.DeleteBasketsByIdsCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketByIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketByTemplateIdAndCategoryIdCommand
+import kr.co.shoppingcart.cart.domain.basket.command.GetBasketByTemplateIdAndCategoryNameCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketsByTemplateIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetPublicBasketByTemplateIdAndCategoryIdCommand
+import kr.co.shoppingcart.cart.domain.basket.command.GetPublicBasketByTemplateIdAndCategoryNameCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetPublicBasketsByTemplateIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.UpdateAllCheckedCommand
 import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketContentCommand
 import kr.co.shoppingcart.cart.domain.basket.command.UpdateBasketFlagCommand
+import kr.co.shoppingcart.cart.domain.basket.command.UpdateCategoryNameCommand
 import kr.co.shoppingcart.cart.domain.basket.service.BasketCreationService
 import kr.co.shoppingcart.cart.domain.basket.service.BasketUpdateService
 import kr.co.shoppingcart.cart.domain.basket.service.GetBasketService
@@ -56,6 +59,7 @@ class BasketUseCase(
                 id = 0,
                 name = createBasketCommand.name,
                 checked = createBasketCommand.checked ?: false,
+                categoryName = createBasketCommand.categoryName,
                 category = category,
                 template = template,
                 count = createBasketCommand.count ?: 1,
@@ -181,6 +185,15 @@ class BasketUseCase(
         return getBasketService.getByTemplateIdAndCategoryIdByUpdatedDesc(command.templateId, command.categoryId)
     }
 
+    fun getByTemplateIdAndCategoryName(command: GetBasketByTemplateIdAndCategoryNameCommand): List<Basket> {
+        readerPermissionService.getOverLevelByUserIdAndTemplateId(
+            command.userId,
+            command.templateId,
+        ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+
+        return getBasketService.getByTemplateIdAndCategoryNameByUpdatedDesc(command.templateId, command.categoryName)
+    }
+
     fun getByTemplateIdAndCategoryIdPublic(command: GetPublicBasketByTemplateIdAndCategoryIdCommand): List<Basket> {
         val template = getTemplateService.getByIdOrFail(command.templateId)
 
@@ -189,6 +202,16 @@ class BasketUseCase(
         }
 
         return getBasketService.getByTemplateIdAndCategoryIdByUpdatedDesc(command.templateId, command.categoryId)
+    }
+
+    fun getByTemplateIdAndCategoryNamePublic(command: GetPublicBasketByTemplateIdAndCategoryNameCommand): List<Basket> {
+        val template = getTemplateService.getByIdOrFail(command.templateId)
+
+        if (!template.isPublicTemplate()) {
+            throw CustomException.responseBody(ExceptionCode.E_403_001)
+        }
+
+        return getBasketService.getByTemplateIdAndCategoryNameByUpdatedDesc(command.templateId, command.categoryName)
     }
 
     @Transactional(readOnly = true)
@@ -212,4 +235,20 @@ class BasketUseCase(
         templateId: Long,
         size: Int,
     ): List<Basket> = getBasketService.getByTemplateIdAndSizeOrderByUpdatedDesc(templateId, size)
+
+    fun updateCategoryName(command: UpdateCategoryNameCommand) {
+        val baskets = getBasketService.getByIds(command.basketIds)
+
+        baskets.distinctBy { it.templateId!!.templateId }.forEach {
+            writerPermissionService.getOverLevelByUserIdAndTemplateId(
+                command.userId,
+                it.templateId!!.templateId,
+            ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+        }
+
+        return this.basketUpdateService.updateCategoryName(
+            command.basketIds,
+            command.categoryName,
+        )
+    }
 }
