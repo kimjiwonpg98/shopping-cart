@@ -2,8 +2,9 @@ package kr.co.shoppingcart.cart.domain.auth.service
 
 import kr.co.shoppingcart.cart.auth.JwtPayloadDto
 import kr.co.shoppingcart.cart.auth.JwtProvider
-import kr.co.shoppingcart.cart.database.mysql.tokenExpiration.TokenExpirationRepositoryAdapter
-import kr.co.shoppingcart.cart.domain.auth.vo.expiration.TokenExpiration
+import kr.co.shoppingcart.cart.core.tokenexpiration.application.port.inpout.GetTokenExpiration
+import kr.co.shoppingcart.cart.core.tokenexpiration.application.port.inpout.GetTokenExpirationCommand
+import kr.co.shoppingcart.cart.core.tokenexpiration.domain.TokenExpiration
 import kr.co.shoppingcart.cart.domain.auth.vo.tokens.Tokens
 import org.apache.coyote.BadRequestException
 import org.springframework.cache.annotation.CacheEvict
@@ -13,7 +14,7 @@ import java.time.ZonedDateTime
 
 @Component
 class TokenServiceImpl(
-    private val tokenExpirationRepositoryAdapter: TokenExpirationRepositoryAdapter,
+    private val getTokenExpiration: GetTokenExpiration,
     private val jwtProvider: JwtProvider,
 ) : TokenService {
     override fun createAccessToken(
@@ -29,7 +30,7 @@ class TokenServiceImpl(
                 claims = claims,
                 identificationValue = userId.toString(),
                 now = ZonedDateTime.now(),
-                expiredTimestamp = tokenInfo.tokenTTL.ttl,
+                expiredTimestamp = tokenInfo.ttl,
             )
 
         return jwtProvider.createJwt(jwtPayload)
@@ -48,7 +49,7 @@ class TokenServiceImpl(
                 claims = claims,
                 identificationValue = userId.toString(),
                 now = ZonedDateTime.now(),
-                expiredTimestamp = tokenInfo.refreshTokenTTL.refreshTokenTtl,
+                expiredTimestamp = tokenInfo.refreshTTL,
             )
 
         return jwtProvider.createJwt(jwtPayload)
@@ -83,7 +84,9 @@ class TokenServiceImpl(
     }
 
     private fun getTokenExpByType(provider: String): TokenExpiration? =
-        tokenExpirationRepositoryAdapter.getByName(
-            provider,
+        getTokenExpiration.getByName(
+            GetTokenExpirationCommand(
+                name = provider,
+            ),
         )
 }
