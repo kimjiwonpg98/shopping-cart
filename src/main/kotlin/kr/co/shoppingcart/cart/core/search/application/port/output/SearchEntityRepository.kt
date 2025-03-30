@@ -1,4 +1,4 @@
-package kr.co.shoppingcart.cart.database.mongo.search
+package kr.co.shoppingcart.cart.core.search.application.port.output
 
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.data.repository.NoRepositoryBean

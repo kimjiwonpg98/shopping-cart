@@ -1,17 +1,18 @@
-package kr.co.shoppingcart.cart.database.mongo.search
+package kr.co.shoppingcart.cart.core.search.application
 
-import kr.co.shoppingcart.cart.database.mongo.search.entity.CartSearchEntity
+import kr.co.shoppingcart.cart.core.search.application.port.input.SearchByKeyword
+import kr.co.shoppingcart.cart.core.search.domain.CartSearch
 import org.bson.Document
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.stereotype.Component
 
 @Component
-class SearchMongoRepositoryImpl(
+class SearchService(
     @Qualifier("search-mongodb-template")
     private val searchMongoTemplate: MongoTemplate,
-) : CustomSearchRepository {
-    override fun searchForKeyword(keyword: String): List<CartSearchEntity> {
+) : SearchByKeyword {
+    override fun search(keyword: String): List<CartSearch> {
         val collection = searchMongoTemplate.getCollection("search")
 
         val searchQuery =
@@ -57,9 +58,9 @@ class SearchMongoRepositoryImpl(
 
         val pipeline: List<Document> = listOf(searchQuery)
 
-        val results = mutableListOf<CartSearchEntity>()
+        val results = mutableListOf<CartSearch>()
         collection.aggregate(pipeline).forEach { doc ->
-            results.add(searchMongoTemplate.converter.read(CartSearchEntity::class.java, doc))
+            results.add(searchMongoTemplate.converter.read(CartSearch::class.java, doc))
         }
 
         return results
