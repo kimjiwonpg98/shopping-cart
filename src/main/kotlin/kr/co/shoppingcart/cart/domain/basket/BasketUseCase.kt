@@ -2,6 +2,9 @@ package kr.co.shoppingcart.cart.domain.basket
 
 import kr.co.shoppingcart.cart.common.error.CustomException
 import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
+import kr.co.shoppingcart.cart.core.permission.application.port.input.ValidPermission
+import kr.co.shoppingcart.cart.core.permission.application.port.input.ValidPermissionIsOverLevelCommand
+import kr.co.shoppingcart.cart.core.permission.domain.PermissionLevel
 import kr.co.shoppingcart.cart.domain.basket.command.CreateBasketCommand
 import kr.co.shoppingcart.cart.domain.basket.command.DeleteBasketByIdCommand
 import kr.co.shoppingcart.cart.domain.basket.command.DeleteBasketsByIdsCommand
@@ -22,9 +25,7 @@ import kr.co.shoppingcart.cart.domain.basket.service.GetBasketService
 import kr.co.shoppingcart.cart.domain.basket.vo.Basket
 import kr.co.shoppingcart.cart.domain.basket.vo.BasketListAndTemplate
 import kr.co.shoppingcart.cart.domain.category.services.GetCategoryService
-import kr.co.shoppingcart.cart.domain.permissions.services.PermissionService
 import kr.co.shoppingcart.cart.domain.template.services.GetTemplateService
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -36,10 +37,7 @@ class BasketUseCase(
     private val basketUpdateService: BasketUpdateService,
     private val basketCreationService: BasketCreationService,
     private val getTemplateService: GetTemplateService,
-    @Qualifier("writerPermissionService")
-    private val writerPermissionService: PermissionService,
-    @Qualifier("readerPermissionService")
-    private val readerPermissionService: PermissionService,
+    private val validPermission: ValidPermission,
 ) {
     @Transactional
     fun create(createBasketCommand: CreateBasketCommand): Basket {
@@ -49,10 +47,13 @@ class BasketUseCase(
         val template =
             getTemplateService.getByIdOrFail(createBasketCommand.templateId)
 
-        writerPermissionService.getOverLevelByUserIdAndTemplateId(
-            createBasketCommand.userId,
-            createBasketCommand.templateId,
-        ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+        validPermission.isOverLevel(
+            ValidPermissionIsOverLevelCommand(
+                userId = createBasketCommand.userId,
+                templateId = createBasketCommand.templateId,
+                level = PermissionLevel.WRITER_LEVEL,
+            ),
+        )
 
         return basketCreationService.save(
             Basket.toDomain(
@@ -76,10 +77,13 @@ class BasketUseCase(
         val basket =
             getBasketService.getByIdOrFail(updateBasketFlagCommand.basketId)
 
-        writerPermissionService.getOverLevelByUserIdAndTemplateId(
-            updateBasketFlagCommand.userId,
-            basket.templateId!!.templateId,
-        ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+        validPermission.isOverLevel(
+            ValidPermissionIsOverLevelCommand(
+                userId = updateBasketFlagCommand.userId,
+                templateId = basket.templateId!!.templateId,
+                level = PermissionLevel.WRITER_LEVEL,
+            ),
+        )
 
         return this.basketUpdateService.updateCheckedById(
             updateBasketFlagCommand.basketId,
@@ -91,10 +95,13 @@ class BasketUseCase(
     fun updateAllChecked(command: UpdateAllCheckedCommand) {
         val baskets = getBasketService.getByTemplateId(command.templateId)
 
-        writerPermissionService.getOverLevelByUserIdAndTemplateId(
-            command.userId,
-            command.templateId,
-        ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+        validPermission.isOverLevel(
+            ValidPermissionIsOverLevelCommand(
+                userId = command.userId,
+                templateId = command.templateId,
+                level = PermissionLevel.WRITER_LEVEL,
+            ),
+        )
 
         return this.basketUpdateService.updateCheckedAll(
             baskets.filter { !it.checked.checked }.map { it.id.id },
@@ -104,10 +111,13 @@ class BasketUseCase(
 
     @Transactional
     fun getByTemplateId(command: GetBasketsByTemplateIdCommand): List<Basket> {
-        readerPermissionService.getOverLevelByUserIdAndTemplateId(
-            command.userId,
-            command.templateId,
-        ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+        validPermission.isOverLevel(
+            ValidPermissionIsOverLevelCommand(
+                userId = command.userId,
+                templateId = command.templateId,
+                level = PermissionLevel.READER_LEVEL,
+            ),
+        )
 
         return getBasketService.getByTemplateId(command.templateId)
     }
@@ -130,10 +140,13 @@ class BasketUseCase(
     fun updateBasketContent(command: UpdateBasketContentCommand): Basket {
         val basket = getBasketService.getByIdOrFail(command.basketId)
 
-        writerPermissionService.getOverLevelByUserIdAndTemplateId(
-            command.userId,
-            basket.templateId!!.templateId,
-        ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+        validPermission.isOverLevel(
+            ValidPermissionIsOverLevelCommand(
+                userId = command.userId,
+                templateId = basket.templateId!!.templateId,
+                level = PermissionLevel.WRITER_LEVEL,
+            ),
+        )
 
         return this.basketUpdateService.updateContent(
             command.basketId,
@@ -147,10 +160,13 @@ class BasketUseCase(
         val basket =
             this.getBasketService.getByIdOrFail(command.basketId)
 
-        writerPermissionService.getOverLevelByUserIdAndTemplateId(
-            command.userId,
-            basket.templateId!!.templateId,
-        ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+        validPermission.isOverLevel(
+            ValidPermissionIsOverLevelCommand(
+                userId = command.userId,
+                templateId = basket.templateId!!.templateId,
+                level = PermissionLevel.WRITER_LEVEL,
+            ),
+        )
 
         this.basketUpdateService.deleteById(
             command.basketId,
@@ -166,10 +182,13 @@ class BasketUseCase(
 
         if (templateIds.size > 1) throw CustomException.responseBody(ExceptionCode.E_400_001)
 
-        writerPermissionService.getOverLevelByUserIdAndTemplateId(
-            command.userId,
-            templateIds[0],
-        ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+        validPermission.isOverLevel(
+            ValidPermissionIsOverLevelCommand(
+                userId = command.userId,
+                templateId = templateIds[0],
+                level = PermissionLevel.WRITER_LEVEL,
+            ),
+        )
 
         this.basketUpdateService.deleteByIds(
             command.basketIds,
@@ -177,19 +196,25 @@ class BasketUseCase(
     }
 
     fun getByTemplateIdAndCategoryId(command: GetBasketByTemplateIdAndCategoryIdCommand): List<Basket> {
-        readerPermissionService.getOverLevelByUserIdAndTemplateId(
-            command.userId,
-            command.templateId,
-        ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+        validPermission.isOverLevel(
+            ValidPermissionIsOverLevelCommand(
+                userId = command.userId,
+                templateId = command.templateId,
+                level = PermissionLevel.READER_LEVEL,
+            ),
+        )
 
         return getBasketService.getByTemplateIdAndCategoryIdByUpdatedDesc(command.templateId, command.categoryId)
     }
 
     fun getByTemplateIdAndCategoryName(command: GetBasketByTemplateIdAndCategoryNameCommand): List<Basket> {
-        readerPermissionService.getOverLevelByUserIdAndTemplateId(
-            command.userId,
-            command.templateId,
-        ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+        validPermission.isOverLevel(
+            ValidPermissionIsOverLevelCommand(
+                userId = command.userId,
+                templateId = command.templateId,
+                level = PermissionLevel.READER_LEVEL,
+            ),
+        )
 
         return getBasketService.getByTemplateIdAndCategoryNameByUpdatedDesc(command.templateId, command.categoryName)
     }
@@ -219,10 +244,13 @@ class BasketUseCase(
         val basket =
             this.getBasketService.getByIdOrFail(command.basketId)
 
-        readerPermissionService.getOverLevelByUserIdAndTemplateId(
-            command.userId,
-            basket.templateId!!.templateId,
-        ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+        validPermission.isOverLevel(
+            ValidPermissionIsOverLevelCommand(
+                userId = command.userId,
+                templateId = basket.templateId!!.templateId,
+                level = PermissionLevel.READER_LEVEL,
+            ),
+        )
 
         return basket
     }
@@ -240,10 +268,13 @@ class BasketUseCase(
         val baskets = getBasketService.getByIds(command.basketIds)
 
         baskets.distinctBy { it.templateId!!.templateId }.forEach {
-            writerPermissionService.getOverLevelByUserIdAndTemplateId(
-                command.userId,
-                it.templateId!!.templateId,
-            ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+            validPermission.isOverLevel(
+                ValidPermissionIsOverLevelCommand(
+                    userId = command.userId,
+                    templateId = it.templateId!!.templateId,
+                    level = PermissionLevel.WRITER_LEVEL,
+                ),
+            )
         }
 
         return this.basketUpdateService.updateCategoryName(

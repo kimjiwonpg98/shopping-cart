@@ -1,6 +1,6 @@
-package kr.co.shoppingcart.cart.domain.permissions.enums
+package kr.co.shoppingcart.cart.core.permission.domain
 
-enum class PermissionLevelEnum(
+enum class PermissionLevel(
     val level: Int,
 ) {
     OWNER_LEVEL(0),

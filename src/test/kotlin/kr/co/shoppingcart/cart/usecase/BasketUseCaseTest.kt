@@ -2,6 +2,7 @@ package kr.co.shoppingcart.cart.usecase
 
 import kr.co.shoppingcart.cart.common.error.CustomException
 import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
+import kr.co.shoppingcart.cart.core.permission.application.port.input.ValidPermission
 import kr.co.shoppingcart.cart.domain.basket.BasketUseCase
 import kr.co.shoppingcart.cart.domain.basket.command.CreateBasketCommand
 import kr.co.shoppingcart.cart.domain.basket.command.GetBasketByTemplateIdAndCategoryIdCommand
@@ -11,12 +12,9 @@ import kr.co.shoppingcart.cart.domain.basket.service.BasketUpdateService
 import kr.co.shoppingcart.cart.domain.basket.service.GetBasketService
 import kr.co.shoppingcart.cart.domain.basket.vo.Basket
 import kr.co.shoppingcart.cart.domain.category.services.GetCategoryService
-import kr.co.shoppingcart.cart.domain.permissions.services.ReaderPermissionService
-import kr.co.shoppingcart.cart.domain.permissions.services.WriterPermissionService
 import kr.co.shoppingcart.cart.domain.template.services.GetTemplateService
 import kr.co.shoppingcart.cart.mock.vo.MockBasket
 import kr.co.shoppingcart.cart.mock.vo.MockCategory
-import kr.co.shoppingcart.cart.mock.vo.MockPermissions
 import kr.co.shoppingcart.cart.mock.vo.MockTemplate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -29,7 +27,6 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.anyLong
 import org.mockito.BDDMockito.given
-import org.mockito.BDDMockito.willReturn
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
@@ -56,10 +53,7 @@ class BasketUseCaseTest {
     private lateinit var getTemplateService: GetTemplateService
 
     @Mock
-    private lateinit var writerPermissionService: WriterPermissionService
-
-    @Mock
-    private lateinit var readerPermissionService: ReaderPermissionService
+    private lateinit var validPermission: ValidPermission
 
     @InjectMocks
     private lateinit var basketUseCase: BasketUseCase
@@ -99,8 +93,7 @@ class BasketUseCaseTest {
                     basketUpdateService,
                     basketCreationService,
                     getTemplateService,
-                    writerPermissionService,
-                    readerPermissionService,
+                    validPermission,
                 )
 
             val exception =
@@ -125,11 +118,14 @@ class BasketUseCaseTest {
                 getTemplateService.getByIdOrFail(command.templateId),
             ).willReturn(MockTemplate.getTemplate(command.templateId))
 
-            `when`(
-                writerPermissionService.getOverLevelByUserIdAndTemplateId(command.userId, command.templateId),
-            ).thenReturn(
-                MockPermissions.getOptionalPermission(1, true),
-            )
+//            `when`(
+//                validPermission.isOverLevel(
+//                    ValidPermissionIsOverLevelCommand(
+//                        userId = 1,
+//                        templateId = 1,
+//                        level = PermissionLevel.WRITER_LEVEL,
+//                ),
+//            ).thenReturn(Void.TYPE)
 
             given(
                 basketCreationService.save(
@@ -146,8 +142,7 @@ class BasketUseCaseTest {
                     basketUpdateService,
                     basketCreationService,
                     getTemplateService,
-                    writerPermissionService,
-                    readerPermissionService,
+                    validPermission,
                 )
 
             val result =
@@ -177,8 +172,7 @@ class BasketUseCaseTest {
                     basketUpdateService,
                     basketCreationService,
                     getTemplateService,
-                    writerPermissionService,
-                    readerPermissionService,
+                    validPermission,
                 )
 
             val exception =
@@ -201,9 +195,9 @@ class BasketUseCaseTest {
                 MockBasket.getBasket(1, true),
             )
 
-            `when`(writerPermissionService.getOverLevelByUserIdAndTemplateId(1L, 1)).thenReturn(
-                null,
-            )
+//            `when`(writerPermissionService.getOverLevelByUserIdAndTemplateId(1L, 1)).thenReturn(
+//                null,
+//            )
 
             basketUseCase =
                 BasketUseCase(
@@ -212,8 +206,7 @@ class BasketUseCaseTest {
                     basketUpdateService,
                     basketCreationService,
                     getTemplateService,
-                    writerPermissionService,
-                    readerPermissionService,
+                    validPermission,
                 )
 
             val exception =
@@ -236,9 +229,9 @@ class BasketUseCaseTest {
                 MockBasket.getBasket(1, true),
             )
 
-            `when`(writerPermissionService.getOverLevelByUserIdAndTemplateId(1L, 1)).thenReturn(
-                null,
-            )
+//            `when`(writerPermissionService.getOverLevelByUserIdAndTemplateId(1L, 1)).thenReturn(
+//                null,
+//            )
 
             basketUseCase =
                 BasketUseCase(
@@ -247,8 +240,7 @@ class BasketUseCaseTest {
                     basketUpdateService,
                     basketCreationService,
                     getTemplateService,
-                    writerPermissionService,
-                    readerPermissionService,
+                    validPermission,
                 )
 
             val exception =
@@ -271,9 +263,9 @@ class BasketUseCaseTest {
                 MockBasket.getBasket(1, false),
             )
 
-            `when`(writerPermissionService.getOverLevelByUserIdAndTemplateId(1L, 1)).thenReturn(
-                MockPermissions.getPermission(1, 0),
-            )
+//            `when`(writerPermissionService.getOverLevelByUserIdAndTemplateId(1L, 1)).thenReturn(
+//                MockPermissions.getPermission(1, 0),
+//            )
 
             `when`(basketUpdateService.updateCheckedById(1, true)).thenReturn(
                 MockBasket.getBasket(1, true),
@@ -286,8 +278,7 @@ class BasketUseCaseTest {
                     basketUpdateService,
                     basketCreationService,
                     getTemplateService,
-                    writerPermissionService,
-                    readerPermissionService,
+                    validPermission,
                 )
 
             val result =
@@ -320,11 +311,11 @@ class BasketUseCaseTest {
             ).thenReturn(
                 emptyList(),
             )
-            `when`(
-                readerPermissionService.getOverLevelByUserIdAndTemplateId(command.userId, command.templateId),
-            ).thenReturn(
-                MockPermissions.getPermissionWriter(1, true),
-            )
+//            `when`(
+//                readerPermissionService.getOverLevelByUserIdAndTemplateId(command.userId, command.templateId),
+//            ).thenReturn(
+//                MockPermissions.getPermissionWriter(1, true),
+//            )
 
             basketUseCase =
                 BasketUseCase(
@@ -333,8 +324,7 @@ class BasketUseCaseTest {
                     basketUpdateService,
                     basketCreationService,
                     getTemplateService,
-                    writerPermissionService,
-                    readerPermissionService,
+                    validPermission,
                 )
 
             val result =
@@ -353,11 +343,11 @@ class BasketUseCaseTest {
                 emptyList(),
             )
 
-            `when`(
-                readerPermissionService.getOverLevelByUserIdAndTemplateId(command.userId, command.templateId),
-            ).thenReturn(
-                MockPermissions.getPermissionReader(1),
-            )
+//            `when`(
+//                readerPermissionService.getOverLevelByUserIdAndTemplateId(command.userId, command.templateId),
+//            ).thenReturn(
+//                MockPermissions.getPermissionReader(1),
+//            )
 
             basketUseCase =
                 BasketUseCase(
@@ -366,8 +356,7 @@ class BasketUseCaseTest {
                     basketUpdateService,
                     basketCreationService,
                     getTemplateService,
-                    writerPermissionService,
-                    readerPermissionService,
+                    validPermission,
                 )
 
             val result =

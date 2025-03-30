@@ -8,11 +8,11 @@ import jakarta.persistence.MappedSuperclass
 import java.io.Serializable
 
 @MappedSuperclass
-abstract class BaseEntity(
+open class BaseEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "BIGINT", nullable = false, name = "id")
-    private val id: Long? = 0L,
+    val id: Long? = 0L,
 ) : Serializable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

@@ -2,8 +2,13 @@ package kr.co.shoppingcart.cart.domain.template
 
 import kr.co.shoppingcart.cart.common.error.CustomException
 import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
+import kr.co.shoppingcart.cart.core.permission.application.port.input.CreatePermission
+import kr.co.shoppingcart.cart.core.permission.application.port.input.CreatePermissionCommand
+import kr.co.shoppingcart.cart.core.permission.application.port.input.ValidPermission
+import kr.co.shoppingcart.cart.core.permission.application.port.input.ValidPermissionCommand
+import kr.co.shoppingcart.cart.core.permission.application.port.input.ValidPermissionIsOverLevelCommand
+import kr.co.shoppingcart.cart.core.permission.domain.PermissionLevel
 import kr.co.shoppingcart.cart.domain.basket.service.GetBasketService
-import kr.co.shoppingcart.cart.domain.permissions.services.PermissionService
 import kr.co.shoppingcart.cart.domain.template.command.CopyOwnTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.CopyTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.CopyTemplateInCompleteCommand
@@ -19,7 +24,6 @@ import kr.co.shoppingcart.cart.domain.template.services.GetTemplateService
 import kr.co.shoppingcart.cart.domain.template.services.UpdateTemplateService
 import kr.co.shoppingcart.cart.domain.template.vo.Template
 import kr.co.shoppingcart.cart.domain.template.vo.TemplateWithCheckedCount
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -30,69 +34,77 @@ class TemplateUseCase(
     private val getTemplateService: GetTemplateService,
     private val deleteTemplateService: DeleteTemplateService,
     private val updateTemplateService: UpdateTemplateService,
-    @Qualifier("ownerPermissionService")
-    private val ownerPermissionService: PermissionService,
-    @Qualifier("readerPermissionService")
-    private val readerPermissionService: PermissionService,
+    private val validPermission: ValidPermission,
+    private val createPermission: CreatePermission,
 ) {
     @Transactional
     fun createByApi(createTemplateCommand: CreateTemplateCommand): Template =
         this.createAsOwner(createTemplateCommand.name, createTemplateCommand.userId)
 
     @Transactional(readOnly = true)
-    fun getByIdAndUserIdToRead(
-        getTemplateByIdAndUserIdCommand: GetTemplateByIdAndUserIdCommand,
-    ): TemplateWithCheckedCount {
-        readerPermissionService.getOverLevelByUserIdAndTemplateId(
-            getTemplateByIdAndUserIdCommand.userId,
-            getTemplateByIdAndUserIdCommand.id,
-        ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+    fun getByIdAndUserIdToRead(command: GetTemplateByIdAndUserIdCommand): TemplateWithCheckedCount {
+        validPermission.isOverLevel(
+            ValidPermissionIsOverLevelCommand(
+                userId = command.userId,
+                templateId = command.id,
+                level = PermissionLevel.READER_LEVEL,
+            ),
+        )
 
-        return getTemplateService.getTemplateByIdWithPercentOrFail(getTemplateByIdAndUserIdCommand)
+        return getTemplateService.getTemplateByIdWithPercentOrFail(command)
     }
 
     @Transactional
-    fun updateSharedById(updateTemplateSharedByIdCommand: UpdateTemplateSharedByIdCommand): Template {
-        ownerPermissionService.getByUserIdAndTemplateId(
-            updateTemplateSharedByIdCommand.userId,
-            updateTemplateSharedByIdCommand.id,
-        ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+    fun updateSharedById(command: UpdateTemplateSharedByIdCommand): Template {
+        validPermission.isOverLevel(
+            ValidPermissionIsOverLevelCommand(
+                userId = command.userId,
+                templateId = command.id,
+                level = PermissionLevel.OWNER_LEVEL,
+            ),
+        )
 
         return updateTemplateService.updateSharedById(
-            updateTemplateSharedByIdCommand.id,
-            updateTemplateSharedByIdCommand.isShared,
+            command.id,
+            command.isShared,
         )
     }
 
     @Transactional
-    fun updateById(updateTemplateByIdCommand: UpdateTemplateByIdCommand): Template {
-        ownerPermissionService.getByUserIdAndTemplateId(
-            updateTemplateByIdCommand.userId,
-            updateTemplateByIdCommand.templateId,
-        ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+    fun updateById(command: UpdateTemplateByIdCommand): Template {
+        validPermission.isOverLevel(
+            ValidPermissionIsOverLevelCommand(
+                userId = command.userId,
+                templateId = command.templateId,
+                level = PermissionLevel.OWNER_LEVEL,
+            ),
+        )
 
         return updateTemplateService.update(
-            updateTemplateByIdCommand.templateId,
-            updateTemplateByIdCommand.name,
-            updateTemplateByIdCommand.thumbnailIndex,
+            command.templateId,
+            command.name,
+            command.thumbnailIndex,
         )
     }
 
     @Transactional
-    fun copyOwnTemplateInComplete(copyTemplateInCompleteCommand: CopyTemplateInCompleteCommand): Template {
-        ownerPermissionService.getByUserIdAndTemplateId(
-            copyTemplateInCompleteCommand.userId,
-            copyTemplateInCompleteCommand.id,
-        ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+    fun copyOwnTemplateInComplete(command: CopyTemplateInCompleteCommand): Template {
+        validPermission.isOverLevel(
+            ValidPermissionIsOverLevelCommand(
+                userId = command.userId,
+                templateId = command.id,
+                level = PermissionLevel.OWNER_LEVEL,
+            ),
+        )
 
         val template =
             this.getTemplateService.getByIdOrFail(
-                copyTemplateInCompleteCommand.id,
+                command.id,
             )
 
         val newTemplate = this.createAsOwner(name = template.name.name, userId = template.userId.userId)
 
-        val baskets = getBasketService.getByTemplateId(copyTemplateInCompleteCommand.id)
+        val baskets = getBasketService.getByTemplateId(command.id)
         if (baskets.isEmpty()) return newTemplate
 
         val (_, nonCheckedItems) = baskets.partition { it.checked.checked }
@@ -105,20 +117,23 @@ class TemplateUseCase(
     }
 
     @Transactional
-    fun copyOwnTemplate(copyOwnTemplateCommand: CopyOwnTemplateCommand): Template {
-        ownerPermissionService.getByUserIdAndTemplateId(
-            copyOwnTemplateCommand.userId,
-            copyOwnTemplateCommand.id,
-        ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+    fun copyOwnTemplate(command: CopyOwnTemplateCommand): Template {
+        validPermission.validate(
+            ValidPermissionCommand(
+                userId = command.userId,
+                templateId = command.id,
+                level = PermissionLevel.OWNER_LEVEL,
+            ),
+        )
 
         val template =
             this.getTemplateService.getByIdOrFail(
-                copyOwnTemplateCommand.id,
+                command.id,
             )
 
         val newTemplate = this.createAsOwner(name = template.name.name, userId = template.userId.userId)
 
-        val baskets = getBasketService.getByTemplateId(copyOwnTemplateCommand.id)
+        val baskets = getBasketService.getByTemplateId(command.id)
         if (baskets.isEmpty()) return newTemplate
 
         this.createTemplateService.createNewBasketsByTemplateId(baskets, newTemplate.id.id)
@@ -155,13 +170,16 @@ class TemplateUseCase(
             getWithCompletePercentAndPreviewCommand.userId,
         )
 
-    fun deleteByIdAndUserId(deleteByTemplateIdCommand: DeleteByTemplateIdCommand) {
-        ownerPermissionService.getByUserIdAndTemplateId(
-            deleteByTemplateIdCommand.userId,
-            deleteByTemplateIdCommand.templateId,
-        ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+    fun deleteByIdAndUserId(command: DeleteByTemplateIdCommand) {
+        validPermission.validate(
+            ValidPermissionCommand(
+                userId = command.userId,
+                templateId = command.templateId,
+                level = PermissionLevel.OWNER_LEVEL,
+            ),
+        )
 
-        deleteTemplateService.deleteById(deleteByTemplateIdCommand.templateId)
+        deleteTemplateService.deleteById(command.templateId)
     }
 
     @Transactional
@@ -176,9 +194,12 @@ class TemplateUseCase(
                 thumbnailIndex = thumbnailIndex,
                 userId = userId,
             )
-        ownerPermissionService.createPermission(
-            userId = userId,
-            templateId = template.id.id,
+        createPermission.create(
+            CreatePermissionCommand(
+                userId = userId,
+                templateId = template.id.id,
+                level = PermissionLevel.OWNER_LEVEL,
+            ),
         )
         return template
     }

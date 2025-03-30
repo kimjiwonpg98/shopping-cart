@@ -2,9 +2,8 @@ package kr.co.shoppingcart.cart.usecase
 
 import kr.co.shoppingcart.cart.common.error.CustomException
 import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
+import kr.co.shoppingcart.cart.core.permission.application.port.input.ValidPermission
 import kr.co.shoppingcart.cart.domain.basket.service.GetBasketService
-import kr.co.shoppingcart.cart.domain.permissions.services.OwnerPermissionService
-import kr.co.shoppingcart.cart.domain.permissions.services.ReaderPermissionService
 import kr.co.shoppingcart.cart.domain.template.TemplateUseCase
 import kr.co.shoppingcart.cart.domain.template.command.CopyOwnTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.CopyTemplateCommand
@@ -20,7 +19,6 @@ import kr.co.shoppingcart.cart.fixture.TemplateFixture.DEFAULT_USER_ID
 import kr.co.shoppingcart.cart.fixture.TemplateFixture.PRIVATE
 import kr.co.shoppingcart.cart.fixture.TemplateFixture.PUBLIC
 import kr.co.shoppingcart.cart.mock.vo.MockBasket
-import kr.co.shoppingcart.cart.mock.vo.MockPermissions
 import kr.co.shoppingcart.cart.mock.vo.MockTemplate
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertInstanceOf
@@ -60,10 +58,7 @@ class TemplateUseCaseTest {
     private lateinit var updateTemplateService: UpdateTemplateService
 
     @Mock
-    private lateinit var ownerPermissionService: OwnerPermissionService
-
-    @Mock
-    private lateinit var readerPermissionService: ReaderPermissionService
+    private lateinit var validPermission: ValidPermission
 
     @InjectMocks
     private lateinit var templateUseCase: TemplateUseCase
@@ -102,8 +97,7 @@ class TemplateUseCaseTest {
                     getTemplateService,
                     deleteTemplateService,
                     updateTemplateService,
-                    ownerPermissionService,
-                    readerPermissionService,
+                    validPermission,
                 )
 
             val result =
