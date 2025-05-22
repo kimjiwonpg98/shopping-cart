@@ -53,10 +53,12 @@ class TemplateRepositoryAdapter(
         id: Long,
         name: String?,
         thumbnailIndex: Int?,
+        isPinned: Boolean?,
     ): Template {
         val template = templateEntityRepository.getById(id)
         name?.let { template.name = it }
         thumbnailIndex?.let { template.thumbnailIdx = it }
+        isPinned?.let { template.isPinned = it }
         return template.let(TemplateEntityMapper::toDomain)
     }
 

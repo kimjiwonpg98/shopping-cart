@@ -23,5 +23,22 @@ class UpdateTemplateService(
         templateId,
         name,
         thumbnailIndex,
+        null,
     )
+
+    fun pinnedTemplate(templateId: Long) =
+        templateRepository.update(
+            templateId,
+            null,
+            null,
+            true,
+        )
+
+    fun unpinnedTemplate(templateId: Long) =
+        templateRepository.update(
+            templateId,
+            null,
+            null,
+            false,
+        )
 }

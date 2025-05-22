@@ -11,6 +11,8 @@ import kr.co.shoppingcart.cart.domain.template.command.CreateTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.DeleteByTemplateIdCommand
 import kr.co.shoppingcart.cart.domain.template.command.GetTemplateByIdAndUserIdCommand
 import kr.co.shoppingcart.cart.domain.template.command.GetWithCompletePercentAndPreviewCommand
+import kr.co.shoppingcart.cart.domain.template.command.PinnedTemplateCommand
+import kr.co.shoppingcart.cart.domain.template.command.UnpinnedTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.UpdateTemplateByIdCommand
 import kr.co.shoppingcart.cart.domain.template.command.UpdateTemplateSharedByIdCommand
 import kr.co.shoppingcart.cart.domain.template.services.CreateTemplateService
@@ -198,4 +200,26 @@ class TemplateUseCase(
     }
 
     fun getCountByUserId(userId: Long): Long = getTemplateService.getCountByUserId(userId)
+
+    fun pinnedTemplate(pinnedTemplateCommand: PinnedTemplateCommand): Template {
+        ownerPermissionService.getByUserIdAndTemplateId(
+            pinnedTemplateCommand.userId,
+            pinnedTemplateCommand.templateId,
+        ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+
+        return updateTemplateService.pinnedTemplate(
+            pinnedTemplateCommand.templateId,
+        )
+    }
+
+    fun unpinnedTemplate(unpinnedTemplateCommand: UnpinnedTemplateCommand): Template {
+        ownerPermissionService.getByUserIdAndTemplateId(
+            unpinnedTemplateCommand.userId,
+            unpinnedTemplateCommand.templateId,
+        ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
+
+        return updateTemplateService.unpinnedTemplate(
+            unpinnedTemplateCommand.templateId,
+        )
+    }
 }

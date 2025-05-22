@@ -28,6 +28,7 @@ interface TemplateRepository {
         id: Long,
         name: String?,
         thumbnailIndex: Int?,
+        isPinned: Boolean?,
     ): Template
 
     fun getWithCompletePercent(userId: Long): List<TemplateWithCheckedCount>

@@ -33,6 +33,7 @@ class MockTemplateRepository : TemplateRepository {
         id: Long,
         name: String?,
         thumbnailIndex: Int?,
+        isPinned: Boolean?,
     ): Template = MockTemplate.getTemplate(1)
 
     override fun getWithCompletePercent(userId: Long): List<TemplateWithCheckedCount> =

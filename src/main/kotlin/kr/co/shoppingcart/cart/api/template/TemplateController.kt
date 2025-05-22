@@ -14,6 +14,8 @@ import kr.co.shoppingcart.cart.api.template.dto.response.CreateTemplateResponseB
 import kr.co.shoppingcart.cart.api.template.dto.response.GetCountResponseDto
 import kr.co.shoppingcart.cart.api.template.dto.response.GetTemplateByIdResponseBodyDto
 import kr.co.shoppingcart.cart.api.template.dto.response.GetTemplateResponseBodyDto
+import kr.co.shoppingcart.cart.api.template.dto.response.PinnedTemplateResponse
+import kr.co.shoppingcart.cart.api.template.dto.response.UnpinnedTemplateResponse
 import kr.co.shoppingcart.cart.api.template.dto.response.UpdateTemplateResponseBodyDto
 import kr.co.shoppingcart.cart.api.template.dto.response.UpdateTemplateToSharedResponseBodyDto
 import kr.co.shoppingcart.cart.auth.JwtPayload
@@ -29,6 +31,8 @@ import kr.co.shoppingcart.cart.domain.template.command.CreateTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.DeleteByTemplateIdCommand
 import kr.co.shoppingcart.cart.domain.template.command.GetTemplateByIdAndUserIdCommand
 import kr.co.shoppingcart.cart.domain.template.command.GetWithCompletePercentAndPreviewCommand
+import kr.co.shoppingcart.cart.domain.template.command.PinnedTemplateCommand
+import kr.co.shoppingcart.cart.domain.template.command.UnpinnedTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.UpdateTemplateByIdCommand
 import kr.co.shoppingcart.cart.domain.template.command.UpdateTemplateSharedByIdCommand
 import org.springframework.http.ResponseEntity
@@ -345,6 +349,58 @@ class TemplateController(
             GetCountResponseDto(
                 count = count,
             ),
+        )
+    }
+
+    @OpenApiSpecApiException(
+        [
+            ExceptionCode.E_401_000,
+            ExceptionCode.E_401_001,
+            ExceptionCode.E_401_002,
+            ExceptionCode.E_401_003,
+        ],
+    )
+    @Operation(summary = "장바구니 고정", description = "토큰 필요")
+    @PutMapping("/v1/templates/pinned/{id}")
+    fun pinnedTemplate(
+        @CurrentUser currentUser: JwtPayload,
+        @PathVariable id: String,
+    ): ResponseEntity<PinnedTemplateResponse> {
+        templateUseCase.pinnedTemplate(
+            PinnedTemplateCommand(
+                userId = currentUser.identificationValue.toLong(),
+                templateId = id.toLong(),
+            ),
+        )
+
+        return ResponseEntity.ok().body(
+            PinnedTemplateResponse(),
+        )
+    }
+
+    @OpenApiSpecApiException(
+        [
+            ExceptionCode.E_401_000,
+            ExceptionCode.E_401_001,
+            ExceptionCode.E_401_002,
+            ExceptionCode.E_401_003,
+        ],
+    )
+    @Operation(summary = "장바구니 고정 취소", description = "토큰 필요")
+    @PutMapping("/v1/templates/unpinned/{id}")
+    fun unpinnedTemplate(
+        @CurrentUser currentUser: JwtPayload,
+        @PathVariable id: String,
+    ): ResponseEntity<UnpinnedTemplateResponse> {
+        templateUseCase.unpinnedTemplate(
+            UnpinnedTemplateCommand(
+                userId = currentUser.identificationValue.toLong(),
+                templateId = id.toLong(),
+            ),
+        )
+
+        return ResponseEntity.ok().body(
+            UnpinnedTemplateResponse(),
         )
     }
 }
