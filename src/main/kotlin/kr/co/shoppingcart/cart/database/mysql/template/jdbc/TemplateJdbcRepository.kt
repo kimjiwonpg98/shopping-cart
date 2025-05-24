@@ -19,6 +19,7 @@ class TemplateJdbcRepository(
                 t.name,
                 t.user_id AS userId,
                 t.is_public AS isPublic,
+                t.is_pinned AS isPinned,
                 t.thumbnail_idx AS thumbnailIndex,
                 t.created_at AS createdAt,
                 t.updated_at AS updatedAt
@@ -42,6 +43,7 @@ class TemplateJdbcRepository(
                 t.name,
                 t.user_id AS userId,
                 t.is_public AS isPublic,
+                t.is_pinned AS isPinned,
                 t.thumbnail_idx AS thumbnailIndex,
                 t.created_at AS createdAt,
                 t.updated_at AS updatedAt

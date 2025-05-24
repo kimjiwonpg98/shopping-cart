@@ -8,4 +8,7 @@ object TemplateFixture {
 
     const val PRIVATE: Boolean = false
     const val PUBLIC: Boolean = true
+
+    const val IS_PINNED: Boolean = true
+    const val IS_UNPINNED: Boolean = false
 }

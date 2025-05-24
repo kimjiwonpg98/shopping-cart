@@ -7,6 +7,7 @@ import kr.co.shoppingcart.cart.fixture.TemplateFixture.DEFAULT_ID
 import kr.co.shoppingcart.cart.fixture.TemplateFixture.DEFAULT_NAME
 import kr.co.shoppingcart.cart.fixture.TemplateFixture.DEFAULT_THUMBNAIL
 import kr.co.shoppingcart.cart.fixture.TemplateFixture.DEFAULT_USER_ID
+import kr.co.shoppingcart.cart.fixture.TemplateFixture.IS_PINNED
 import kr.co.shoppingcart.cart.fixture.TemplateFixture.PRIVATE
 import java.time.ZonedDateTime
 
@@ -23,6 +24,7 @@ object MockTemplate {
             name,
             userId,
             isPublic,
+            IS_PINNED,
             thumbnailIndex,
             null,
             null,
@@ -34,6 +36,7 @@ object MockTemplate {
             DEFAULT_NAME,
             DEFAULT_USER_ID,
             PRIVATE,
+            IS_PINNED,
             DEFAULT_THUMBNAIL,
             0,
             0,
@@ -50,6 +53,7 @@ object MockTemplate {
             DEFAULT_NAME,
             DEFAULT_USER_ID,
             isPublic,
+            IS_PINNED,
             DEFAULT_THUMBNAIL,
             null,
             null,
@@ -82,6 +86,7 @@ object MockTemplate {
             createTemplateCommand.name,
             createTemplateCommand.userId,
             PRIVATE,
+            IS_PINNED,
             DEFAULT_THUMBNAIL,
             null,
             null,

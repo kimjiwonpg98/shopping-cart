@@ -25,6 +25,7 @@ object BasketEntityMapper {
                     name = basketEntity.template.name,
                     userId = basketEntity.template.userId,
                     isPublic = basketEntity.template.isPublic,
+                    isPinned = basketEntity.template.isPinned,
                     thumbnailIndex = basketEntity.template.thumbnailIdx,
                     createdAt =
                         basketEntity.template.createdAt?.let { convertZonedDateTimeToSeoulTime(it) },

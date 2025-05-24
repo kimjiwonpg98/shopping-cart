@@ -1,6 +1,7 @@
 package kr.co.shoppingcart.cart.domain.vo
 
 import kr.co.shoppingcart.cart.domain.template.vo.Template
+import kr.co.shoppingcart.cart.fixture.TemplateFixture.IS_PINNED
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
@@ -17,6 +18,7 @@ class TemplateTest {
                 NAME,
                 USER_ID,
                 IS_PUBLIC,
+                IS_PINNED,
                 THUMBNAIL_IDX,
                 createdAt,
                 updatedAt,
@@ -43,6 +45,7 @@ class TemplateTest {
                 NAME,
                 USER_ID,
                 IS_PUBLIC,
+                IS_PINNED,
                 THUMBNAIL_IDX,
                 null,
                 null,
@@ -65,6 +68,7 @@ class TemplateTest {
                 NAME,
                 USER_ID,
                 IS_PUBLIC,
+                IS_PINNED,
                 THUMBNAIL_IDX,
                 null,
                 null,

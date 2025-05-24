@@ -16,6 +16,7 @@ object GetWithCheckedCountMapper {
                     name = rs.getString("name"),
                     userId = rs.getLong("userId"),
                     isPublic = rs.getBoolean("isPublic"),
+                    isPinned = rs.getBoolean("isPinned"),
                     thumbnailIndex = rs.getInt("thumbnailIndex"),
                     createdAt = convertLocalDateTimeToSeoulTime(rs.getTimestamp("createdAt").toLocalDateTime()),
                     updatedAt = convertLocalDateTimeToSeoulTime(rs.getTimestamp("updatedAt").toLocalDateTime()),

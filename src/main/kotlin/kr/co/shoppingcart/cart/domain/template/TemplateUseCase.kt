@@ -15,6 +15,7 @@ import kr.co.shoppingcart.cart.domain.template.command.PinnedTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.UnpinnedTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.UpdateTemplateByIdCommand
 import kr.co.shoppingcart.cart.domain.template.command.UpdateTemplateSharedByIdCommand
+import kr.co.shoppingcart.cart.domain.template.dto.TemplateWithPercentAndPreviewDto
 import kr.co.shoppingcart.cart.domain.template.services.CreateTemplateService
 import kr.co.shoppingcart.cart.domain.template.services.DeleteTemplateService
 import kr.co.shoppingcart.cart.domain.template.services.GetTemplateService
@@ -151,11 +152,31 @@ class TemplateUseCase(
     }
 
     fun getWithCompletePercentAndPreview(
-        getWithCompletePercentAndPreviewCommand: GetWithCompletePercentAndPreviewCommand,
-    ): List<TemplateWithCheckedCount> =
-        getTemplateService.getWithCompletePercentAndPreview(
-            getWithCompletePercentAndPreviewCommand.userId,
-        )
+        command: GetWithCompletePercentAndPreviewCommand,
+    ): List<TemplateWithPercentAndPreviewDto> =
+        getTemplateService
+            .getWithCompletePercentAndPreview(
+                command.userId,
+            ).map { template ->
+                if (template.checkedCount.count + template.unCheckedCount.count != 0L) {
+                    val basketNames =
+                        getBasketService
+                            .getByTemplateIdAndSizeOrderByUpdatedDesc(
+                                templateId = template.id.id,
+                                size = command.previewCount,
+                            ).map { it.name.name }
+                    TemplateWithPercentAndPreviewDto.of(
+                        template = template,
+                        basketNames = basketNames,
+                    )
+                } else {
+                    val basketNames = emptyList<String>()
+                    TemplateWithPercentAndPreviewDto.of(
+                        template = template,
+                        basketNames = basketNames,
+                    )
+                }
+            }
 
     fun deleteByIdAndUserId(deleteByTemplateIdCommand: DeleteByTemplateIdCommand) {
         ownerPermissionService.getByUserIdAndTemplateId(

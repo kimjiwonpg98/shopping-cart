@@ -13,6 +13,7 @@ object TemplateWithCheckedCountEntityMapper {
             name = templateEntity.name,
             userId = templateEntity.userId,
             isPublic = templateEntity.isPublic,
+            isPinned = templateEntity.isPinned,
             thumbnailIndex = templateEntity.thumbnailIndex,
             createdAt = convertZonedDateTimeToSeoulTime(templateEntity.createdAt),
             updatedAt = convertZonedDateTimeToSeoulTime(templateEntity.updatedAt),

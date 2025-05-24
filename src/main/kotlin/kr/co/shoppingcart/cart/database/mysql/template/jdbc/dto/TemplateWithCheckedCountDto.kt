@@ -9,6 +9,7 @@ data class TemplateWithCheckedCountDto(
     val name: String,
     val userId: Long,
     val isPublic: Boolean,
+    val isPinned: Boolean,
     val thumbnailIndex: Int,
     val createdAt: ZonedDateTime,
     val updatedAt: ZonedDateTime,

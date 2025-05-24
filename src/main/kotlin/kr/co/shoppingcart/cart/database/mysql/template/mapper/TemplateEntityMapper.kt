@@ -11,6 +11,7 @@ object TemplateEntityMapper {
             name = templateEntity.name,
             userId = templateEntity.userId,
             isPublic = templateEntity.isPublic,
+            isPinned = templateEntity.isPinned,
             thumbnailIndex = templateEntity.thumbnailIdx,
             createdAt = templateEntity.createdAt?.let { convertZonedDateTimeToSeoulTime(it) },
             updatedAt = templateEntity.updatedAt?.let { convertZonedDateTimeToSeoulTime(it) },
@@ -22,6 +23,7 @@ object TemplateEntityMapper {
             name = template.name.name,
             userId = template.userId.userId,
             isPublic = template.isPublic.isPublic,
+            isPinned = template.isPinned.isPinned,
             thumbnailIdx = template.thumbnailIndex.thumbnail,
         )
 }

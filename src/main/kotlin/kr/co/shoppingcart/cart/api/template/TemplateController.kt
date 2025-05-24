@@ -283,24 +283,13 @@ class TemplateController(
             )
         val templates = templateUseCase.getWithCompletePercentAndPreview(command)
 
+        val (pinnedTemplates, unPinnedTemplates) =
+            templates.partition { it.isPinned }
+
         return ResponseEntity.ok().body(
             GetTemplateResponseBodyDto(
-                result =
-                    templates.map { template ->
-                        if (template.checkedCount.count + template.unCheckedCount.count != 0L) {
-                            val basketNames =
-                                basketUseCase
-                                    .getByTemplateIdAndSizeOrderByUpdatedDesc(
-                                        templateId = template.id.id,
-                                        size =
-                                            params?.previewCount?.toIntOrNull() ?: 3,
-                                    ).map { it.name.name }
-                            TemplateResponseMapper.toResponseWithPercentAndPreview(template, basketNames)
-                        } else {
-                            val basketNames = emptyList<String>()
-                            TemplateResponseMapper.toResponseWithPercentAndPreview(template, basketNames)
-                        }
-                    },
+                pinned = pinnedTemplates.map(TemplateResponseMapper::toResponseWithPercentAndPreview),
+                result = unPinnedTemplates.map(TemplateResponseMapper::toResponseWithPercentAndPreview),
             ),
         )
     }
