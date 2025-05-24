@@ -345,6 +345,7 @@ class TemplateController(
             ExceptionCode.E_401_001,
             ExceptionCode.E_401_002,
             ExceptionCode.E_401_003,
+            ExceptionCode.E_403_002,
         ],
     )
     @Operation(summary = "장바구니 고정", description = "토큰 필요")
