@@ -10,6 +10,7 @@ import kr.co.shoppingcart.cart.domain.template.command.CopyOwnTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.CopyTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.CopyTemplateInCompleteCommand
 import kr.co.shoppingcart.cart.domain.template.command.CreateTemplateCommand
+import kr.co.shoppingcart.cart.domain.template.command.PinnedTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.UpdateTemplateSharedByIdCommand
 import kr.co.shoppingcart.cart.domain.template.services.CreateTemplateService
 import kr.co.shoppingcart.cart.domain.template.services.DeleteTemplateService
@@ -17,6 +18,7 @@ import kr.co.shoppingcart.cart.domain.template.services.GetTemplateService
 import kr.co.shoppingcart.cart.domain.template.services.UpdateTemplateService
 import kr.co.shoppingcart.cart.domain.template.vo.Template
 import kr.co.shoppingcart.cart.fixture.TemplateFixture.DEFAULT_USER_ID
+import kr.co.shoppingcart.cart.fixture.TemplateFixture.IS_PINNED
 import kr.co.shoppingcart.cart.fixture.TemplateFixture.PRIVATE
 import kr.co.shoppingcart.cart.fixture.TemplateFixture.PUBLIC
 import kr.co.shoppingcart.cart.mock.vo.MockBasket
@@ -628,6 +630,48 @@ class TemplateUseCaseTest {
             val result = templateUseCase.getDefaultNameByUserId(DEFAULT_USER_ID)
 
             assertEquals(101, result)
+        }
+    }
+
+    @Nested
+    @DisplayName("pinnedTemplate test")
+    inner class PinnedTemplateTest {
+        @Test
+        fun `고정 개수가 넘어가면 에러`() {
+            `when`(
+                getTemplateService.getByUserId(
+                    userId = DEFAULT_USER_ID,
+                ),
+            ).thenReturn(
+                MockTemplate.getTemplates(count = 3, isPinned = IS_PINNED, userId = DEFAULT_USER_ID),
+            )
+
+            `when`(
+                ownerPermissionService.getByUserIdAndTemplateId(
+                    userId = DEFAULT_USER_ID,
+                    templateId = 1,
+                ),
+            ).thenReturn(
+                MockPermissions.getPermission(1, level = 0, userId = DEFAULT_USER_ID, templateId = 1),
+            )
+
+            templateUseCase =
+                TemplateUseCase(
+                    getBasketService,
+                    createTemplateService,
+                    getTemplateService,
+                    deleteTemplateService,
+                    updateTemplateService,
+                    ownerPermissionService,
+                    readerPermissionService,
+                )
+
+            val exception =
+                assertThrows<CustomException> {
+                    templateUseCase.pinnedTemplate(PinnedTemplateCommand(templateId = 1, userId = DEFAULT_USER_ID))
+                }
+
+            assertEquals(ExceptionCode.E_403_002.name, exception.code.name)
         }
     }
 }

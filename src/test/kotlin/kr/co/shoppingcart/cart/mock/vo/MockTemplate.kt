@@ -8,6 +8,7 @@ import kr.co.shoppingcart.cart.fixture.TemplateFixture.DEFAULT_NAME
 import kr.co.shoppingcart.cart.fixture.TemplateFixture.DEFAULT_THUMBNAIL
 import kr.co.shoppingcart.cart.fixture.TemplateFixture.DEFAULT_USER_ID
 import kr.co.shoppingcart.cart.fixture.TemplateFixture.IS_PINNED
+import kr.co.shoppingcart.cart.fixture.TemplateFixture.IS_UNPINNED
 import kr.co.shoppingcart.cart.fixture.TemplateFixture.PRIVATE
 import java.time.ZonedDateTime
 
@@ -83,4 +84,31 @@ object MockTemplate {
             null,
             null,
         )
+
+    fun getTemplates(
+        name: String = DEFAULT_NAME,
+        userId: Long = DEFAULT_USER_ID,
+        isPublic: Boolean = PRIVATE,
+        isPinned: Boolean = IS_UNPINNED,
+        thumbnailIndex: Int = DEFAULT_THUMBNAIL,
+        count: Int = 10,
+    ): List<Template> {
+        val result = mutableListOf<Template>()
+
+        for (i in 0 until count) {
+            result.add(
+                Template.toDomain(
+                    (i + 1).toLong(),
+                    name,
+                    userId,
+                    isPublic,
+                    isPinned,
+                    thumbnailIndex,
+                    null,
+                    null,
+                ),
+            )
+        }
+        return result
+    }
 }

@@ -40,6 +40,9 @@ class TemplateRepositoryAdapter(
         userId: Long,
     ): Template? = templateEntityRepository.getByIdAndUserId(id, userId)?.let(TemplateEntityMapper::toDomain)
 
+    override fun getByUserId(userId: Long): List<Template> =
+        templateEntityRepository.getByUserId(userId).map(TemplateEntityMapper::toDomain)
+
     override fun updateSharedById(
         id: Long,
         isShared: Boolean,

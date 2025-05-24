@@ -28,4 +28,6 @@ class GetTemplateService(
     fun getByUserIdForDefaultName(userId: Long): Template? = templateRepository.getByUserIdForDefaultName(userId)
 
     fun getCountByUserId(userId: Long): Long = templateRepository.getCountByUserId(userId)
+
+    fun getByUserId(userId: Long): List<Template> = templateRepository.getByUserId(userId)
 }

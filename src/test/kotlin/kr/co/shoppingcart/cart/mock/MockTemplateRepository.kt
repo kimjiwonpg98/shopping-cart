@@ -24,6 +24,9 @@ class MockTemplateRepository : TemplateRepository {
         userId: Long,
     ): Template? = MockTemplate.getOptionalTemplate(id, id == TEMPLATE_ID_RETURN_NULL)
 
+    override fun getByUserId(userId: Long): List<Template> =
+        listOf(MockTemplate.getTemplate(1), MockTemplate.getTemplate(2))
+
     override fun updateSharedById(
         id: Long,
         isShared: Boolean,

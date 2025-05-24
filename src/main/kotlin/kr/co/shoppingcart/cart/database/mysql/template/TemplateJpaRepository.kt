@@ -18,6 +18,8 @@ interface TemplateJpaRepository : TemplateEntityRepository<TemplateEntity, Long>
         userId: Long,
     ): TemplateEntity?
 
+    override fun getByUserId(userId: Long): List<TemplateEntity>
+
     @Query(
         "SELECT b, t FROM TemplateEntity t " +
             "INNER JOIN BasketEntity b ON t.id = b.template.id" +

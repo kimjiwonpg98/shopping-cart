@@ -17,6 +17,8 @@ interface TemplateEntityRepository<T, ID> : Repository<T, ID> {
         userId: Long,
     ): TemplateEntity?
 
+    fun getByUserId(userId: Long): List<TemplateEntity>
+
     fun getByIdWithBasket(id: Long): TemplateEntity?
 
     fun deleteById(id: Long)

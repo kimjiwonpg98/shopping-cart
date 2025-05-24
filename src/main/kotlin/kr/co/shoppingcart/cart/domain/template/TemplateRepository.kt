@@ -19,6 +19,8 @@ interface TemplateRepository {
         userId: Long,
     ): Template?
 
+    fun getByUserId(userId: Long): List<Template>
+
     fun updateSharedById(
         id: Long,
         isShared: Boolean,

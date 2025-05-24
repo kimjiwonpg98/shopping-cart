@@ -222,14 +222,20 @@ class TemplateUseCase(
 
     fun getCountByUserId(userId: Long): Long = getTemplateService.getCountByUserId(userId)
 
-    fun pinnedTemplate(pinnedTemplateCommand: PinnedTemplateCommand): Template {
+    fun pinnedTemplate(command: PinnedTemplateCommand): Template {
         ownerPermissionService.getByUserIdAndTemplateId(
-            pinnedTemplateCommand.userId,
-            pinnedTemplateCommand.templateId,
+            command.userId,
+            command.templateId,
         ) ?: throw CustomException.responseBody(ExceptionCode.E_403_000)
 
+        val pinnedCount = getTemplateService.getByUserId(command.userId).count { it.isPinned.isPinned }
+
+        if (pinnedCount >= MAX_PINNED_COUNT) {
+            throw CustomException.responseBody(ExceptionCode.E_403_002)
+        }
+
         return updateTemplateService.pinnedTemplate(
-            pinnedTemplateCommand.templateId,
+            command.templateId,
         )
     }
 
@@ -242,5 +248,9 @@ class TemplateUseCase(
         return updateTemplateService.unpinnedTemplate(
             unpinnedTemplateCommand.templateId,
         )
+    }
+
+    companion object {
+        const val MAX_PINNED_COUNT = 3
     }
 }
