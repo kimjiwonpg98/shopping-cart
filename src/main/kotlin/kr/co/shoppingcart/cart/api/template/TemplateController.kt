@@ -22,7 +22,6 @@ import kr.co.shoppingcart.cart.auth.JwtPayload
 import kr.co.shoppingcart.cart.auth.annotation.CurrentUser
 import kr.co.shoppingcart.cart.common.error.annotations.OpenApiSpecApiException
 import kr.co.shoppingcart.cart.common.error.model.ExceptionCode
-import kr.co.shoppingcart.cart.domain.basket.BasketUseCase
 import kr.co.shoppingcart.cart.domain.template.TemplateUseCase
 import kr.co.shoppingcart.cart.domain.template.command.CopyOwnTemplateCommand
 import kr.co.shoppingcart.cart.domain.template.command.CopyTemplateCommand
@@ -48,7 +47,6 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class TemplateController(
     private val templateUseCase: TemplateUseCase,
-    private val basketUseCase: BasketUseCase,
 ) {
     @OpenApiSpecApiException(
         [

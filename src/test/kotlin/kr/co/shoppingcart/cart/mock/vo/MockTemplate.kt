@@ -64,14 +64,6 @@ object MockTemplate {
         flag: Boolean,
     ): Template? = if (!flag) getTemplate(i) else null
 
-    fun getTemplates(): List<Template> {
-        val templates = mutableListOf<Template>()
-        for (i in 0..5) {
-            templates.add(getTemplate(i.toLong()))
-        }
-        return templates
-    }
-
     fun getTemplatesWithPercent(): List<TemplateWithCheckedCount> {
         val templates = mutableListOf<TemplateWithCheckedCount>()
         for (i in 0..5) {
