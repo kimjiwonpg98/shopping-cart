@@ -20,7 +20,7 @@ class OpenApiSpecConfiguration {
             .apply { addSecurityItem(SecurityRequirement().addList("bearerAuth")) }
             .apply { components = authSetting() }
             .apply { info = swaggerInfo() }
-            .apply { addServersItem(Server().url("https://ggadam-dev.shop/").description("개발 서버")) }
+            .apply { addServersItem(Server().url("https://kka-dam.shop/").description("개발 서버")) }
             .apply { addServersItem(Server().url("http://localhost:8080/").description("로컬 서버")) }
 
     @Bean
